@@ -14,14 +14,14 @@ class VisitScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: secondaryColor,
-        title: Text(
+        title: const Text(
           "Visit",
           style: TextStyle(color: textColor),
         ),
         actions: [
           IconButton(
               onPressed: () {},
-              icon: Icon(
+              icon: const Icon(
                 Icons.notifications_none_rounded,
                 color: textColor,
               ))
@@ -29,7 +29,7 @@ class VisitScreen extends StatelessWidget {
       ),
       backgroundColor: backgroundColor,
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             Expanded(
@@ -37,28 +37,28 @@ class VisitScreen extends StatelessWidget {
                 itemCount: visits.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    padding: EdgeInsets.all(16.0),
-                    margin: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       color: secondaryColor,
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Table(
                       columnWidths: {
-                        0: FlexColumnWidth(1),
-                        1: FlexColumnWidth(0.2),
-                        2: FlexColumnWidth(1),
+                        0: const FlexColumnWidth(1),
+                        1: const FlexColumnWidth(0.2),
+                        2: const FlexColumnWidth(1),
                       },
                       children: [
                         TableRow(
                           children: [
-                            TableCell(
+                            const TableCell(
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: 8.0),
                                 child: Text('Purpose of Visit'),
                               ),
                             ),
-                            TableCell(
+                            const TableCell(
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: 8.0),
                                 child: Text(':'),
@@ -66,7 +66,7 @@ class VisitScreen extends StatelessWidget {
                             ),
                             TableCell(
                               child: Padding(
-                                padding: EdgeInsets.only(bottom: 8.0),
+                                padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Text(visits[index].purpose),
                               ),
                             ),
@@ -74,13 +74,13 @@ class VisitScreen extends StatelessWidget {
                         ),
                         TableRow(
                           children: [
-                            TableCell(
+                            const TableCell(
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: 8.0),
                                 child: Text('Date'),
                               ),
                             ),
-                            TableCell(
+                            const TableCell(
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: 8.0),
                                 child: Text(':'),
@@ -88,7 +88,7 @@ class VisitScreen extends StatelessWidget {
                             ),
                             TableCell(
                               child: Padding(
-                                padding: EdgeInsets.only(bottom: 8.0),
+                                padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Text(visits[index].date),
                               ),
                             ),
@@ -96,13 +96,13 @@ class VisitScreen extends StatelessWidget {
                         ),
                         TableRow(
                           children: [
-                            TableCell(
+                            const TableCell(
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: 8.0),
                                 child: Text('From'),
                               ),
                             ),
-                            TableCell(
+                            const TableCell(
                               child: Padding(
                                 padding: EdgeInsets.only(bottom: 8.0),
                                 child: Text(':'),
@@ -110,7 +110,7 @@ class VisitScreen extends StatelessWidget {
                             ),
                             TableCell(
                               child: Padding(
-                                padding: EdgeInsets.only(bottom: 8.0),
+                                padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Text(visits[index].from),
                               ),
                             ),
@@ -118,10 +118,10 @@ class VisitScreen extends StatelessWidget {
                         ),
                         TableRow(
                           children: [
-                            TableCell(
+                            const TableCell(
                               child: Text('To'),
                             ),
-                            TableCell(
+                            const TableCell(
                               child: Text(':'),
                             ),
                             TableCell(

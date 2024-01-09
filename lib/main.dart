@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workmate_01/view/login_view.dart';
 import 'package:workmate_01/view/visit_screen.dart';
 
 void main() {
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const VisitScreen(),
+      home: const LoginViewPage(),
     );
   }
 }
