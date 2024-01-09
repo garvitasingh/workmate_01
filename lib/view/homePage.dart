@@ -26,7 +26,7 @@ class _HomePageViewState extends State<HomePageView> {
           child: Container(
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Colors.blueGrey),
-              child: const Icon(Icons.person_2)),
+              child: const Icon(Icons.person)),
         ),
         backgroundColor: Colors.white,
         title: const Text(
