@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/utils/colors.dart';
+import 'package:workmate_01/view/today_visit.dart';
 
 class MyAttendanceView extends StatefulWidget {
   const MyAttendanceView({Key? key}) : super(key: key);
@@ -74,6 +75,12 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                 if(kDebugMode){
                   print(_selectedDay);
                 }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TodayVisit(),
+                  ),
+                );
               },
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, day, focusedDay) {
