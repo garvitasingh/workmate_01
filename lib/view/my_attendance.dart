@@ -42,7 +42,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   Widget build(BuildContext context) {
     DateTime currentDate = DateTime.now();
     List<DateTime> logDates =
-        List.generate(7, (index) => currentDate.add(Duration(days: index)));
+    List.generate(7, (index) => currentDate.add(Duration(days: index)));
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Attendance'),
@@ -219,36 +219,36 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.black26,
-                                  borderRadius:
-                                      BorderRadiusDirectional.circular(12)),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Card(
-                                      color: Colors.white,
-                                      surfaceTintColor: Colors.white,
-                                      child: Container(
-                                        decoration: BoxDecoration(),
-                                        child: Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: DateHeader(logDates[index])),
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.black26,
+                                    borderRadius:
+                                    BorderRadiusDirectional.circular(12)),
+                                child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Card(
+                                        color: Colors.white,
+                                        surfaceTintColor: Colors.white,
+                                        child: Container(
+                                          decoration: BoxDecoration(),
+                                          child: Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child: DateHeader(logDates[index]),),
+                                        ),
                                       ),
-                                    ),
-                                    _buildLog1("11:38 AM"),
-                                    _buildLog1("01:38 PM"),
-                                    _buildLog1("Check-in"),
-                                  ]),
-                            ),
+                                      _buildLog1("11:38 AM"),
+                                      _buildLog1("01:38 PM"),
+                                      _buildLog1("Check-in"),
+                                    ]),
+                              ),
                           );
                         },
                         separatorBuilder: (context, index) => SizedBox(
-                              height: 3,
-                            ),
+                          height: 3,
+                        ),
                         itemCount: 7)
                   ],
                 ),
