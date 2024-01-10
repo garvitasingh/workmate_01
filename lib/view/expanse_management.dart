@@ -88,7 +88,9 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                         MaterialButton(
                           height: 50,
                           minWidth: MediaQuery.of(context).size.width,
-                          onPressed: () {},
+                          onPressed: () {
+                            
+                          },
                           color: const Color.fromARGB(255, 14, 124, 213),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5)),
@@ -122,7 +124,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
           borderRadius: BorderRadius.circular(12)),
       child: TextFormField(
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(5),
+            contentPadding: const EdgeInsets.all(5),
             border: InputBorder.none,
             hintText: text),
       ),

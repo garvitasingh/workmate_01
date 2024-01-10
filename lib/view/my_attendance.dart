@@ -15,15 +15,15 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;
   late DateTime _selectedDay;
-  Map<DateTime, List<String>> _events = {};
-  List<DateTime> _leaveDates = [
+  final Map<DateTime, List<String>> _events = {};
+  final List<DateTime> _leaveDates = [
     DateTime(2024, 1, 6),
     DateTime(2024, 1, 8),
   ];
-  List<DateTime> _absentDates = [
+  final List<DateTime> _absentDates = [
     DateTime(2024, 1, 19),
   ];
-  List<DateTime> _presentDates = [
+  final List<DateTime> _presentDates = [
     DateTime(2024, 1, 14),
     DateTime(2024, 1, 25),
   ];
@@ -40,7 +40,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Attendance'),
+        title: const Text('My Attendance'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -53,7 +53,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
               lastDay: DateTime.utc(2025, 12, 31),
               focusedDay: _focusedDay,
               calendarFormat: _calendarFormat,
-              calendarStyle: CalendarStyle(
+              calendarStyle: const CalendarStyle(
                 todayDecoration: BoxDecoration(
                   color: Colors.blue,
                   shape: BoxShape.circle,
@@ -63,7 +63,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                   shape: BoxShape.circle,
                 ),
               ),
-              headerStyle: HeaderStyle(
+              headerStyle: const HeaderStyle(
                 formatButtonVisible: false,
               ),
               onDaySelected: (selectedDay, focusedDay) {
@@ -80,7 +80,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                   for (DateTime highlightedDate in _leaveDates) {
                     if (_isSameDay(day, highlightedDate)) {
                       return Container(
-                        margin: EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           color: Colors.orangeAccent.shade100,
                           border: Border.all(color: Colors.orangeAccent,width: 2),
@@ -89,7 +89,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                         child: Center(
                           child: Text(
                             '${day.day}',
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
                       );
@@ -98,7 +98,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                   for (DateTime highlightedDate in _absentDates) {
                     if (_isSameDay(day, highlightedDate)) {
                       return Container(
-                        margin: EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             color: Colors.redAccent.shade100,
                             border: Border.all(color: Colors.redAccent,width: 2),
@@ -107,7 +107,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                         child: Center(
                           child: Text(
                             '${day.day}',
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
                       );
@@ -116,7 +116,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                   for (DateTime highlightedDate in _presentDates) {
                     if (_isSameDay(day, highlightedDate)) {
                       return Container(
-                        margin: EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             color: Colors.greenAccent.shade100,
                             border: Border.all(color: Colors.greenAccent,width: 2),
@@ -125,7 +125,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                         child: Center(
                           child: Text(
                             '${day.day}',
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
                       );
@@ -135,7 +135,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                 },
               ),
             ),
-            Text("Attendance Status",
+            const Text("Attendance Status",
             style: TextStyle(
               color: primaryColor,
               fontSize: 20,
@@ -165,8 +165,8 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   Widget _buildStatusContainer(String title, int count, Color color) {
     return Container(
       width: 150,
-      margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: color.withOpacity(0.2),

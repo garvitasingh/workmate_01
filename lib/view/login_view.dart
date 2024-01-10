@@ -19,7 +19,7 @@ class _LoginViewPageState extends State<LoginViewPage> {
             image: DecorationImage(
                 fit: BoxFit.cover,
                 image: AssetImage(
-                  "assets/backgroung.png",
+                  "assets/bg.png",
                 ))),
         child: Padding(
           padding:
@@ -27,8 +27,10 @@ class _LoginViewPageState extends State<LoginViewPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset("assets/logo.png"),
+              Image.asset("assets/applogo.png"),
               Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(children: [
@@ -36,12 +38,13 @@ class _LoginViewPageState extends State<LoginViewPage> {
                       height: 40,
                     ),
                     Container(
+                      height: 60,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.grey)),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.all(5),
+                            contentPadding: EdgeInsets.all(12),
                             border: InputBorder.none,
                             hintStyle: TextStyle(color: Colors.black),
                             hintText: "Enter Mobile Number"),
