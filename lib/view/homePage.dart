@@ -97,8 +97,8 @@ class _HomePageViewState extends State<HomePageView> {
   }
 
   List routes = [
-    const MyAttendanceView(),
     const MarkAttendanceView(),
+    const MyAttendanceView(),
     const VisitScreen(),
     const ExpanseManagementView(),
     const LeaveView(),
