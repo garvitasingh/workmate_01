@@ -77,11 +77,9 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                 }
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => TodayVisit(),
-                  ),
+                  MaterialPageRoute(builder: (context) => TodayVisit()),
                 );
-              },
+                },
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, day, focusedDay) {
                   for (DateTime highlightedDate in _leaveDates) {
