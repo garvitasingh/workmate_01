@@ -17,6 +17,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   late DateTime _focusedDay;
   late DateTime _selectedDay;
   final Map<DateTime, List<String>> _events = {};
+
   final List<DateTime> _leaveDates = [
     DateTime(2024, 1, 6),
     DateTime(2024, 1, 8),
@@ -39,132 +40,270 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime currentDate = DateTime.now();
+    List<DateTime> logDates =
+        List.generate(7, (index) => currentDate.add(Duration(days: index)));
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Attendance'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Card(
+                color: Colors.white,
+                surfaceTintColor: Colors.white,
+                child: TableCalendar(
+                  firstDay: DateTime.utc(2022, 1, 1),
+                  lastDay: DateTime.utc(2025, 12, 31),
+                  focusedDay: _focusedDay,
+                  calendarFormat: _calendarFormat,
+                  calendarStyle: const CalendarStyle(
+                    todayDecoration: BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                    selectedDecoration: BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  headerStyle: const HeaderStyle(
+                    formatButtonVisible: false,
+                  ),
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
+                    });
+                    if (kDebugMode) {
+                      print(_selectedDay);
+                    }
+                    if (_isSameDay(selectedDay, DateTime.now())) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TodayVisit(),
+                        ),
+                      );
+                    }
+                  },
+                  calendarBuilders: CalendarBuilders(
+                    defaultBuilder: (context, day, focusedDay) {
+                      for (DateTime highlightedDate in _leaveDates) {
+                        if (_isSameDay(day, highlightedDate)) {
+                          return Container(
+                            margin: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                color: Colors.orangeAccent.shade100,
+                                border: Border.all(
+                                    color: Colors.orangeAccent, width: 2),
+                                shape: BoxShape.circle),
+                            child: Center(
+                              child: Text(
+                                '${day.day}',
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                      for (DateTime highlightedDate in _absentDates) {
+                        if (_isSameDay(day, highlightedDate)) {
+                          return Container(
+                            margin: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                color: Colors.redAccent.shade100,
+                                border: Border.all(
+                                    color: Colors.redAccent, width: 2),
+                                shape: BoxShape.circle),
+                            child: Center(
+                              child: Text(
+                                '${day.day}',
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                      for (DateTime highlightedDate in _presentDates) {
+                        if (_isSameDay(day, highlightedDate)) {
+                          return Container(
+                            margin: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                color: Colors.greenAccent.shade100,
+                                border: Border.all(
+                                    color: Colors.greenAccent, width: 2),
+                                shape: BoxShape.circle),
+                            child: Center(
+                              child: Text(
+                                '${day.day}',
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Card(
+                surfaceTintColor: Colors.white,
+                color: Colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Attendance Status",
+                      style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 110,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          _buildStatusContainer(
+                              "Present", _presentDates.length, Colors.green),
+                          _buildStatusContainer(
+                              "Absent", _absentDates.length, Colors.red),
+                          _buildStatusContainer(
+                              "Leave", _leaveDates.length, Colors.orange),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Card(
+                surfaceTintColor: Colors.white,
+                color: Colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "7 Days log",
+                      style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildLog(" Days"),
+                        _buildLog("Check-in"),
+                        _buildLog("Check-out"),
+                        _buildLog("status  ")
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    ListView.separated(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.black26,
+                                  borderRadius:
+                                      BorderRadiusDirectional.circular(12)),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Card(
+                                      color: Colors.white,
+                                      surfaceTintColor: Colors.white,
+                                      child: Container(
+                                        decoration: BoxDecoration(),
+                                        child: Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: DateHeader(logDates[index])),
+                                      ),
+                                    ),
+                                    _buildLog1("11:38 AM"),
+                                    _buildLog1("01:38 PM"),
+                                    _buildLog1("Check-in"),
+                                  ]),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => SizedBox(
+                              height: 3,
+                            ),
+                        itemCount: 7)
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget DateHeader(DateTime date) {
+    return Card(
+      color: Colors.white,
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TableCalendar(
-              firstDay: DateTime.utc(2022, 1, 1),
-              lastDay: DateTime.utc(2025, 12, 31),
-              focusedDay: _focusedDay,
-              calendarFormat: _calendarFormat,
-              calendarStyle: const CalendarStyle(
-                todayDecoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                ),
-                selectedDecoration: BoxDecoration(
-                  color: Colors.green,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              headerStyle: const HeaderStyle(
-                formatButtonVisible: false,
-              ),
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-                if(kDebugMode){
-                  print(_selectedDay);
-                }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TodayVisit()),
-                );
-                },
-              calendarBuilders: CalendarBuilders(
-                defaultBuilder: (context, day, focusedDay) {
-                  for (DateTime highlightedDate in _leaveDates) {
-                    if (_isSameDay(day, highlightedDate)) {
-                      return Container(
-                        margin: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.orangeAccent.shade100,
-                          border: Border.all(color: Colors.orangeAccent,width: 2),
-                          shape: BoxShape.circle
-                        ),
-                        child: Center(
-                          child: Text(
-                            '${day.day}',
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      );
-                    }
-                  }
-                  for (DateTime highlightedDate in _absentDates) {
-                    if (_isSameDay(day, highlightedDate)) {
-                      return Container(
-                        margin: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: Colors.redAccent.shade100,
-                            border: Border.all(color: Colors.redAccent,width: 2),
-                            shape: BoxShape.circle
-                        ),
-                        child: Center(
-                          child: Text(
-                            '${day.day}',
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      );
-                    }
-                  }
-                  for (DateTime highlightedDate in _presentDates) {
-                    if (_isSameDay(day, highlightedDate)) {
-                      return Container(
-                        margin: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: Colors.greenAccent.shade100,
-                            border: Border.all(color: Colors.greenAccent,width: 2),
-                            shape: BoxShape.circle
-                        ),
-                        child: Center(
-                          child: Text(
-                            '${day.day}',
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      );
-                    }
-                  }
-                  return null;
-                },
-              ),
-            ),
-            const Text("Attendance Status",
-            style: TextStyle(
-              color: primaryColor,
-              fontSize: 20,
-              fontWeight: FontWeight.bold
-            ),),
-            SizedBox(
-              height: 110,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _buildStatusContainer("Present", _presentDates.length, Colors.green),
-                  _buildStatusContainer("Absent", _absentDates.length, Colors.red),
-                  _buildStatusContainer("Leave", _leaveDates.length, Colors.orange),
-                ],
-              ),
-            )
+            Text("${date.day}"),
+            Text(_getDayName(date)),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildLog(text) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+      ),
+    );
+  }
+
+  Widget _buildLog1(text) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+      ),
+    );
+  }
+
+  String _getDayName(DateTime date) {
+    final List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days[date.weekday - 1];
+  }
+
   bool _isSameDay(DateTime dayA, DateTime dayB) {
-    return dayA.year == dayB.year && dayA.month == dayB.month && dayA.day == dayB.day;
+    return dayA.year == dayB.year &&
+        dayA.month == dayB.month &&
+        dayA.day == dayB.day;
   }
 
   Widget _buildStatusContainer(String title, int count, Color color) {
