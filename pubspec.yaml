@@ -35,6 +35,8 @@ dependencies:
     sdk: flutter
   intl:
   table_calendar: ^3.0.9
+  intl: ^0.18.0
+  booking_calendar: ^1.1.10
 
 dev_dependencies:
   flutter_lints: ^2.0.0
