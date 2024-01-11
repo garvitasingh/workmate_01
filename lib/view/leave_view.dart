@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:workmate_01/controller/leave_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
 
 class LeaveView extends StatefulWidget {
@@ -9,6 +11,8 @@ class LeaveView extends StatefulWidget {
 }
 
 class _LeaveViewState extends State<LeaveView> {
+  LeaveController controller = Get.put(LeaveController());
+  
   @override
   Widget build(BuildContext context) {
     var h = MediaQuery.of(context).size.height;
@@ -38,57 +42,57 @@ class _LeaveViewState extends State<LeaveView> {
           const SizedBox(
             height: 20,
           ),
-          GridView.builder(
+          Obx(() => controller.isLoading.isFalse?GridView(
             shrinkWrap: true,
-            itemCount: text.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 mainAxisExtent: 130),
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  //
-                },
-                child: Card(
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        text[index],
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        data[index],
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          )
+            children: [
+              _leaveCard("Total Leave", controller.leaveData[0].leaves),
+              _leaveCard("SL", controller.leaveData[0].sL),
+              _leaveCard("PL", controller.leaveData[0].pL),
+              _leaveCard("CL", controller.leaveData[0].cL),
+              _leaveCard("Approve Leave", controller.leaveData[0].approved),
+              _leaveCard("Pending Leave", controller.leaveData[0].pending),
+              _leaveCard("Rejected Leave", controller.leaveData[0].rejected),
+            ],
+          ):Center(child: CircularProgressIndicator()))
         ]),
       ),
     );
   }
 
-  List data = ["10", "1", "2", "4", "3"];
-  List text = [
-    "Total Leave",
-    "New Leave",
-    "Approve Leave",
-    "Pending Leave",
-    "Rejected Leave"
-  ];
+  Widget _leaveCard(String title, int? count){
+    return InkWell(
+      onTap: () {
+        //
+      },
+      child: Card(
+        color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600),
+            ),
+            Text(
+              count.toString()??"0",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

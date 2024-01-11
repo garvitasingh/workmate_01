@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:workmate_01/view/today_visit.dart';
+
+import '../controller/attendance_controller.dart';
 
 class MyAttendanceView extends StatefulWidget {
   const MyAttendanceView({Key? key}) : super(key: key);
@@ -17,6 +20,8 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   late DateTime _focusedDay;
   late DateTime _selectedDay;
   final Map<DateTime, List<String>> _events = {};
+
+  AttendanceController controller = Get.put(AttendanceController());
 
   final List<DateTime> _leaveDates = [
     DateTime(2024, 1, 6),

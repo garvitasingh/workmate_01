@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:workmate_01/controller/home_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:workmate_01/view/expanse_management.dart';
 import 'package:workmate_01/view/leave_view.dart';
@@ -15,6 +17,8 @@ class HomePageView extends StatefulWidget {
 }
 
 class _HomePageViewState extends State<HomePageView> {
+  HomeController controller = Get.put(HomeController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,9 +54,9 @@ class _HomePageViewState extends State<HomePageView> {
             const SizedBox(
               height: 20,
             ),
-            GridView.builder(
+            Obx(() => controller.isLoading.isFalse?GridView.builder(
               shrinkWrap: true,
-              itemCount: text.length,
+              itemCount: controller.menuData.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   crossAxisSpacing: 10,
@@ -77,8 +81,7 @@ class _HomePageViewState extends State<HomePageView> {
                           height: 10,
                         ),
                         Text(
-                          text[index],
-                          textAlign: TextAlign.center,
+                          controller.menuData[index].name ?? "",                          textAlign: TextAlign.center,
                           style: const TextStyle(
                               color: Colors.black,
                               fontSize: 15,
@@ -89,7 +92,7 @@ class _HomePageViewState extends State<HomePageView> {
                   ),
                 );
               },
-            )
+            ):Center(child: CircularProgressIndicator()))
           ],
         ),
       ),
@@ -97,12 +100,12 @@ class _HomePageViewState extends State<HomePageView> {
   }
 
   List routes = [
+    const OthersView(),
     const MarkAttendanceView(),
     const MyAttendanceView(),
-    const VisitScreen(),
     const ExpanseManagementView(),
     const LeaveView(),
-    const OthersView()
+    const VisitScreen(),
   ];
   List icons = [
     const Icon(Icons.calendar_month_rounded),
@@ -113,12 +116,12 @@ class _HomePageViewState extends State<HomePageView> {
     const Icon(Icons.help_outline_sharp)
   ];
 
-  List text = [
-    "My Attendance",
-    "Mark Attendance",
-    "Visit",
-    "Expense Manegemant",
-    "Leave",
-    "Others"
-  ];
+  // List text = [
+  //   "My Attendance",
+  //   "Mark Attendance",
+  //   "Visit",
+  //   "Expense Manegemant",
+  //   "Leave",
+  //   "Others"
+  // ];
 }

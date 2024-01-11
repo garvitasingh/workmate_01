@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:workmate_01/controller/visit_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
 
 class VisitScreen extends StatelessWidget {
@@ -6,6 +8,8 @@ class VisitScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    VisitController controller = Get.put(VisitController());
+
     final List<Visit> visits = [
       Visit("Meeting", "2024-01-05", "Pune", "Mumbai"),
       Visit("Conference", "2024-01-10", "Noida", "Delhi"),
@@ -28,13 +32,13 @@ class VisitScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: backgroundColor,
-      body: Padding(
+      body: Obx(() => controller.isLoading.isFalse?Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: visits.length,
+                itemCount: controller.visitData.length,
                 itemBuilder: (context, index) {
                   return Container(
                     padding: const EdgeInsets.all(16.0),
@@ -67,7 +71,7 @@ class VisitScreen extends StatelessWidget {
                             TableCell(
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text(visits[index].purpose),
+                                child: Text(controller.visitData[index].visitPurpose??""),
                               ),
                             ),
                           ],
@@ -89,7 +93,7 @@ class VisitScreen extends StatelessWidget {
                             TableCell(
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text(visits[index].date),
+                                child: Text(controller.visitData[index].date??""),
                               ),
                             ),
                           ],
@@ -111,7 +115,7 @@ class VisitScreen extends StatelessWidget {
                             TableCell(
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text(visits[index].from),
+                                child: Text(controller.visitData[index].source??""),
                               ),
                             ),
                           ],
@@ -125,7 +129,7 @@ class VisitScreen extends StatelessWidget {
                               child: Text(':'),
                             ),
                             TableCell(
-                              child: Text(visits[index].to),
+                              child: Text(controller.visitData[index].destination??""),
                             ),
                           ],
                         ),
@@ -137,7 +141,7 @@ class VisitScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      ):Center(child: CircularProgressIndicator(),)),
     );
   }
 }
