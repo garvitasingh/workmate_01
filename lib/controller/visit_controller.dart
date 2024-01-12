@@ -1,8 +1,7 @@
-import 'dart:convert';
+// ignore_for_file: avoid_print
 
-import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:get/get.dart';
-import 'package:workmate_01/model/leave_model.dart';
 import 'package:workmate_01/model/visit_model.dart';
 
 import '../Provider/Api_provider.dart';
@@ -25,7 +24,6 @@ class VisitController extends GetxController{
       var res = await ApiProvider().getRequest(apiUrl: "Expense/GetVisitDetails");
       // print(jsonDecode(res));
       var data = jsonDecode(res);
-      print(data["Data"]["VisitDetails"]);
       for (var i = 0; i < data["Data"]["VisitDetails"].length; i++) {
         visitData.add(VisitModel.fromJson(data["Data"]["VisitDetails"][i]));
         isLoading.value = false;

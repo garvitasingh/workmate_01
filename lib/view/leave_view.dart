@@ -12,11 +12,11 @@ class LeaveView extends StatefulWidget {
 
 class _LeaveViewState extends State<LeaveView> {
   LeaveController controller = Get.put(LeaveController());
-  
+
   @override
   Widget build(BuildContext context) {
-    var h = MediaQuery.of(context).size.height;
-    var w = MediaQuery.of(context).size.width;
+    // var h = MediaQuery.of(context).size.height;
+    // var w = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -42,29 +42,34 @@ class _LeaveViewState extends State<LeaveView> {
           const SizedBox(
             height: 20,
           ),
-          Obx(() => controller.isLoading.isFalse?GridView(
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                mainAxisExtent: 130),
-            children: [
-              _leaveCard("Total Leave", controller.leaveData[0].leaves),
-              _leaveCard("SL", controller.leaveData[0].sL),
-              _leaveCard("PL", controller.leaveData[0].pL),
-              _leaveCard("CL", controller.leaveData[0].cL),
-              _leaveCard("Approve Leave", controller.leaveData[0].approved),
-              _leaveCard("Pending Leave", controller.leaveData[0].pending),
-              _leaveCard("Rejected Leave", controller.leaveData[0].rejected),
-            ],
-          ):Center(child: CircularProgressIndicator()))
+          Obx(() => controller.isLoading.isFalse
+              ? GridView(
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      mainAxisExtent: 130),
+                  children: [
+                    _leaveCard("Total Leave", controller.leaveData[0].leaves),
+                    _leaveCard("SL", controller.leaveData[0].sL),
+                    _leaveCard("PL", controller.leaveData[0].pL),
+                    _leaveCard("CL", controller.leaveData[0].cL),
+                    _leaveCard(
+                        "Approve Leave", controller.leaveData[0].approved),
+                    _leaveCard(
+                        "Pending Leave", controller.leaveData[0].pending),
+                    _leaveCard(
+                        "Rejected Leave", controller.leaveData[0].rejected),
+                  ],
+                )
+              : const Center(child: CircularProgressIndicator()))
         ]),
       ),
     );
   }
 
-  Widget _leaveCard(String title, int? count){
+  Widget _leaveCard(String title, int? count) {
     return InkWell(
       onTap: () {
         //
@@ -83,12 +88,10 @@ class _LeaveViewState extends State<LeaveView> {
                   fontWeight: FontWeight.w600),
             ),
             Text(
-              count.toString()??"0",
+              count.toString() ?? "0",
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500),
+                  color: Colors.red, fontSize: 20, fontWeight: FontWeight.w500),
             ),
           ],
         ),

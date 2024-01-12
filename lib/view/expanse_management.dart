@@ -11,7 +11,6 @@ class ExpanseManagementView extends StatefulWidget {
 class _ExpanseManagementViewState extends State<ExpanseManagementView> {
   @override
   Widget build(BuildContext context) {
-    var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -88,9 +87,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                         MaterialButton(
                           height: 50,
                           minWidth: MediaQuery.of(context).size.width,
-                          onPressed: () {
-                            
-                          },
+                          onPressed: () {},
                           color: const Color.fromARGB(255, 14, 124, 213),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5)),

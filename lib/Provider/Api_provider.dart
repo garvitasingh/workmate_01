@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils/constants.dart';
@@ -29,12 +28,12 @@ class ApiProvider {
   }
 
   // Future<dynamic> postRequest({required apiUrl, data}) async {
-  //  var headers = {'Content-Type': 'application/json'};
+  //   var headers = {'Content-Type': 'application/json'};
   //   var request = http.Request('POST', Uri.parse('$BASEURL$apiUrl'));
   //   request.body = json.encode(data);
   //   request.headers.addAll(headers);
-  //    http.StreamedResponse res = await request.send();
-  //    print(res.statusCode);
+  //   http.StreamedResponse res = await request.send();
+  //   print(res.statusCode);
   //   if (res.statusCode == 200) {
   //     var decode = jsonDecode(await res.stream.bytesToString());
   //     print("result is ====  ${decode}");
@@ -45,26 +44,26 @@ class ApiProvider {
   //   }
   // }
 
-  // Future<dynamic> postRequestToken({required apiUrl, data}) async {
-  //   // var token = box.read("token");
-  //   var res = await http.post(
-  //       body: data,
-  //       Uri.parse('$BASEURL$apiUrl'),
-  //       headers: {'Authorization': 'Bearer $token'});
-  //   print(res.body);
-  //   if (res.statusCode == 200) {
-  //     return res;
-  //   } else if (res.statusCode == 401) {
-  //     return Future.error(res.body);
-  //   } else if (res.statusCode == 404) {
-  //     return Future.error(res.body);
-  //   } else if (res.statusCode == 500) {
-  //     return Future.error(res.body);
-  //   } else {
-  //     return Future.error('Network Problem');
-  //   }
-  // }
-  //
+  Future<dynamic> postRequestToken({required apiUrl, data}) async {
+    // var token = box.read("token");
+    var res = await http.post(
+        body: data,
+        Uri.parse('$apiUrl'),
+        headers: {'Authorization': 'Bearer $BoxToken'});
+    return jsonDecode(res.body);
+    // if (res.statusCode == 200) {
+    //   return res;
+    // } else if (res.statusCode == 400) {
+    //   return Future.error(res.body);
+    // } else if (res.statusCode == 404) {
+    //   return Future.error(res.body);
+    // } else if (res.statusCode == 500) {
+    //   return Future.error(res.body);
+    // } else {
+    //   return Future.error('Network Problem');
+    // }
+  }
+
   // Future<dynamic> postRequestRegister(
   //     {required apiUrl, data, token, email, mobile, name}) async {
   //   var request = http.Request(

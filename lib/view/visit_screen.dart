@@ -10,10 +10,6 @@ class VisitScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     VisitController controller = Get.put(VisitController());
 
-    final List<Visit> visits = [
-      Visit("Meeting", "2024-01-05", "Pune", "Mumbai"),
-      Visit("Conference", "2024-01-10", "Noida", "Delhi"),
-    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -48,10 +44,10 @@ class VisitScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Table(
-                      columnWidths: {
-                        0: const FlexColumnWidth(1),
-                        1: const FlexColumnWidth(0.2),
-                        2: const FlexColumnWidth(1),
+                      columnWidths: const {
+                        0: FlexColumnWidth(1),
+                        1: FlexColumnWidth(0.2),
+                        2: FlexColumnWidth(1),
                       },
                       children: [
                         TableRow(
