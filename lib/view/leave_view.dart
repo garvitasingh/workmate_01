@@ -20,11 +20,20 @@ class _LeaveViewState extends State<LeaveView> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: secondaryColor,
+            )),
         centerTitle: false,
-        backgroundColor: Colors.white,
+        backgroundColor: darkColor,
         title: const Text(
           "Leave",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.w600, color: secondaryColor),
         ),
         actions: [
           IconButton(

@@ -10,6 +10,10 @@ class OthersView extends StatefulWidget {
 class _OthersViewState extends State<OthersView> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return const Scaffold(
+      body: Center(
+        child: Text("Comming Soon....."),
+      ),
+    );
   }
 }

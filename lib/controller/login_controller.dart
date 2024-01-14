@@ -19,8 +19,8 @@ class AuthController extends GetxController {
   var password = "null";
   @override
   void onInit() {
-     getDeviceId();
-   // generateUUID();
+    getDeviceId();
+    // generateUUID();
     super.onInit();
   }
 
@@ -106,6 +106,8 @@ class AuthController extends GetxController {
       print('Device ID: ${androidInfo.id}');
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      password = iosInfo.identifierForVendor.toString();
+      update();
       print('Device ID: ${iosInfo.identifierForVendor}');
     }
   }

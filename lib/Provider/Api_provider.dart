@@ -1,16 +1,17 @@
 import 'dart:convert';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils/constants.dart';
 
 class ApiProvider {
-  // var box = GetStorage();
-
+  var box = GetStorage();
+   
   Future<dynamic> getRequest({required apiUrl}) async {
-    // var token = box.read("token");
+     var token = box.read("token");
 
     var res = await http.get(Uri.parse('$BASEURL$apiUrl'),
-        headers: {'Authorization': 'Bearer $BoxToken'});
+        headers: {'Authorization': 'Bearer $token'});
 
     if (res.statusCode == 200) {
       return res.body;
@@ -45,11 +46,11 @@ class ApiProvider {
   // }
 
   Future<dynamic> postRequestToken({required apiUrl, data}) async {
-    // var token = box.read("token");
+    var token = box.read("token");
     var res = await http.post(
         body: data,
         Uri.parse('$apiUrl'),
-        headers: {'Authorization': 'Bearer $BoxToken'});
+        headers: {'Authorization': 'Bearer $token'});
     return jsonDecode(res.body);
     // if (res.statusCode == 200) {
     //   return res;

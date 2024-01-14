@@ -20,16 +20,23 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
     var w = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
+      appBar: AppBar( leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                color: secondaryColor,
+              )),
         centerTitle: false,
-        backgroundColor: Colors.white,
+        backgroundColor: darkColor,
         title: const Text(
           "My Attendance",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,color: secondaryColor),
         ),
         actions: [
           IconButton(
-              onPressed: () {}, icon: const Icon(Icons.notifications_rounded))
+              onPressed: () {}, icon: const Icon(Icons.notifications_rounded,color: secondaryColor,))
         ],
       ),
       body: Padding(
@@ -53,9 +60,9 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
                   mainAxisExtent: 150),
               children: [
                 _iconCard("Present", controller.attendanceData[0].present),
-                _iconCard("Present", controller.attendanceData[0].absent),
-                _iconCard("Present", controller.attendanceData[0].leave),
-                _iconCard("Present", controller.attendanceData[0].workingDay),
+                _iconCard("Absent", controller.attendanceData[0].absent),
+                _iconCard("Leave", controller.attendanceData[0].leave),
+                _iconCard("WorkingDay", controller.attendanceData[0].workingDay),
               ],
             ),
           ):Center(child: CircularProgressIndicator()))

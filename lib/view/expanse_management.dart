@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:workmate_01/utils/colors.dart';
 
 class ExpanseManagementView extends StatefulWidget {
@@ -15,15 +16,28 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: secondaryColor,
+            )),
         centerTitle: false,
-        backgroundColor: Colors.white,
+        backgroundColor: darkColor,
         title: const Text(
           "Expense Management",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.w600, color: secondaryColor),
         ),
         actions: [
           IconButton(
-              onPressed: () {}, icon: const Icon(Icons.notifications_rounded))
+              onPressed: () {},
+              icon: const Icon(
+                Icons.notifications,
+                color: secondaryColor,
+              ))
         ],
       ),
       body: SingleChildScrollView(
