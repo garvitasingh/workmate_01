@@ -20,23 +20,29 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
     var w = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar( leading: IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: Icon(
-                Icons.arrow_back,
-                color: secondaryColor,
-              )),
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: secondaryColor,
+            )),
         centerTitle: false,
         backgroundColor: darkColor,
         title: const Text(
           "My Attendance",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,color: secondaryColor),
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.w600, color: secondaryColor),
         ),
         actions: [
           IconButton(
-              onPressed: () {}, icon: const Icon(Icons.notifications_rounded,color: secondaryColor,))
+              onPressed: () {},
+              icon: const Icon(
+                Icons.notifications_rounded,
+                color: secondaryColor,
+              ))
         ],
       ),
       body: Padding(
@@ -50,28 +56,43 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
           const SizedBox(
             height: 20,
           ),
-          Obx(() => controller.isLoading.isFalse?Expanded(
-            child: GridView(
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  mainAxisExtent: 150),
-              children: [
-                _iconCard("Present", controller.attendanceData[0].present),
-                _iconCard("Absent", controller.attendanceData[0].absent),
-                _iconCard("Leave", controller.attendanceData[0].leave),
-                _iconCard("WorkingDay", controller.attendanceData[0].workingDay),
-              ],
-            ),
-          ):Center(child: CircularProgressIndicator()))
+          Obx(() => controller.isLoading.isFalse
+              ? Expanded(
+                  child: GridView(
+                    shrinkWrap: true,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            mainAxisExtent: 150),
+                    children: [
+                      _iconCard(
+                          "Present",
+                          controller
+                              .attendanceData!.data.claimDetails[0].present),
+                      _iconCard(
+                          "Absent",
+                          controller
+                              .attendanceData!.data.claimDetails[0].absent),
+                      _iconCard(
+                          "Leave",
+                          controller
+                              .attendanceData!.data.claimDetails[0].leave),
+                      _iconCard(
+                          "WorkingDay",
+                          controller.attendanceData!.data.claimDetails[0]
+                              .workingDays),
+                    ],
+                  ),
+                )
+              : Center(child: CircularProgressIndicator()))
         ]),
       ),
     );
   }
 
-  Widget _iconCard(String title, int? count){
+  Widget _iconCard(String title, int? count) {
     return InkWell(
       onTap: () {
         //
@@ -93,9 +114,7 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
               count.toString() ?? "0",
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500),
+                  color: Colors.red, fontSize: 15, fontWeight: FontWeight.w500),
             ),
             Text(
               title,

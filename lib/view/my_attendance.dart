@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:intl/intl.dart';
 import 'package:workmate_01/utils/colors.dart';
+import 'package:workmate_01/utils/constants.dart';
 import 'package:workmate_01/view/today_visit.dart';
 
 import '../controller/attendance_controller.dart';
@@ -19,22 +19,20 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;
   late DateTime _selectedDay;
-  final Map<DateTime, List<String>> _events = {};
 
   AttendanceController controller = Get.put(AttendanceController());
 
   final List<DateTime> _leaveDates = [
     DateTime(2024, 1, 4),
     DateTime(2024, 1, 6),
-    DateTime(2024, 1, 8),
   ];
   final List<DateTime> _absentDates = [
-    DateTime(2024, 1, 19),
+    DateTime(2024, 1, 3),
   ];
-  final List<DateTime> _presentDates = [
-    DateTime(2024, 1, 14),
-    DateTime(2024, 1, 25),
-  ];
+  // final List<DateTime> _presentDates = [
+  //   DateTime(2024, 1, 14),
+  //   DateTime(2024, 1, 25),
+  // ];
   List<DateTime> holidays = [
     DateTime.utc(2024, 1, 1),
     DateTime.utc(2024, 1, 5),
@@ -66,7 +64,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
               )),
           backgroundColor: darkColor,
           title: const Text(
-            'My Attendance',
+            'Mark Attendance',
             style: TextStyle(color: secondaryColor),
           ),
         ),
@@ -82,8 +80,10 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                         color: Colors.white,
                         surfaceTintColor: Colors.white,
                         child: TableCalendar(
-                          firstDay: DateTime(DateTime.now().year, DateTime.now().month, 1),
-                          lastDay: DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
+                          firstDay: DateTime(
+                              DateTime.now().year, DateTime.now().month, 1),
+                          lastDay: DateTime(
+                              DateTime.now().year, DateTime.now().month + 1, 0),
                           focusedDay: _focusedDay,
                           calendarFormat: _calendarFormat,
                           calendarStyle: const CalendarStyle(
@@ -101,7 +101,8 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                           ),
                           enabledDayPredicate: (DateTime day) {
                             // Disable all past days except leave and absent days
-                            if (day.isAfter(DateTime.now().subtract(const Duration(days: 1)))) {
+                            if (day.isAfter(DateTime.now()
+                                .subtract(const Duration(days: 1)))) {
                               return true;
                             }
                             for (DateTime leaveDate in _leaveDates) {
@@ -224,17 +225,20 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                 children: [
                                   _buildStatusContainer(
                                       "Present",
-                                      controller.attendanceData[0].present
+                                      controller.attendanceData!.data
+                                          .claimDetails[0].present
                                           .toString(),
                                       Colors.green),
                                   _buildStatusContainer(
                                       "Absent",
-                                      controller.attendanceData[0].absent
+                                      controller.attendanceData!.data
+                                          .claimDetails[0].absent
                                           .toString(),
                                       Colors.red),
                                   _buildStatusContainer(
                                       "Leave",
-                                      controller.attendanceData[0].leave
+                                      controller.attendanceData!.data
+                                          .claimDetails[0].leave
                                           .toString(),
                                       Colors.orange),
                                 ],
@@ -288,9 +292,28 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             DateHeader(logDates[index]),
-                                            _buildLog1("11:38 AM"),
-                                            _buildLog1("01:38 PM"),
-                                            _buildLog1("Check-in"),
+                                            _buildLog1(convertTimestampToTime(
+                                                controller
+                                                    .attendanceLogModel!
+                                                    .data
+                                                    .attendancelog[index]
+                                                    .presentTimeIn
+                                                    .toString())),
+                                            _buildLog1(convertTimestampToTime(
+                                                controller
+                                                    .attendanceLogModel!
+                                                    .data
+                                                    .attendancelog[index]
+                                                    .presentTimeOut
+                                                    .toString())),
+                                            _buildLog1(controller
+                                                        .attendanceLogModel!
+                                                        .data
+                                                        .attendancelog[index]
+                                                        .checkOut ==
+                                                    1
+                                                ? "Check-Out"
+                                                : "Check-In"),
                                           ]),
                                     ),
                                   );
@@ -299,7 +322,8 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                     const SizedBox(
                                       height: 3,
                                     ),
-                                itemCount: 7)
+                                itemCount:
+                                    controller.attendanceLogModel!.dataCount)
                           ],
                         ),
                       )

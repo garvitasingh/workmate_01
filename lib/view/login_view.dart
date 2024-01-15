@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:workmate_01/controller/login_controller.dart';
-
 
 class LoginViewPage extends StatefulWidget {
   const LoginViewPage({super.key});
@@ -67,6 +67,13 @@ class _LoginViewPageState extends State<LoginViewPage> {
                                     border: Border.all(color: Colors.grey)),
                                 child: TextFormField(
                                   controller: controller.phoneController,
+                                  keyboardType: TextInputType.phone,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(
+                                        10), // Limit to 10 characters
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[0-9]')), // Allow only digits
+                                  ],
                                   decoration: const InputDecoration(
                                       contentPadding: EdgeInsets.all(12),
                                       border: InputBorder.none,
@@ -100,7 +107,10 @@ class _LoginViewPageState extends State<LoginViewPage> {
                                             fontSize: 20,
                                             fontWeight: FontWeight.w600),
                                       )
-                                    : Center(child: CircularProgressIndicator(color: Colors.white,)),
+                                    : Center(
+                                        child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )),
                               ),
                               const SizedBox(
                                 height: 40,

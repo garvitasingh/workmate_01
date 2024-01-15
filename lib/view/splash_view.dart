@@ -1,9 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:workmate_01/controller/attendance_controller.dart';
 import 'package:workmate_01/view/homePage.dart';
 import 'package:workmate_01/view/login_view.dart';
 

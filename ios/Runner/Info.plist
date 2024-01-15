@@ -47,5 +47,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Location Needed</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Location Needed</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location Needed</string>
 </dict>
 </plist>

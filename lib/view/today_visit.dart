@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/component/check_in_button.dart';
+import 'package:workmate_01/controller/visit_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,7 +19,9 @@ class TodayVisit extends StatefulWidget {
 }
 
 class _TodayVisitState extends State<TodayVisit> {
-  String selectedLocation = 'Pune-Mumbai';
+  VisitController controller = Get.put(VisitController());
+  late String formattedTime;
+
   late Position _currentPosition;
   String Address = 'Location';
   File? _capturedImage;
@@ -25,6 +30,22 @@ class _TodayVisitState extends State<TodayVisit> {
   void initState() {
     super.initState();
     _initializeLocation();
+    updateFormattedTime();
+
+    // Set up a timer to refresh the time every second
+    Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      if (mounted) {
+        // Check if the widget is still mounted before updating the state
+        updateFormattedTime();
+      }
+    });
+  }
+
+  void updateFormattedTime() {
+    setState(() {
+      DateTime currentDate = DateTime.now();
+      formattedTime = DateFormat('yyyy HH:mm:ss').format(currentDate);
+    });
   }
 
   Future<void> _initializeLocation() async {
@@ -69,11 +90,11 @@ class _TodayVisitState extends State<TodayVisit> {
 
   Future<void> GetAddressFromLatLong(Position position) async {
     List<Placemark> placemarks =
-    await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     print(placemarks);
     Placemark place = placemarks[0];
     Address =
-    '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
     setState(() {});
   }
 
@@ -92,15 +113,25 @@ class _TodayVisitState extends State<TodayVisit> {
   @override
   Widget build(BuildContext context) {
     DateTime currentDate = DateTime.now();
-    String formattedTime = DateFormat('yyyy HH:mm:ss').format(currentDate);
+
     String formattedDate = DateFormat('EEEE, d MMM yyyy').format(currentDate);
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: secondaryColor,
+            )),
+        centerTitle: false,
         backgroundColor: appbarColor,
         title: const Text(
           "Today Visit",
+          style: TextStyle(color: secondaryColor),
         ),
         actions: [
           Container(
@@ -108,14 +139,14 @@ class _TodayVisitState extends State<TodayVisit> {
             margin: const EdgeInsets.all(8.0),
             decoration: const BoxDecoration(color: Colors.white30),
             child: DropdownButton<String>(
-              value: selectedLocation,
+              value: controller.selectedLocation,
               onChanged: (String? newValue) {
                 setState(() {
-                  selectedLocation = newValue!;
+                  controller.selectedLocation = newValue!;
                 });
               },
               elevation: 2,
-              items: <String>['Pune-Mumbai', 'Noida-Delhi']
+              items: controller.visits
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -132,188 +163,214 @@ class _TodayVisitState extends State<TodayVisit> {
       body: Address == "Location"
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: Text(
-                  formattedTime,
-                  style: const TextStyle(
-                      color: primaryColor,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              Center(child: Text(formattedDate)),
-              Container(
-                alignment: Alignment.center,
-                height: 200,
-                child: CheckInButton(checkIn: true),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RichText(
-                    text: TextSpan(children: [
-                      const WidgetSpan(
-                          child: Icon(
-                            Icons.location_on,
-                            color: Colors.blue,
-                          )),
-                      const TextSpan(
-                          text: "Longitude:",
-                          style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)),
-                      TextSpan(
-                          text:
-                          "\n    ${_currentPosition.longitude.toStringAsFixed(4) ?? "--"}",
-                          style: const TextStyle(
-                            color: textLightColor,
-                          ))
-                    ]),
-                  ),
-                  RichText(
-                    text: TextSpan(children: [
-                      const WidgetSpan(
-                          child: Icon(
-                            Icons.location_on,
-                            color: Colors.blue,
-                          )),
-                      const TextSpan(
-                          text: "Latitiude:",
-                          style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)),
-                      TextSpan(
-                          text:
-                          "\n    ${_currentPosition.latitude.toStringAsFixed(4) ?? "--"}",
-                          style: const TextStyle(
-                            color: textLightColor,
-                          ))
-                    ]),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: secondaryColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Text(
+                        formattedTime,
+                        style: const TextStyle(
+                            color: primaryColor,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Center(child: Text(formattedDate)),
+                    Container(
+                      alignment: Alignment.center,
+                      height: 200,
+                      child: CheckInButton(checkIn: true),
+                    ),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildRow("11:45 AM", "Check-in"),
-                        _buildRow("--:--", "Check-out"),
-                        _buildRow("Process", "Status")
-                      ]),
-                ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: secondaryColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Today's Punch Logs",
-                          style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          _punchBuild("Photo"),
-                          _punchBuild("Punch Time"),
-                          _punchBuild("Location")
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
+                        Text("Longitude",
+                            style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
+                        Text("Latitude  ",
+                            style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
                             height: 50,
                             width: 100,
-                            child: _capturedImage != null
-                                ? Image.file(
-                              _capturedImage!,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            )
-                                : IconButton(
-                              icon: const Icon(
-                                Icons.camera_alt,
-                                color: Colors.black,
-                              ),
-                              onPressed: _openCamera,
-                              iconSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Container(
-                              width: 100, child: const Text("11:30 AM")),
-                          Container(
-                            width: 100,
-                            child: Row(
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.fitHeight,
+                                    image: AssetImage(
+                                      "assets/map.png",
+                                    ))),
+                            child: Column(
                               children: [
-                                const Icon(Icons.location_on),
-                                IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        temp = !temp;
-                                      });
-                                    },
-                                    icon: !temp
-                                        ? Icon(Icons.keyboard_arrow_down)
-                                        : Icon(Icons.keyboard_arrow_up))
+                                Icon(
+                                  Icons.location_on,
+                                  color: Colors.blue,
+                                ),
+                                Text(
+                                    "   ${_currentPosition.longitude.toStringAsFixed(4) ?? "--"}",
+                                    style: const TextStyle(
+                                        color: textLightColor,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600))
+                              ],
+                            )),
+                        Container(
+                            height: 50,
+                            width: 100,
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.fitHeight,
+                                    image: AssetImage(
+                                      "assets/map.png",
+                                    ))),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Colors.blue,
+                                ),
+                                Text(
+                                    "   ${_currentPosition.latitude.toStringAsFixed(4) ?? "--"}",
+                                    style: const TextStyle(
+                                        color: textLightColor,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600))
+                              ],
+                            )),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: secondaryColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              _buildRow("11:45 AM", "Check-in"),
+                              _buildRow("--:--", "Check-out"),
+                              _buildRow("Process", "Status")
+                            ]),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: secondaryColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("Today's Punch Logs",
+                                style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                            Row(crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                _punchBuild("Photo"),
+                                _punchBuild("Punch Time"),
+                                _punchBuild("Location")
                               ],
                             ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: temp ? 5 : 0,
-                      ),
-                      temp
-                          ? Text(
-                        Address,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 50,
+                                  width: 100,
+                                  child: _capturedImage != null
+                                      ? Image.file(
+                                          _capturedImage!,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : IconButton(
+                                          icon: const Icon(
+                                            Icons.camera_alt,
+                                            color: Colors.red,
+                                            size: 40,
+                                          ),
+                                          onPressed: _openCamera,
+                                          iconSize: 20,
+                                          color: Colors.white,
+                                        ),
+                                ),
+                                Container(
+                                    width: 100, child: const Text("11:30 AM")),
+                                Container(
+                                  width: 100,
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.location_on,
+                                        size: 40,
+                                        color: Colors.blue,
+                                      ),
+                                      IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              temp = !temp;
+                                            });
+                                          },
+                                          icon: !temp
+                                              ? const Icon(
+                                                  Icons.keyboard_arrow_down)
+                                              : const Icon(
+                                                  Icons.keyboard_arrow_up))
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: temp ? 5 : 0,
+                            ),
+                            temp
+                                ? Text(
+                                    Address,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                          ],
                         ),
-                      )
-                          : Text(""),
-                    ],
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 

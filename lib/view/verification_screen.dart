@@ -16,15 +16,27 @@ class _VerificationUserState extends State<VerificationUser> {
   @override
   void initState() {
     // TODO: implement initState
-  Timer(Duration(seconds: 2), () {
-    auth.userActivation();
-   });
+    Timer(Duration(seconds: 2), () {
+      auth.userActivation();
+    });
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body: Center(child: Image.asset("assets/verif.gif")),
+    return Scaffold(
+      body: Center(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Verifying.....",
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.w600, color: Colors.green),
+          ),
+          Image.asset("assets/verif.gif"),
+        ],
+      )),
     );
   }
 }

@@ -2,8 +2,10 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:workmate_01/model/about_app_model.dart';
 import 'package:workmate_01/model/user_model.dart';
 
 import '../Provider/Api_provider.dart';
@@ -11,6 +13,8 @@ import '../model/menu_model.dart';
 
 class HomeController extends GetxController {
   final menuData = <MenuModel>[].obs;
+  AboutAppModel? aboutapp;
+  UserData? userData;
   final isLoading = true.obs;
   final List<String> imgList = [
     'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
@@ -22,17 +26,50 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getMenu();
-    getUser();
+    getAboutapp();
   }
 
-  getMenu() async {
+  getUser() async {
+    isLoading.value = true;
+    print("get User called");
+    try {
+      var res = await ApiProvider().getRequest(apiUrl: "data/authenticate");
+      userData = userDataFromJson(res);
+      update();
+      getMenu(userId: userData!.data.empCode.toString());
+      await GetStorage().write("username", userData!.data.userName.toString());
+      await GetStorage().write("code", userData!.data.empCode.toString());
+      await GetStorage().write("mobile", userData!.data.mobileNo.toString());
+      isLoading.value = false;
+      update();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  getAboutapp() async {
+    isLoading.value = true;
+    print("get AboutCall called");
+    try {
+      var res = await ApiProvider().getRequest(apiUrl: "dashboard/GetAppInfo");
+      aboutapp = aboutAppModelFromJson(res);
+      await GetStorage()
+          .write("productname", aboutapp!.data.claimDetails[0].productName);
+      getUser();
+      isLoading.value = false;
+      update();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  getMenu({userId}) async {
     isLoading.value = true;
     menuData.clear();
     print("get menu called");
     try {
       var res = await ApiProvider()
-          .getRequest(apiUrl: "dashboard/GetMenu?p_devicetype=1");
+          .getRequest(apiUrl: "dashboard/GetMenu?Devicetype=M&EmpCode=$userId");
       print("object");
       print(jsonDecode(res));
       var data = jsonDecode(res);
@@ -48,20 +85,23 @@ class HomeController extends GetxController {
     }
   }
 
-  getUser() async {
-    isLoading.value = true;
-    menuData.clear();
-    print("get User called");
-    try {
-      var res = await ApiProvider().getRequest(apiUrl: "data/authenticate");
-      final userData = userDataFromJson(res);
-      await GetStorage().write("username", userData.data.userName.toString());
-      await GetStorage().write("code", userData.data.empCode.toString());
-      await GetStorage().write("mobile", userData.data.mobileNo.toString());
-      isLoading.value = false;
-      update();
-    } catch (e) {
-      print(e.toString());
+  DateTime? currentBackPressTime;
+  Future<bool> onWillPop(BuildContext context) async {
+    DateTime now = DateTime.now();
+
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
+      // First time back pressed or exceeds 2 seconds, show a message.
+      currentBackPressTime = now;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Press back again to exit.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return false; // Do not exit the app.
+    } else {
+      return true; // Exit the app.
     }
   }
 }

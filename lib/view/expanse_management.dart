@@ -20,7 +20,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
             onPressed: () {
               Get.back();
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: secondaryColor,
             )),

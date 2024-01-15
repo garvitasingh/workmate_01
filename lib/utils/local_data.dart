@@ -18,4 +18,9 @@ class LocalData {
     String mobile = box.read('mobile');
     return mobile;
   }
+
+  getProductName() {
+    String productname = box.read('productname');
+    return productname;
+  }
 }

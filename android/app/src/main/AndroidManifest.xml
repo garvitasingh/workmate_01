@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.workmate_01">
+    package="com.forzanedi.app">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="workmate_01"
+        android:label="ForzaMedi"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

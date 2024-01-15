@@ -1,4 +1,4 @@
-package com.example.workmate_01
+package com.forzanedi.app
 
 import io.flutter.embedding.android.FlutterActivity
 

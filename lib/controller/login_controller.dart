@@ -32,8 +32,10 @@ class AuthController extends GetxController {
     try {
       // You can use your logic to get the password
       print(password);
-      if (phoneController.text.isEmpty || password == "null") {
-        constToast("Mobile cannot be empty.");
+      if (phoneController.text.isEmpty ||
+          phoneController.text.length < 10 ||
+          password == "null") {
+        constToast("Mobile should be a 10-digit number.");
         isLoading.value = true;
         update();
         return;
@@ -90,12 +92,6 @@ class AuthController extends GetxController {
       print(e.toString());
     }
   }
-
-  // void generateUUID() {
-  //   var uuid = Uuid();
-  //   password = uuid.v4();
-  //   print('UUID: ${uuid.v4()}');
-  // }
 
   Future<void> getDeviceId() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();

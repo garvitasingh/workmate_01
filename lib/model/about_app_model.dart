@@ -1,15 +1,15 @@
 // To parse this JSON data, do
 //
-//     final attendanceModel = attendanceModelFromJson(jsonString);
+//     final aboutAppModel = aboutAppModelFromJson(jsonString);
 
-
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
-AttendanceModel attendanceModelFromJson(String str) => AttendanceModel.fromJson(json.decode(str));
+AboutAppModel aboutAppModelFromJson(String str) => AboutAppModel.fromJson(json.decode(str));
 
-String attendanceModelToJson(AttendanceModel data) => json.encode(data.toJson());
+String aboutAppModelToJson(AboutAppModel data) => json.encode(data.toJson());
 
-class AttendanceModel {
+class AboutAppModel {
     String responseMessage;
     bool status;
     int dataCount;
@@ -17,7 +17,7 @@ class AttendanceModel {
     String responseCode;
     bool confirmationbox;
 
-    AttendanceModel({
+    AboutAppModel({
         required this.responseMessage,
         required this.status,
         required this.dataCount,
@@ -26,7 +26,7 @@ class AttendanceModel {
         required this.confirmationbox,
     });
 
-    factory AttendanceModel.fromJson(Map<String, dynamic> json) => AttendanceModel(
+    factory AboutAppModel.fromJson(Map<String, dynamic> json) => AboutAppModel(
         responseMessage: json["ResponseMessage"],
         status: json["Status"],
         dataCount: json["DataCount"],
@@ -62,33 +62,33 @@ class Data {
 }
 
 class ClaimDetail {
-    int totalDays;
-    int workingDays;
-    int present;
-    int absent;
-    int leave;
+    String clientName;
+    String productName;
+    String copyrightName;
+    String appName;
+    String productIcon;
 
     ClaimDetail({
-        required this.totalDays,
-        required this.workingDays,
-        required this.present,
-        required this.absent,
-        required this.leave,
+        required this.clientName,
+        required this.productName,
+        required this.copyrightName,
+        required this.appName,
+        required this.productIcon,
     });
 
     factory ClaimDetail.fromJson(Map<String, dynamic> json) => ClaimDetail(
-        totalDays: json["TotalDays"],
-        workingDays: json["WorkingDays"],
-        present: json["Present"],
-        absent: json["Absent"],
-        leave: json["Leave"],
+        clientName: json["ClientName"],
+        productName: json["ProductName"],
+        copyrightName: json["CopyrightName"],
+        appName: json["AppName"],
+        productIcon: json["ProductIcon"],
     );
 
     Map<String, dynamic> toJson() => {
-        "TotalDays": totalDays,
-        "WorkingDays": workingDays,
-        "Present": present,
-        "Absent": absent,
-        "Leave": leave,
+        "ClientName": clientName,
+        "ProductName": productName,
+        "CopyrightName": copyrightName,
+        "AppName": appName,
+        "ProductIcon": productIcon,
     };
 }
