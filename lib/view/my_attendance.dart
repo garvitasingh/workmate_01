@@ -24,6 +24,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   AttendanceController controller = Get.put(AttendanceController());
 
   final List<DateTime> _leaveDates = [
+    DateTime(2024, 1, 4),
     DateTime(2024, 1, 6),
     DateTime(2024, 1, 8),
   ];
@@ -35,9 +36,8 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
     DateTime(2024, 1, 25),
   ];
   List<DateTime> holidays = [
-    DateTime.utc(2024, 1, 1), // New Year's Day
-    DateTime.utc(2024, 1, 5), // Christmas
-    // Add more holiday dates as needed
+    DateTime.utc(2024, 1, 1),
+    DateTime.utc(2024, 1, 5),
   ];
 
   @override
@@ -82,8 +82,8 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                         color: Colors.white,
                         surfaceTintColor: Colors.white,
                         child: TableCalendar(
-                          firstDay: DateTime.utc(2024, 1, 1),
-                          lastDay: DateTime.utc(2024, 1, 31),
+                          firstDay: DateTime(DateTime.now().year, DateTime.now().month, 1),
+                          lastDay: DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
                           focusedDay: _focusedDay,
                           calendarFormat: _calendarFormat,
                           calendarStyle: const CalendarStyle(
@@ -99,11 +99,22 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                           headerStyle: const HeaderStyle(
                             formatButtonVisible: false,
                           ),
-
-                          // Enable current day and holidays, disable all other days
                           enabledDayPredicate: (DateTime day) {
-                            return _isSameDay(day, DateTime.now()) ||
-                                holidays.contains(day);
+                            // Disable all past days except leave and absent days
+                            if (day.isAfter(DateTime.now().subtract(const Duration(days: 1)))) {
+                              return true;
+                            }
+                            for (DateTime leaveDate in _leaveDates) {
+                              if (_isSameDay(day, leaveDate)) {
+                                return true;
+                              }
+                            }
+                            for (DateTime absentDate in _absentDates) {
+                              if (_isSameDay(day, absentDate)) {
+                                return true;
+                              }
+                            }
+                            return false;
                           },
                           onDaySelected: (selectedDay, focusedDay) {
                             setState(() {
@@ -163,26 +174,26 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                   );
                                 }
                               }
-                              for (DateTime highlightedDate in _presentDates) {
-                                if (_isSameDay(day, highlightedDate)) {
-                                  return Container(
-                                    margin: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        color: Colors.greenAccent.shade100,
-                                        border: Border.all(
-                                            color: Colors.greenAccent,
-                                            width: 2),
-                                        shape: BoxShape.circle),
-                                    child: Center(
-                                      child: Text(
-                                        '${day.day}',
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }
+                              // for (DateTime highlightedDate in _presentDates) {
+                              //   if (_isSameDay(day, highlightedDate)) {
+                              //     return Container(
+                              //       margin: const EdgeInsets.all(5),
+                              //       decoration: BoxDecoration(
+                              //           color: Colors.greenAccent.shade100,
+                              //           border: Border.all(
+                              //               color: Colors.greenAccent,
+                              //               width: 2),
+                              //           shape: BoxShape.circle),
+                              //       child: Center(
+                              //         child: Text(
+                              //           '${day.day}',
+                              //           style: const TextStyle(
+                              //               color: Colors.black),
+                              //         ),
+                              //       ),
+                              //     );
+                              //   }
+                              // }
                               return null;
                             },
                           ),
