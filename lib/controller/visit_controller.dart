@@ -12,7 +12,7 @@ class VisitController extends GetxController {
   final visitData = <VisitModel>[].obs;
   final isLoading = true.obs;
   VisitPlanModel? visitPlanModel;
-  String? selectedLocation = 'Pune-Pune';
+  String? selectedLocation = ' ';
   List<String> visits = [];
   @override
   void onInit() {
@@ -50,11 +50,10 @@ class VisitController extends GetxController {
       // print(jsonDecode(res));
       visitPlanModel = visitPlanModelFromJson(res);
       for (var i = 0; i < visitPlanModel!.dataCount; i++) {
-        
         visits.add(visitPlanModel!.data.visitPlan[i].visitLocation);
         update();
       }
-
+      selectedLocation = visitPlanModel!.data.visitPlan[0].visitLocation;
       isLoading.value = false;
       update();
     } catch (e) {

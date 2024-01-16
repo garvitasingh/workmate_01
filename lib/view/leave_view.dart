@@ -83,7 +83,7 @@ class _LeaveViewState extends State<LeaveView> {
                                       labelText: 'Employee Code'),
                                   validator: (value) {
                                     if (value == null) {
-                                      return 'From Date is required';
+                                      return 'required';
                                     }
                                     // You can add more custom validation logic here if needed
                                     return null;
@@ -116,7 +116,7 @@ class _LeaveViewState extends State<LeaveView> {
                                       .toList(),
                                   validator: (value) {
                                     if (value == null) {
-                                      return 'From Date is required';
+                                      return 'Leave Type is required';
                                     }
                                     // You can add more custom validation logic here if needed
                                     return null;
@@ -179,7 +179,7 @@ class _LeaveViewState extends State<LeaveView> {
                                       labelText: 'Remarks'),
                                   validator: (value) {
                                     if (value == null) {
-                                      return 'From Remarks is required';
+                                      return 'Remarks is required';
                                     }
                                     // You can add more custom validation logic here if needed
                                     return null;
@@ -188,9 +188,10 @@ class _LeaveViewState extends State<LeaveView> {
                                 const SizedBox(height: 20),
                                 MaterialButton(
                                   minWidth: 200,
+                                  height: 50,
                                   color: darkColor,
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)),
+                                      borderRadius: BorderRadius.circular(10)),
                                   onPressed: () {
                                     if (_formKey.currentState!
                                         .saveAndValidate()) {
@@ -203,7 +204,8 @@ class _LeaveViewState extends State<LeaveView> {
                                   },
                                   child: const Text(
                                     'Submit',
-                                    style: TextStyle(color: secondaryColor),
+                                    style: TextStyle(
+                                        color: secondaryColor, fontSize: 20),
                                   ),
                                 ),
                               ],
@@ -236,23 +238,39 @@ class _LeaveViewState extends State<LeaveView> {
                           _leaveCard(
                               "Total Leave",
                               controller
-                                  .leaveData!.data.visitPlan[0].totalLeave),
-                          _leaveCard("SL",
-                              controller.leaveData!.data.visitPlan[0].totalSl),
-                          _leaveCard("EL",
-                              controller.leaveData!.data.visitPlan[0].totalEl),
-                          _leaveCard("CL",
-                              controller.leaveData!.data.visitPlan[0].totalCl),
-                          _leaveCard("Approve Leave",
-                              controller.leaveData!.data.visitPlan[0].approved),
-                          _leaveCard("Pending Leave",
-                              controller.leaveData!.data.visitPlan[0].pending),
-                          _leaveCard("Rejected Leave",
-                              controller.leaveData!.data.visitPlan[0].rejected),
-                          _leaveCard("Pending",
-                              controller.leaveData!.data.visitPlan[0].pending)
+                                  .leaveData!.data.visitPlan[0].totalLeave,
+                              getColorByIndex(0)),
+                          _leaveCard(
+                              "SL",
+                              controller.leaveData!.data.visitPlan[0].totalSl,
+                              getColorByIndex(1)),
+                          _leaveCard(
+                              "EL",
+                              controller.leaveData!.data.visitPlan[0].totalEl,
+                              getColorByIndex(3)),
+                          _leaveCard(
+                              "CL",
+                              controller.leaveData!.data.visitPlan[0].totalCl,
+                              getColorByIndex(4)),
+                          _leaveCard(
+                              "Approve Leave",
+                              controller.leaveData!.data.visitPlan[0].approved,
+                              getColorByIndex(5)),
+                          _leaveCard(
+                              "Pending Leave",
+                              controller.leaveData!.data.visitPlan[0].pending,
+                              getColorByIndex(6)),
+                          _leaveCard(
+                              "Rejected Leave",
+                              controller.leaveData!.data.visitPlan[0].rejected,
+                              getColorByIndex(7)),
+                          _leaveCard(
+                              "Pending",
+                              controller.leaveData!.data.visitPlan[0].pending,
+                              getColorByIndex(8))
                         ],
                       ),
+                      SizedBox(height: 20,)
                       // Card(
                       //   margin: EdgeInsets.all(16.0),
                       //   child: Padding(
@@ -326,13 +344,26 @@ class _LeaveViewState extends State<LeaveView> {
     );
   }
 
-  Widget _leaveCard(String title, int? count) {
+  Color getColorByIndex(int index) {
+    // Replace this logic with your own color assignment
+    Color baseColor = Colors.redAccent; // Change this to your base color
+
+    // Calculate the percentage based on the index (adjust the factor as needed)
+    double percentage = (index + 1) * 10.0; // For example, 10% increments
+
+    // Create a color with the adjusted opacity
+    Color adjustedColor = baseColor.withOpacity(percentage / 100.0);
+
+    return adjustedColor;
+  }
+
+  Widget _leaveCard(String title, int? count, color) {
     return InkWell(
       onTap: () {
         //
       },
       child: Card(
-        color: Colors.cyanAccent,
+        color: color,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -345,10 +376,10 @@ class _LeaveViewState extends State<LeaveView> {
                   fontWeight: FontWeight.w600),
             ),
             Text(
-              count.toString() ?? "0",
+              "#" + count.toString() ?? "0",
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  color: Colors.red, fontSize: 18, fontWeight: FontWeight.w500),
+                  color: darkColor, fontSize: 18, fontWeight: FontWeight.w700),
             ),
           ],
         ),

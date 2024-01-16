@@ -53,5 +53,9 @@
 	<string>Location Needed</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location Needed</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your camera to capture photos</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to capture photos</string>
 </dict>
 </plist>

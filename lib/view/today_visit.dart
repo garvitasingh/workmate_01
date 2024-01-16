@@ -113,7 +113,6 @@ class _TodayVisitState extends State<TodayVisit> {
   @override
   Widget build(BuildContext context) {
     DateTime currentDate = DateTime.now();
-
     String formattedDate = DateFormat('EEEE, d MMM yyyy').format(currentDate);
 
     return Scaffold(
@@ -188,12 +187,12 @@ class _TodayVisitState extends State<TodayVisit> {
                       children: [
                         Text("Longitude",
                             style: TextStyle(
-                                color: primaryColor,
+                                color: darkColor,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold)),
                         Text("Latitude  ",
                             style: TextStyle(
-                                color: primaryColor,
+                                color: darkColor,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold)),
                       ],
@@ -278,20 +277,19 @@ class _TodayVisitState extends State<TodayVisit> {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text("Today's Punch Logs",
                                 style: TextStyle(
-                                    color: primaryColor,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                            Row(crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    color: darkColor,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800)),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const SizedBox(
-                                  width: 10,
-                                ),
                                 _punchBuild("Photo"),
                                 _punchBuild("Punch Time"),
                                 _punchBuild("Location")
@@ -304,13 +302,16 @@ class _TodayVisitState extends State<TodayVisit> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
-                                  height: 50,
+                                  height: 100,
                                   width: 100,
                                   child: _capturedImage != null
-                                      ? Image.file(
-                                          _capturedImage!,
-                                          height: 50,
-                                          fit: BoxFit.cover,
+                                      ? InkWell(
+                                          onTap: _openCamera,
+                                          child: Image.file(
+                                            _capturedImage!,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          ),
                                         )
                                       : IconButton(
                                           icon: const Icon(
@@ -324,7 +325,14 @@ class _TodayVisitState extends State<TodayVisit> {
                                         ),
                                 ),
                                 Container(
-                                    width: 100, child: const Text("11:30 AM")),
+                                    width: 100,
+                                    child: const Text(
+                                      "11:30 AM",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.w500),
+                                    )),
                                 Container(
                                   width: 100,
                                   child: Row(
@@ -375,19 +383,31 @@ class _TodayVisitState extends State<TodayVisit> {
   }
 
   Widget _punchBuild(text) {
-    return Container(width: 100, child: Text(text));
+    return Container(
+        width: 110,
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        ));
   }
 
   Widget _buildRow(text, text2) {
     return Column(
       children: [
-        const Icon(Icons.watch_later_outlined),
+        const Icon(
+          Icons.watch_later_outlined,
+          size: 25,
+        ),
         Text(
           text,
           style: const TextStyle(
-              color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600),
+              color: Colors.red, fontSize: 18, fontWeight: FontWeight.w600),
         ),
-        Text(text2)
+        Text(
+          text2,
+          style: const TextStyle(
+              color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
+        )
       ],
     );
   }

@@ -17,17 +17,22 @@ class AttendanceController extends GetxController {
     getAttendanceLogs();
   }
 
+  getall() {
+    getAttendance();
+    getAttendanceLogs();
+  }
+
   getAttendance() async {
     isLoading.value = true;
+    update();
     print("get attendance called");
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
               "Attendance/GetAttendanceSummary?EmpCode=${LocalData().getEmpCode()}");
       // print(jsonDecode(res));
-
+      print(res);
       attendanceData = attendanceModelFromJson(res);
-      print(attendanceData!.data.claimDetails[0].present);
       isLoading.value = false;
       update();
     } catch (e) {
@@ -37,12 +42,14 @@ class AttendanceController extends GetxController {
 
   getAttendanceLogs() async {
     isLoading.value = true;
+    update();
     print("get attendance called");
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
               "Attendance/GetAttendancelog?EmpCode=${LocalData().getEmpCode()}&VisitId=1");
       attendanceLogModel = attendanceLogModelFromJson(res);
+      print(res);
       isLoading.value = false;
       update();
     } catch (e) {

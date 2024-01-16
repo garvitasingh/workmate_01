@@ -58,7 +58,10 @@ class _HomePageViewState extends State<HomePageView> {
                         ),
                       ),
                       ListTile(
-                        leading: const Icon(Icons.perm_identity_rounded),
+                        leading: Image.asset(
+                          "assets/emp_id.png",
+                          height: 40,
+                        ),
                         title: Text(
                           controller.userData!.data.empCode.toString(),
                           style: const TextStyle(
@@ -67,31 +70,39 @@ class _HomePageViewState extends State<HomePageView> {
                         onTap: () {},
                       ),
                       ListTile(
-                        leading: const Icon(Icons.apartment),
+                        leading: Image.asset(
+                          "assets/visits.png",
+                          height: 40,
+                        ),
                         title: const Text(
                           'Visits',
-                          style: TextStyle(fontSize: 24.0),
+                          style: TextStyle(fontSize: 24.0,color: darkColor),
                         ),
                         onTap: () {
                           Get.to(VisitScreen());
-                         
                         },
                       ),
                       ListTile(
-                        leading: const Icon(Icons.account_box_outlined),
+                        leading: Image.asset(
+                          "assets/about_app.png",
+                          height: 40,
+                        ),
                         title: const Text(
                           'About App',
-                          style: TextStyle(fontSize: 24.0),
+                          style: TextStyle(fontSize: 24.0,color: darkColor),
                         ),
                         onTap: () {
                           Get.to(const AboutAppPage());
                         },
                       ),
                       ListTile(
-                        leading: const Icon(Icons.logout),
+                        leading: Image.asset(
+                          "assets/log_out.png",
+                          height: 40,
+                        ),
                         title: const Text(
                           'Logout',
-                          style: TextStyle(fontSize: 24.0),
+                          style: TextStyle(fontSize: 24.0,color: darkColor),
                         ),
                         onTap: () {
                           AwesomeDialog(
@@ -112,27 +123,20 @@ class _HomePageViewState extends State<HomePageView> {
                       ),
                     ],
                   )
-                : const CircularProgressIndicator())),
+                : Center(child: const CircularProgressIndicator()))),
         backgroundColor: backgroundColor,
         appBar: AppBar(
           centerTitle: false,
           leading: Builder(
             builder: (BuildContext context) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle, color: Colors.blueGrey),
-                  child: IconButton(
-                    icon: const Icon(Icons
-                        .person), // Replace 'Icons.menu' with your desired icon
-                    color:
-                        Colors.black, // Change this color to your desired color
-                    onPressed: () {
-                      _scaffoldKey.currentState!.openDrawer();
-                    },
-                  ),
-                ),
+              return IconButton(
+                icon: const Icon(
+                    Icons.menu), // Replace 'Icons.menu' with your desired icon
+                color:
+                    secondaryColor, // Change this color to your desired color
+                onPressed: () {
+                  _scaffoldKey.currentState!.openDrawer();
+                },
               );
             },
           ),
@@ -162,7 +166,9 @@ class _HomePageViewState extends State<HomePageView> {
                   ? Text(
                       controller.aboutapp!.data.claimDetails[0].productName,
                       style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.w700),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: darkColor),
                     )
                   : const Text("")),
               const SizedBox(
@@ -220,7 +226,11 @@ class _HomePageViewState extends State<HomePageView> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      icons[index],
+                                      Image.asset(
+                                        "assets/${iconss[index]}.png",
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      ),
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -228,7 +238,7 @@ class _HomePageViewState extends State<HomePageView> {
                                         controller.menuData[index].name ?? "",
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
-                                            color: Colors.black,
+                                            color: darkColor,
                                             fontSize: 15,
                                             fontWeight: FontWeight.w600),
                                       ),
@@ -251,7 +261,7 @@ class _HomePageViewState extends State<HomePageView> {
 
   Color getColorByIndex(int index) {
     // Replace this logic with your own color assignment
-    Color baseColor = Colors.yellowAccent; // Change this to your base color
+    Color baseColor = Colors.redAccent; // Change this to your base color
 
     // Calculate the percentage based on the index (adjust the factor as needed)
     double percentage = (index + 1) * 10.0; // For example, 10% increments
@@ -269,6 +279,14 @@ class _HomePageViewState extends State<HomePageView> {
     const ExpanseManagementView(),
     const LeaveView(),
     const OthersView(),
+  ];
+  List iconss = [
+    "my_att",
+    "mark_atten",
+    "visits",
+    "expense_m",
+    "leave",
+    "others"
   ];
   List icons = [
     const Icon(

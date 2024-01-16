@@ -49,16 +49,13 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime currentDate = DateTime.now();
-    List<DateTime> logDates =
-        List.generate(7, (index) => currentDate.add(Duration(days: index)));
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
               onPressed: () {
                 Get.back();
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: secondaryColor,
               )),
@@ -68,274 +65,328 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
             style: TextStyle(color: secondaryColor),
           ),
         ),
-        body: Obx(() => controller.isLoading.isFalse
-            ? SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Card(
-                        color: Colors.white,
-                        surfaceTintColor: Colors.white,
-                        child: TableCalendar(
-                          firstDay: DateTime(
-                              DateTime.now().year, DateTime.now().month, 1),
-                          lastDay: DateTime(
-                              DateTime.now().year, DateTime.now().month + 1, 0),
-                          focusedDay: _focusedDay,
-                          calendarFormat: _calendarFormat,
-                          calendarStyle: const CalendarStyle(
-                            todayDecoration: BoxDecoration(
-                              color: Colors.blue,
-                              shape: BoxShape.circle,
-                            ),
-                            selectedDecoration: BoxDecoration(
-                              color: Colors.green,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          headerStyle: const HeaderStyle(
-                            formatButtonVisible: false,
-                          ),
-                          enabledDayPredicate: (DateTime day) {
-                            // Disable all past days except leave and absent days
-                            if (day.isAfter(DateTime.now()
-                                .subtract(const Duration(days: 1)))) {
-                              return true;
-                            }
-                            for (DateTime leaveDate in _leaveDates) {
-                              if (_isSameDay(day, leaveDate)) {
-                                return true;
-                              }
-                            }
-                            for (DateTime absentDate in _absentDates) {
-                              if (_isSameDay(day, absentDate)) {
-                                return true;
-                              }
-                            }
-                            return false;
-                          },
-                          onDaySelected: (selectedDay, focusedDay) {
-                            setState(() {
-                              _selectedDay = selectedDay;
-                              _focusedDay = focusedDay;
-                            });
-                            if (kDebugMode) {
-                              print(_selectedDay);
-                            }
-                            if (_isSameDay(selectedDay, DateTime.now())) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const TodayVisit(),
+        body: GetBuilder<AttendanceController>(
+          builder: (controller) {
+            return controller.isLoading.isFalse
+                ? SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Card(
+                            color: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            child: TableCalendar(
+                              firstDay: DateTime(
+                                  DateTime.now().year, DateTime.now().month, 1),
+                              lastDay: DateTime(DateTime.now().year,
+                                  DateTime.now().month + 1, 0),
+                              focusedDay: _focusedDay,
+                              calendarFormat: _calendarFormat,
+                              calendarStyle: const CalendarStyle(
+                                todayDecoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  shape: BoxShape.circle,
                                 ),
-                              );
-                            }
-                          },
-                          calendarBuilders: CalendarBuilders(
-                            defaultBuilder: (context, day, focusedDay) {
-                              for (DateTime highlightedDate in _leaveDates) {
-                                if (_isSameDay(day, highlightedDate)) {
-                                  return Container(
-                                    margin: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        color: Colors.orangeAccent.shade100,
-                                        border: Border.all(
-                                            color: Colors.orangeAccent,
-                                            width: 2),
-                                        shape: BoxShape.circle),
-                                    child: Center(
-                                      child: Text(
-                                        '${day.day}',
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                      ),
+                                selectedDecoration: BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              headerStyle: const HeaderStyle(
+                                formatButtonVisible: false,
+                              ),
+                              enabledDayPredicate: (DateTime day) {
+                                // Disable all past days except leave and absent days
+                                if (day.isAfter(DateTime.now()
+                                    .subtract(const Duration(days: 1)))) {
+                                  return true;
+                                }
+                                for (DateTime leaveDate in _leaveDates) {
+                                  if (_isSameDay(day, leaveDate)) {
+                                    return true;
+                                  }
+                                }
+                                for (DateTime absentDate in _absentDates) {
+                                  if (_isSameDay(day, absentDate)) {
+                                    return true;
+                                  }
+                                }
+                                return false;
+                              },
+                              onDaySelected: (selectedDay, focusedDay) {
+                                setState(() {
+                                  _selectedDay = selectedDay;
+                                  _focusedDay = focusedDay;
+                                });
+                                if (kDebugMode) {
+                                  print(_selectedDay);
+                                }
+                                if (_isSameDay(selectedDay, DateTime.now())) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const TodayVisit(),
                                     ),
                                   );
                                 }
-                              }
-                              for (DateTime highlightedDate in _absentDates) {
-                                if (_isSameDay(day, highlightedDate)) {
-                                  return Container(
-                                    margin: const EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                        color: Colors.redAccent.shade100,
-                                        border: Border.all(
-                                            color: Colors.redAccent, width: 2),
-                                        shape: BoxShape.circle),
-                                    child: Center(
-                                      child: Text(
-                                        '${day.day}',
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }
-                              // for (DateTime highlightedDate in _presentDates) {
-                              //   if (_isSameDay(day, highlightedDate)) {
-                              //     return Container(
-                              //       margin: const EdgeInsets.all(5),
-                              //       decoration: BoxDecoration(
-                              //           color: Colors.greenAccent.shade100,
-                              //           border: Border.all(
-                              //               color: Colors.greenAccent,
-                              //               width: 2),
-                              //           shape: BoxShape.circle),
-                              //       child: Center(
-                              //         child: Text(
-                              //           '${day.day}',
-                              //           style: const TextStyle(
-                              //               color: Colors.black),
-                              //         ),
-                              //       ),
-                              //     );
-                              //   }
-                              // }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Card(
-                        surfaceTintColor: Colors.white,
-                        color: Colors.white,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Attendance Status",
-                              style: TextStyle(
-                                  color: primaryColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 110,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                //scrollDirection: Axis.horizontal,
-                                children: [
-                                  _buildStatusContainer(
-                                      "Present",
-                                      controller.attendanceData!.data
-                                          .claimDetails[0].present
-                                          .toString(),
-                                      Colors.green),
-                                  _buildStatusContainer(
-                                      "Absent",
-                                      controller.attendanceData!.data
-                                          .claimDetails[0].absent
-                                          .toString(),
-                                      Colors.red),
-                                  _buildStatusContainer(
-                                      "Leave",
-                                      controller.attendanceData!.data
-                                          .claimDetails[0].leave
-                                          .toString(),
-                                      Colors.orange),
-                                ],
+                              },
+                              calendarBuilders: CalendarBuilders(
+                                defaultBuilder: (context, day, focusedDay) {
+                                  for (DateTime highlightedDate
+                                      in _leaveDates) {
+                                    if (_isSameDay(day, highlightedDate)) {
+                                      return Container(
+                                        margin: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                            color: Colors.orangeAccent.shade100,
+                                            border: Border.all(
+                                                color: Colors.orangeAccent,
+                                                width: 2),
+                                            shape: BoxShape.circle),
+                                        child: Center(
+                                          child: Text(
+                                            '${day.day}',
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  for (DateTime highlightedDate
+                                      in _absentDates) {
+                                    if (_isSameDay(day, highlightedDate)) {
+                                      return Container(
+                                        margin: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                            color: Colors.redAccent.shade100,
+                                            border: Border.all(
+                                                color: Colors.redAccent,
+                                                width: 2),
+                                            shape: BoxShape.circle),
+                                        child: Center(
+                                          child: Text(
+                                            '${day.day}',
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  // for (DateTime highlightedDate in _presentDates) {
+                                  //   if (_isSameDay(day, highlightedDate)) {
+                                  //     return Container(
+                                  //       margin: const EdgeInsets.all(5),
+                                  //       decoration: BoxDecoration(
+                                  //           color: Colors.greenAccent.shade100,
+                                  //           border: Border.all(
+                                  //               color: Colors.greenAccent,
+                                  //               width: 2),
+                                  //           shape: BoxShape.circle),
+                                  //       child: Center(
+                                  //         child: Text(
+                                  //           '${day.day}',
+                                  //           style: const TextStyle(
+                                  //               color: Colors.black),
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //   }
+                                  // }
+                                  return null;
+                                },
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Card(
-                        surfaceTintColor: Colors.white,
-                        color: Colors.white,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "7 Days log",
-                              style: TextStyle(
-                                  color: primaryColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                _buildLog(" Days"),
-                                _buildLog("Check-in"),
-                                _buildLog("Check-out"),
-                                _buildLog("status  ")
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: getColorByIndex(index),
-                                          borderRadius:
-                                              BorderRadiusDirectional.circular(
-                                                  12)),
-                                      child: Row(
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Obx(() => controller.isLoading.isFalse
+                              ? Card(
+                                  surfaceTintColor: Colors.white,
+                                  color: Colors.white,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        " Attendance Status",
+                                        style: TextStyle(
+                                            color: darkColor,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height: 110,
+                                        child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
+                                          //scrollDirection: Axis.horizontal,
                                           children: [
-                                            DateHeader(logDates[index]),
-                                            _buildLog1(convertTimestampToTime(
-                                                controller
-                                                    .attendanceLogModel!
-                                                    .data
-                                                    .attendancelog[index]
-                                                    .presentTimeIn
-                                                    .toString())),
-                                            _buildLog1(convertTimestampToTime(
-                                                controller
-                                                    .attendanceLogModel!
-                                                    .data
-                                                    .attendancelog[index]
-                                                    .presentTimeOut
-                                                    .toString())),
-                                            _buildLog1(controller
+                                            _buildStatusContainer(
+                                                "Present",
+                                                controller.attendanceData!.data
+                                                    .claimDetails[0].present
+                                                    .toString(),
+                                                Colors.green),
+                                            _buildStatusContainer(
+                                                "Absent",
+                                                controller.attendanceData!.data
+                                                    .claimDetails[0].absent
+                                                    .toString(),
+                                                Colors.red),
+                                            _buildStatusContainer(
+                                                "Leave",
+                                                controller.attendanceData!.data
+                                                    .claimDetails[0].leave
+                                                    .toString(),
+                                                Colors.orange),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : CircularProgressIndicator()),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Card(
+                            surfaceTintColor: Colors.white,
+                            color: Colors.white,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  " 7 Days log",
+                                  style: TextStyle(
+                                      color: darkColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _buildLog(" Days"),
+                                    _buildLog("Check-In"),
+                                    _buildLog("Check-Out"),
+                                    _buildLog("status ")
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                ListView.separated(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      final data = controller
+                                          .attendanceLogModel!
+                                          .data
+                                          .attendancelog[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: getColorByIndex(index),
+                                              borderRadius:
+                                                  BorderRadiusDirectional
+                                                      .circular(12)),
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                data.presentTimeIn == null
+                                                    ? const SizedBox(
+                                                        width: 60,
+                                                        child: Card(
+                                                          color: Colors.white,
+                                                          child: Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8.0),
+                                                            child: Column(
+                                                              children: [
+                                                                Text("-:-")
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ))
+                                                    : DateHeader(controller
                                                         .attendanceLogModel!
                                                         .data
                                                         .attendancelog[index]
-                                                        .checkOut ==
-                                                    1
-                                                ? "Check-Out"
-                                                : "Check-In"),
-                                          ]),
-                                    ),
-                                  );
-                                },
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(
-                                      height: 3,
-                                    ),
-                                itemCount:
-                                    controller.attendanceLogModel!.dataCount)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              )
-            : Center(child: CircularProgressIndicator())));
+                                                        .presentTimeIn
+                                                        .toString()),
+                                                data.presentTimeIn == null
+                                                    ? const SizedBox(
+                                                        width: 60,
+                                                        child: Center(
+                                                            child: Text("-:-")))
+                                                    : _buildLog1(
+                                                        convertTimestampToTime(
+                                                            controller
+                                                                .attendanceLogModel!
+                                                                .data
+                                                                .attendancelog[
+                                                                    index]
+                                                                .presentTimeIn
+                                                                .toString())),
+                                                data.presentTimeOut == null
+                                                    ? const SizedBox(
+                                                        width: 60,
+                                                        child: Center(
+                                                            child: Text("-:-")))
+                                                    : _buildLog1(
+                                                        convertTimestampToTime(
+                                                            controller
+                                                                .attendanceLogModel!
+                                                                .data
+                                                                .attendancelog[
+                                                                    index]
+                                                                .presentTimeOut
+                                                                .toString())),
+                                                _buildLog1(controller
+                                                            .attendanceLogModel!
+                                                            .data
+                                                            .attendancelog[
+                                                                index]
+                                                            .checkOut ==
+                                                        1
+                                                    ? "Check-Out"
+                                                    : "Check-In"),
+                                              ]),
+                                        ),
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) =>
+                                        const SizedBox(
+                                          height: 3,
+                                        ),
+                                    itemCount: controller
+                                        .attendanceLogModel!.dataCount)
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                : Center(child: CircularProgressIndicator.adaptive());
+          },
+        ));
   }
 
-  Widget DateHeader(DateTime date) {
-    return Container(
+  Widget DateHeader(String dateString) {
+    DateTime date = DateTime.parse(dateString);
+    return SizedBox(
       width: 60,
       child: Card(
         color: Colors.white,
@@ -398,7 +449,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
 
   Widget _buildStatusContainer(String title, String count, Color color) {
     return Container(
-      width: 100,
+      width: 90,
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(

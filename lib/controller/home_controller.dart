@@ -13,6 +13,7 @@ import '../model/menu_model.dart';
 
 class HomeController extends GetxController {
   final menuData = <MenuModel>[].obs;
+  
   AboutAppModel? aboutapp;
   UserData? userData;
   final isLoading = true.obs;
@@ -26,6 +27,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+   
     getAboutapp();
   }
 

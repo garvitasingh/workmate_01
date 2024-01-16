@@ -16,118 +16,146 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
 
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => AttendanceController());
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: Icon(
-              Icons.arrow_back,
-              color: secondaryColor,
-            )),
-        centerTitle: false,
-        backgroundColor: darkColor,
-        title: const Text(
-          "My Attendance",
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.w600, color: secondaryColor),
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {},
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
               icon: const Icon(
-                Icons.notifications_rounded,
+                Icons.arrow_back,
                 color: secondaryColor,
-              ))
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text(
-            "Attendance Status",
+              )),
+          centerTitle: false,
+          backgroundColor: darkColor,
+          title: const Text(
+            "My Attendance",
             style: TextStyle(
-                color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: secondaryColor),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Obx(() => controller.isLoading.isFalse
-              ? Expanded(
-                  child: GridView(
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            mainAxisExtent: 150),
-                    children: [
-                      _iconCard(
-                          "Present",
-                          controller
-                              .attendanceData!.data.claimDetails[0].present),
-                      _iconCard(
-                          "Absent",
-                          controller
-                              .attendanceData!.data.claimDetails[0].absent),
-                      _iconCard(
-                          "Leave",
-                          controller
-                              .attendanceData!.data.claimDetails[0].leave),
-                      _iconCard(
-                          "WorkingDay",
-                          controller.attendanceData!.data.claimDetails[0]
-                              .workingDays),
-                    ],
-                  ),
+          actions: [
+            IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.notifications_rounded,
+                  color: secondaryColor,
+                ))
+          ],
+        ),
+        body: Obx(
+          () => controller.isLoading.isFalse
+              ? Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Attendance Status",
+                          style: TextStyle(
+                              color: darkColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Expanded(
+                          child: GridView(
+                            shrinkWrap: true,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    mainAxisExtent: 150),
+                            children: [
+                              _iconCard(
+                                  "Present",
+                                  controller.attendanceData!.data
+                                      .claimDetails[0].present,
+                                  "present",
+                                  getColorByIndex(0)),
+                              _iconCard(
+                                  "Absent",
+                                  controller.attendanceData!.data
+                                      .claimDetails[0].absent,
+                                  "absent",
+                                  getColorByIndex(1)),
+                              _iconCard(
+                                  "Leaves",
+                                  controller.attendanceData!.data
+                                      .claimDetails[0].leave,
+                                  "leave",
+                                  getColorByIndex(2)),
+                              _iconCard(
+                                  "Working Days",
+                                  controller.attendanceData!.data
+                                      .claimDetails[0].workingDays,
+                                  "my_att",
+                                  getColorByIndex(3)),
+                            ],
+                          ),
+                        )
+                      ]),
                 )
-              : Center(child: CircularProgressIndicator()))
-        ]),
-      ),
-    );
+              : Center(child: CircularProgressIndicator()),
+        ));
   }
 
-  Widget _iconCard(String title, int? count) {
+  Widget _iconCard(String title, int? count, icon, color) {
     return InkWell(
       onTap: () {
         //
       },
       child: Card(
-        color: Colors.white,
+        color: color,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.calendar_month_rounded,
-              size: 40,
-              color: Colors.blue,
+            Image.asset(
+              "assets/${icon}.png",
+              height: 40,
             ),
             const SizedBox(
               height: 10,
             ),
             Text(
-              count.toString() ?? "0",
+              "#$count" ?? "0",
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  color: Colors.red, fontSize: 15, fontWeight: FontWeight.w500),
+                  color: Colors.black,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500),
             ),
             Text(
               title,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600),
+                  color: darkColor, fontSize: 17, fontWeight: FontWeight.w600),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Color getColorByIndex(int index) {
+    // Replace this logic with your own color assignment
+    Color baseColor = Colors.yellowAccent; // Change this to your base color
+
+    // Calculate the percentage based on the index (adjust the factor as needed)
+    double percentage = (index + 1) * 10.0; // For example, 10% increments
+
+    // Create a color with the adjusted opacity
+    Color adjustedColor = baseColor.withOpacity(percentage / 100.0);
+
+    return adjustedColor;
   }
 
   List text = [
