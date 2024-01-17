@@ -154,7 +154,9 @@ class VisitScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              
+                              Row(children: [
+                                Expanded(child: Container(width: 150,child: Text(""),)),
+                              ],)
                             ],
                           ),
                         );

@@ -47,7 +47,7 @@ class AuthController extends GetxController {
         "grant_type": "password",
         "devicetype": "M",
       };
-
+      box.write("deviceid", password);
       var res = await ApiProvider().postRequestToken(
           apiUrl: "http://14.99.179.131/wsnapi/token", data: data);
       print(res);

@@ -123,6 +123,7 @@ class _LeaveViewState extends State<LeaveView> {
                                   },
                                 ),
                                 FormBuilderDateTimePicker(
+                                  firstDate: DateTime.now(),
                                   name: 'FromDate',
                                   inputType: InputType.date,
                                   format: DateFormat('yyyy-MM-dd'),
@@ -270,7 +271,7 @@ class _LeaveViewState extends State<LeaveView> {
                               getColorByIndex(8))
                         ],
                       ),
-                      SizedBox(height: 20,)
+                      SizedBox(height: 10,)
                       // Card(
                       //   margin: EdgeInsets.all(16.0),
                       //   child: Padding(

@@ -23,4 +23,9 @@ class LocalData {
     String productname = box.read('productname');
     return productname;
   }
+
+  getdeviceid() {
+    String deviceid = box.read('deviceid');
+    return deviceid;
+  }
 }

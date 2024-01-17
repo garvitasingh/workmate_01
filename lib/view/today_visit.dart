@@ -6,10 +6,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/component/check_in_button.dart';
+import 'package:workmate_01/controller/attendance_controller.dart';
 import 'package:workmate_01/controller/visit_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:workmate_01/utils/constants.dart';
 
 class TodayVisit extends StatefulWidget {
   const TodayVisit({super.key});
@@ -19,7 +21,7 @@ class TodayVisit extends StatefulWidget {
 }
 
 class _TodayVisitState extends State<TodayVisit> {
-  VisitController controller = Get.put(VisitController());
+  AttendanceController controller = Get.put(AttendanceController());
   late String formattedTime;
 
   late Position _currentPosition;
@@ -142,6 +144,7 @@ class _TodayVisitState extends State<TodayVisit> {
               onChanged: (String? newValue) {
                 setState(() {
                   controller.selectedLocation = newValue!;
+                  controller.getvisitId();
                 });
               },
               elevation: 2,
@@ -167,6 +170,41 @@ class _TodayVisitState extends State<TodayVisit> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    controller.unplaned.isTrue
+                        ? Row(
+                            children: [
+                              Expanded(
+                                  child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: Colors.grey)),
+                                child: TextFormField(
+                                  controller: controller.from,
+                                  decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.all(5),
+                                      border: InputBorder.none,
+                                      hintText: "From"),
+                                ),
+                              )),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                  child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: Colors.grey)),
+                                child: TextFormField(
+                                  controller: controller.to,
+                                  decoration: const InputDecoration(
+                                      contentPadding: EdgeInsets.all(5),
+                                      border: InputBorder.none,
+                                      hintText: "To"),
+                                ),
+                              )),
+                            ],
+                          )
+                        : const SizedBox(),
                     Center(
                       child: Text(
                         formattedTime,
@@ -180,7 +218,32 @@ class _TodayVisitState extends State<TodayVisit> {
                     Container(
                       alignment: Alignment.center,
                       height: 200,
-                      child: CheckInButton(checkIn: true),
+                      child: CheckInButton(
+                          checkIn: controller.visitAttendanceModel!.data
+                                      .visitAttendance[0].checkIn ==
+                                  1
+                              ? false
+                              : true,
+                          onPressed: () {
+                            controller.visitAttendanceModel!.data
+                                        .visitAttendance[0].checkOut ==
+                                    1
+                                ? constToast("Attendance Completed!")
+                                : controller.markAttendance(
+                                    add: Address,
+                                    log: _currentPosition.longitude
+                                        .toStringAsFixed(4),
+                                    lat: _currentPosition.latitude
+                                        .toStringAsFixed(4),
+                                    attType: controller
+                                                .visitAttendanceModel!
+                                                .data
+                                                .visitAttendance[0]
+                                                .checkOutTime !=
+                                            'null'
+                                        ? 'out'
+                                        : 'in');
+                          }),
                     ),
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -211,7 +274,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                     ))),
                             child: Column(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.location_on,
                                   color: Colors.blue,
                                 ),
@@ -234,7 +297,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                     ))),
                             child: Column(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.location_on,
                                   color: Colors.blue,
                                 ),
@@ -261,9 +324,66 @@ class _TodayVisitState extends State<TodayVisit> {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              _buildRow("11:45 AM", "Check-in"),
-                              _buildRow("--:--", "Check-out"),
-                              _buildRow("Process", "Status")
+                              // _buildRow(
+                              //     convertTimestampToTime(controller
+                              //         .visitAttendanceModel!
+                              //         .data
+                              //         .visitAttendance[0]
+                              //         .checkInTime
+                              //         .toString()),
+                              //     "Check-in"),
+                              _buildRow(
+                                  controller.visitAttendanceModel!.data
+                                              .visitAttendance[0].checkInTime
+                                              .toString() ==
+                                          "null"
+                                      ? '-:-'
+                                      : (convertTimestampToTime(controller
+                                          .visitAttendanceModel!
+                                          .data
+                                          .visitAttendance[0]
+                                          .checkInTime
+                                          .toString())),
+                                  "Check-in"),
+                              _buildRow(
+                                  controller.visitAttendanceModel!.data
+                                              .visitAttendance[0].checkOutTime
+                                              .toString() ==
+                                          "null"
+                                      ? '-:-'
+                                      : (convertTimestampToTime(controller
+                                          .visitAttendanceModel!
+                                          .data
+                                          .visitAttendance[0]
+                                          .checkOutTime
+                                          .toString())),
+                                  "Check-out"),
+                              _buildRow(
+                                  controller
+                                                  .visitAttendanceModel!
+                                                  .data
+                                                  .visitAttendance[0]
+                                                  .checkOutTime
+                                                  .toString() ==
+                                              "null" ||
+                                          controller
+                                                  .visitAttendanceModel!
+                                                  .data
+                                                  .visitAttendance[0]
+                                                  .checkOutTime
+                                                  .toString() ==
+                                              'null'
+                                      ? controller
+                                                  .visitAttendanceModel!
+                                                  .data
+                                                  .visitAttendance[0]
+                                                  .checkInTime
+                                                  .toString() !=
+                                              "null"
+                                          ? "process"
+                                          : '-:-'
+                                      : "Done",
+                                  "Status")
                             ]),
                       ),
                     ),
@@ -326,8 +446,21 @@ class _TodayVisitState extends State<TodayVisit> {
                                 ),
                                 Container(
                                     width: 100,
-                                    child: const Text(
-                                      "11:30 AM",
+                                    child: Text(
+                                      controller
+                                                  .visitAttendanceModel!
+                                                  .data
+                                                  .visitAttendance[0]
+                                                  .checkInTime
+                                                  .toString() ==
+                                              "null"
+                                          ? '-:-'
+                                          : convertTimestampToTime(controller
+                                              .visitAttendanceModel!
+                                              .data
+                                              .visitAttendance[0]
+                                              .checkInTime
+                                              .toString()),
                                       style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.green,
@@ -387,7 +520,7 @@ class _TodayVisitState extends State<TodayVisit> {
         width: 110,
         child: Text(
           text,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ));
   }
 
