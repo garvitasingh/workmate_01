@@ -16,7 +16,7 @@ class _VerificationUserState extends State<VerificationUser> {
   @override
   void initState() {
     // TODO: implement initState
-    Timer(Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 2), () {
       auth.userActivation();
     });
     super.initState();
@@ -29,7 +29,7 @@ class _VerificationUserState extends State<VerificationUser> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             "Verifying.....",
             style: TextStyle(
                 fontSize: 20, fontWeight: FontWeight.w600, color: Colors.green),

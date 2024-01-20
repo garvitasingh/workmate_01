@@ -55,7 +55,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
                     Text(
                       'Version: ${_packageInfo!.version}',
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8.0),
                     Text(

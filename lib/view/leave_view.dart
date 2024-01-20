@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/controller/leave_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
@@ -140,8 +140,10 @@ class _LeaveViewState extends State<LeaveView> {
                                   onChanged: (value) {
                                     if (value != null && value is DateTime) {
                                       fromDate = value;
-                                      print(DateFormat('yyyy-MM-dd')
-                                          .format(fromDate));
+                                      if (kDebugMode) {
+                                        print(DateFormat('yyyy-MM-dd')
+                                            .format(fromDate));
+                                      }
                                     }
                                   },
                                 ),
@@ -169,8 +171,10 @@ class _LeaveViewState extends State<LeaveView> {
                                   onChanged: (value) {
                                     if (value != null && value is DateTime) {
                                       toDate = value;
-                                      print(DateFormat('yyyy-MM-dd')
+                                      if (kDebugMode) {
+                                        print(DateFormat('yyyy-MM-dd')
                                           .format(toDate));
+                                      }
                                     }
                                   },
                                 ),
@@ -200,7 +204,9 @@ class _LeaveViewState extends State<LeaveView> {
                                       var formData =
                                           _formKey.currentState!.value;
                                       controller.applyLeave(fomData: formData);
-                                      print(formData);
+                                      if (kDebugMode) {
+                                        print(formData);
+                                      }
                                     }
                                   },
                                   child: const Text(
@@ -271,7 +277,9 @@ class _LeaveViewState extends State<LeaveView> {
                               getColorByIndex(8))
                         ],
                       ),
-                      SizedBox(height: 10,)
+                      const SizedBox(
+                        height: 10,
+                      )
                       // Card(
                       //   margin: EdgeInsets.all(16.0),
                       //   child: Padding(
@@ -377,7 +385,7 @@ class _LeaveViewState extends State<LeaveView> {
                   fontWeight: FontWeight.w600),
             ),
             Text(
-              "#" + count.toString() ?? "0",
+              "#$count",
               textAlign: TextAlign.center,
               style: const TextStyle(
                   color: darkColor, fontSize: 18, fontWeight: FontWeight.w700),

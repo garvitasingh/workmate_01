@@ -1,14 +1,16 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../utils/constants.dart';
+import '../view/login_view.dart';
 
 class ApiProvider {
   var box = GetStorage();
-   
+
   Future<dynamic> getRequest({required apiUrl}) async {
-     var token = box.read("token");
+    var token = box.read("token");
 
     var res = await http.get(Uri.parse('$BASEURL$apiUrl'),
         headers: {'Authorization': 'Bearer $token'});
@@ -18,6 +20,11 @@ class ApiProvider {
       // var decodedBody = json.decode(res.body);
       // return decodedBody;
     } else if (res.statusCode == 401) {
+      var re = jsonDecode(res.body);
+      GetStorage().erase();
+      if (re['Message'] == 'Authorization has been denied for this request.') {
+        Get.offAll(LoginViewPage());
+      }
       return Future.error(res.body);
     } else if (res.statusCode == 404) {
       return Future.error(res.body);
@@ -47,10 +54,9 @@ class ApiProvider {
 
   Future<dynamic> postRequestToken({required apiUrl, data}) async {
     var token = box.read("token");
-    var res = await http.post(
-        body: data,
-        Uri.parse('$apiUrl'),
-        headers: {'Authorization': 'Bearer $token'});
+    var res = await http.post(body: data, Uri.parse('$apiUrl'), headers: {
+      'Authorization': 'Bearer $token'
+    }).timeout(const Duration(seconds: 10));
     return jsonDecode(res.body);
     // if (res.statusCode == 200) {
     //   return res;

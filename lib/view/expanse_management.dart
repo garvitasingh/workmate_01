@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/controller/expense_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
@@ -81,25 +81,27 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
               : const Text(""))
         ],
       ),
-      body: Obx(() => controller.isLoading.isFalse? SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: Container(
-                width: w,
-                child: Card(
-                  surfaceTintColor: Colors.white,
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: FormBuilder(
-                      key: _formKey,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      child: Column(
-                        children: [
-                          FormBuilderDateTimePicker(
+      body: Obx(() => controller.isLoading.isFalse
+          ? SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: SizedBox(
+                      width: w,
+                      child: Card(
+                        surfaceTintColor: Colors.white,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: FormBuilder(
+                            key: _formKey,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            child: Column(
+                              children: [
+                                FormBuilderDateTimePicker(
                                   name: 'Date',
                                   inputType: InputType.date,
                                   format: DateFormat('yyyy-MM-dd'),
@@ -115,7 +117,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                   ),
                                   initialValue: fromDate,
                                   firstDate: DateTime.now()
-                                      .subtract(Duration(days: 1)),
+                                      .subtract(const Duration(days: 1)),
                                   lastDate: DateTime.now(),
                                   validator: (value) {
                                     if (value == null) {
@@ -129,285 +131,304 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                       controller.dateController.text =
                                           DateFormat('yyyy-MM-dd')
                                               .format(fromDate);
-                                      print(DateFormat('yyyy-MM-dd')
+                                      if (kDebugMode) {
+                                        print(DateFormat('yyyy-MM-dd')
                                           .format(fromDate));
+                                      }
                                     }
                                   },
                                 ),
-                              // : FormBuilderTextField(
-                              //     readOnly: true,
-                              //     controller: controller.dateController,
-                              //     name: 'Date',
-                              //     decoration: InputDecoration(
-                              //       labelText: 'Date',
-                              //       border: OutlineInputBorder(
-                              //         borderRadius: BorderRadius.circular(10.0),
-                              //         borderSide: const BorderSide(
-                              //           color: Colors.blue,
-                              //           width: 1.0,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                          const SizedBox(height: 10),
-                          FormBuilderTextField(
-                            readOnly:
-                                controller.unplaned.isFalse ? true : false,
-                            controller: controller.fromdistanse,
-                            name: 'From',
-                            decoration: InputDecoration(
-                              labelText: 'From',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.blue,
-                                  width: 1.0,
-                                ),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == '') {
-                                return 'required';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          FormBuilderTextField(
-                            readOnly:
-                                controller.unplaned.isFalse ? true : false,
-                            controller: controller.todistanse,
-                            name: 'To',
-                            decoration: InputDecoration(
-                              labelText: 'To',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.blue,
-                                  width: 1.0,
-                                ),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == '') {
-                                return 'required';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          FormBuilderTextField(
-                              controller: controller.visitPurposeController,
-                              name: 'Purpose',
-                              decoration: InputDecoration(
-                                labelText: 'Purpose',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                    color: Colors.blue,
-                                    width: 1.0,
+                                // : FormBuilderTextField(
+                                //     readOnly: true,
+                                //     controller: controller.dateController,
+                                //     name: 'Date',
+                                //     decoration: InputDecoration(
+                                //       labelText: 'Date',
+                                //       border: OutlineInputBorder(
+                                //         borderRadius: BorderRadius.circular(10.0),
+                                //         borderSide: const BorderSide(
+                                //           color: Colors.blue,
+                                //           width: 1.0,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ),
+                                const SizedBox(height: 10),
+                                FormBuilderTextField(
+                                  readOnly: controller.unplaned.isFalse
+                                      ? true
+                                      : false,
+                                  controller: controller.fromdistanse,
+                                  name: 'From',
+                                  decoration: InputDecoration(
+                                    labelText: 'From',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blue,
+                                        width: 1.0,
+                                      ),
+                                    ),
                                   ),
+                                  validator: (value) {
+                                    if (value == '') {
+                                      return 'required';
+                                    }
+                                    return null;
+                                  },
                                 ),
-                              ),
-                              // validator: (value) {
-                              //   if (value == '') {
-                              //     return 'required';
-                              //   }
-                              //   return null;
-                              // },
-                              autofocus: false),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          FormBuilderDropdown(
-                            onChanged: (value) {
-                              controller.convModeString = value;
-                              controller.calculateAmount();
-                              double rate = double.tryParse(
-                                      controller.rateController.text) ??
-                                  0.0;
-                              double distance = double.tryParse(controller
-                                      .locationDistanceController.text) ??
-                                  0.0;
+                                const SizedBox(height: 10),
+                                FormBuilderTextField(
+                                  readOnly: controller.unplaned.isFalse
+                                      ? true
+                                      : false,
+                                  controller: controller.todistanse,
+                                  name: 'To',
+                                  decoration: InputDecoration(
+                                    labelText: 'To',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blue,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == '') {
+                                      return 'required';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 10),
+                                FormBuilderTextField(
+                                    controller:
+                                        controller.visitPurposeController,
+                                    name: 'Purpose',
+                                    decoration: InputDecoration(
+                                      labelText: 'Purpose',
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        borderSide: const BorderSide(
+                                          color: Colors.blue,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                    ),
+                                    // validator: (value) {
+                                    //   if (value == '') {
+                                    //     return 'required';
+                                    //   }
+                                    //   return null;
+                                    // },
+                                    autofocus: false),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                FormBuilderDropdown(
+                                  onChanged: (value) {
+                                    controller.convModeString = value;
+                                    controller.calculateAmount();
+                                    double rate = double.tryParse(
+                                            controller.rateController.text) ??
+                                        0.0;
+                                    double distance = double.tryParse(controller
+                                            .locationDistanceController.text) ??
+                                        0.0;
 
-                              double amount = rate * distance;
+                                    double amount = rate * distance;
 
-                              controller.amountController.text =
-                                  amount.toString();
-                              controller.update();
-                            },
-                            name: 'ConvModeId',
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(
-                                      color: Colors.blue,
-                                      width: 1.0,
+                                    controller.amountController.text =
+                                        amount.toString();
+                                    controller.update();
+                                  },
+                                  name: 'ConvModeId',
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(
+                                            color: Colors.blue,
+                                            width: 1.0,
+                                          )),
+                                      labelText: 'Conv Mode ID'),
+                                  items: controller.convMode
+                                      .map<DropdownMenuItem<String>>(
+                                    (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: const TextStyle(
+                                              color: Colors.black),
+                                        ),
+                                      );
+                                    },
+                                  ).toList(),
+                                ),
+                                const SizedBox(height: 10),
+                                FormBuilderTextField(
+                                  readOnly: true,
+                                  controller: controller.rateController,
+                                  name: 'Rate per (km)',
+                                  decoration: InputDecoration(
+                                    labelText: 'Rate',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blue,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                  ),
+                                  // validator: (value) {
+                                  //   if (value == '') {
+                                  //     return 'required';
+                                  //   }
+                                  //   return null;
+                                  // },
+                                ),
+                                const SizedBox(height: 10),
+                                FormBuilderTextField(
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (value) {
+                                      double rate = double.tryParse(
+                                              controller.rateController.text) ??
+                                          0.0;
+                                      double distance = double.tryParse(
+                                              controller
+                                                  .locationDistanceController
+                                                  .text) ??
+                                          0.0;
+
+                                      double amount = rate * distance;
+
+                                      controller.amountController.text =
+                                          amount.toString();
+                                      controller.update();
+                                      if (kDebugMode) {
+                                        print(amount);
+                                      }
+                                    },
+                                    controller:
+                                        controller.locationDistanceController,
+                                    name: 'Dis in (Km)',
+                                    decoration: InputDecoration(
+                                      labelText: 'Distance',
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        borderSide: const BorderSide(
+                                          color: Colors.blue,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                    ),
+                                    // validator: (value) {
+                                    //   if (value == '') {
+                                    //     return 'required';
+                                    //   }
+                                    //   return null;
+                                    // },
+                                    autofocus: false),
+                                const SizedBox(height: 10),
+                                FormBuilderTextField(
+                                  readOnly: true,
+                                  controller: controller.amountController,
+                                  name: 'Amount in (Rs)',
+                                  decoration: InputDecoration(
+                                    labelText: 'Amount',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.blue,
+                                        width: 1.0,
+                                      ),
+                                    ),
+                                  ),
+                                  // validator: (value) {
+                                  //   if (value == '') {
+                                  //     return 'required';
+                                  //   }
+                                  //   return null;
+                                  // },
+                                ),
+                                const SizedBox(height: 10),
+                                FormBuilderTextField(
+                                    controller: controller.remarksController,
+                                    name: 'Remarks',
+                                    decoration: InputDecoration(
+                                      labelText: 'Remarks',
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        borderSide: const BorderSide(
+                                          color: Colors.blue,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                    ),
+                                    // validator: (value) {
+                                    //   if (value == '') {
+                                    //     return 'required';
+                                    //   }
+                                    //   return null;
+                                    // },
+                                    autofocus: false),
+                                const SizedBox(height: 20),
+                                MaterialButton(
+                                    minWidth: 200,
+                                    height: 50,
+                                    color: darkColor,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    onPressed: () {
+                                      if (_formKey.currentState!
+                                          .saveAndValidate()) {
+                                        // Form data is valid, process it here
+
+                                        if (controller.visitPurposeController
+                                            .text.isEmpty) {
+                                          constToast("Purpose Required!");
+                                        } else if (controller
+                                            .locationDistanceController
+                                            .text
+                                            .isEmpty) {
+                                          constToast("Distance Required!");
+                                        } else if (controller
+                                            .remarksController.text.isEmpty) {
+                                          constToast("Remarks Required!");
+                                        } else {
+                                          controller.addClaim();
+                                        }
+                                      }
+                                    },
+                                    child: Obx(
+                                      () => controller.isSubmit.isTrue
+                                          ? const Text(
+                                              'Submit',
+                                              style: TextStyle(
+                                                  color: secondaryColor,
+                                                  fontSize: 20),
+                                            )
+                                          : const Center(
+                                              child:
+                                                  CircularProgressIndicator()),
                                     )),
-                                labelText: 'Conv Mode ID'),
-                            items: controller.convMode
-                                .map<DropdownMenuItem<String>>(
-                              (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value,
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                );
-                              },
-                            ).toList(),
-                          ),
-                          const SizedBox(height: 10),
-                          FormBuilderTextField(
-                            readOnly: true,
-                            controller: controller.rateController,
-                            name: 'Rate per (km)',
-                            decoration: InputDecoration(
-                              labelText: 'Rate',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.blue,
-                                  width: 1.0,
-                                ),
-                              ),
+                              ],
                             ),
-                            // validator: (value) {
-                            //   if (value == '') {
-                            //     return 'required';
-                            //   }
-                            //   return null;
-                            // },
                           ),
-                          const SizedBox(height: 10),
-                          FormBuilderTextField(
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                double rate = double.tryParse(
-                                        controller.rateController.text) ??
-                                    0.0;
-                                double distance = double.tryParse(controller
-                                        .locationDistanceController.text) ??
-                                    0.0;
-
-                                double amount = rate * distance;
-
-                                controller.amountController.text =
-                                    amount.toString();
-                                controller.update();
-                                print(amount);
-                              },
-                              controller: controller.locationDistanceController,
-                              name: 'Dis in (Km)',
-                              decoration: InputDecoration(
-                                labelText: 'Distance',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                    color: Colors.blue,
-                                    width: 1.0,
-                                  ),
-                                ),
-                              ),
-                              // validator: (value) {
-                              //   if (value == '') {
-                              //     return 'required';
-                              //   }
-                              //   return null;
-                              // },
-                              autofocus: false),
-                          const SizedBox(height: 10),
-                          FormBuilderTextField(
-                            readOnly: true,
-                            controller: controller.amountController,
-                            name: 'Amount in (Rs)',
-                            decoration: InputDecoration(
-                              labelText: 'Amount',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(
-                                  color: Colors.blue,
-                                  width: 1.0,
-                                ),
-                              ),
-                            ),
-                            // validator: (value) {
-                            //   if (value == '') {
-                            //     return 'required';
-                            //   }
-                            //   return null;
-                            // },
-                          ),
-                          const SizedBox(height: 10),
-                          FormBuilderTextField(
-                              controller: controller.remarksController,
-                              name: 'Remarks',
-                              decoration: InputDecoration(
-                                labelText: 'Remarks',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                    color: Colors.blue,
-                                    width: 1.0,
-                                  ),
-                                ),
-                              ),
-                              // validator: (value) {
-                              //   if (value == '') {
-                              //     return 'required';
-                              //   }
-                              //   return null;
-                              // },
-                              autofocus: false),
-                          const SizedBox(height: 20),
-                          MaterialButton(
-                              minWidth: 200,
-                              height: 50,
-                              color: darkColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              onPressed: () {
-                                if (_formKey.currentState!.saveAndValidate()) {
-                                  // Form data is valid, process it here
-                                  var formData = _formKey.currentState!.value;
-                                  if (controller
-                                      .visitPurposeController.text.isEmpty) {
-                                    constToast("Purpose Required!");
-                                  } else if (controller
-                                      .locationDistanceController
-                                      .text
-                                      .isEmpty) {
-                                    constToast("Distance Required!");
-                                  } else if (controller
-                                      .remarksController.text.isEmpty) {
-                                    constToast("Remarks Required!");
-                                  } else {
-                                    controller.addClaim();
-                                  }
-                                }
-                              },
-                              child: Obx(
-                                () => controller.isSubmit.isTrue
-                                    ? const Text(
-                                        'Submit',
-                                        style: TextStyle(
-                                            color: secondaryColor,
-                                            fontSize: 20),
-                                      )
-                                    : const Center(
-                                        child: CircularProgressIndicator()),
-                              )),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  )
+                ],
               ),
             )
-          ],
-        ),
-      ):Center(child: CircularProgressIndicator())),
+          : const Center(child: CircularProgressIndicator())),
     );
   }
 }

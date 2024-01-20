@@ -3,9 +3,6 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:workmate_01/model/visit_model.dart';
-import 'package:workmate_01/model/visit_plan_model.dart';
-import 'package:workmate_01/utils/local_data.dart';
-
 import '../Provider/Api_provider.dart';
 
 class VisitController extends GetxController {

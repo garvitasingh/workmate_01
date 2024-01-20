@@ -9,6 +9,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:workmate_01/utils/constants.dart';
 
 import 'package:workmate_01/view/homePage.dart';
+import 'package:workmate_01/view/login_view.dart';
 import 'package:workmate_01/view/verification_screen.dart';
 import '../Provider/Api_provider.dart';
 
@@ -60,6 +61,7 @@ class AuthController extends GetxController {
       isLoading.value = true;
       update();
     } catch (e) {
+      constToast("Time Out");
       isLoading.value = true;
       update();
       print(e.toString());
@@ -70,7 +72,8 @@ class AuthController extends GetxController {
     print("get userActivation called");
     try {
       // You can use your logic to get the password
-
+      isLoading.value = false;
+      update();
       var data = {
         "UserName": phoneController.text,
         "Password": password,
@@ -83,11 +86,17 @@ class AuthController extends GetxController {
       print(res);
       if (res['Status'] == true) {
         loginUser();
+      } else {
+        isLoading.value = true;
+        update();
+        
+        constToast("Credentials Not Validate");
+        Get.offAll(LoginViewPage());
       }
-      isLoading.value = false;
+      isLoading.value = true;
       update();
     } catch (e) {
-      isLoading.value = false;
+      isLoading.value = true;
       update();
       print(e.toString());
     }

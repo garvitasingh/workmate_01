@@ -251,7 +251,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                     ],
                                   ),
                                 )
-                              : CircularProgressIndicator()),
+                              : const CircularProgressIndicator()),
                           const SizedBox(
                             height: 5,
                           ),
@@ -379,11 +379,12 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                       ),
                     ),
                   )
-                : Center(child: CircularProgressIndicator.adaptive());
+                : const Center(child: CircularProgressIndicator.adaptive());
           },
         ));
   }
 
+  // ignore: non_constant_identifier_names
   Widget DateHeader(String dateString) {
     DateTime date = DateTime.parse(dateString);
     return SizedBox(

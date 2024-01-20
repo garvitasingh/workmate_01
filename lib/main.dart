@@ -1,9 +1,8 @@
-import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:workmate_01/view/splash_view.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:connectivity/connectivity.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,7 +10,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+  const MyApp({super.key,});
 
   @override
   Widget build(BuildContext context) {

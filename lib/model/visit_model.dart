@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_collection_literals
+
 class VisitModel {
   String? visitPurpose;
   String? date;
@@ -14,11 +16,12 @@ class VisitModel {
   }
 
   Map<String, dynamic> toJson() {
+    // ignore: unnecessary_new
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['VisitPurpose'] = this.visitPurpose;
-    data['Date'] = this.date;
-    data['Source'] = this.source;
-    data['Destination'] = this.destination;
+    data['VisitPurpose'] = visitPurpose;
+    data['Date'] = date;
+    data['Source'] = source;
+    data['Destination'] = destination;
     return data;
   }
 }

@@ -1,13 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/component/check_in_button.dart';
 import 'package:workmate_01/controller/attendance_controller.dart';
-import 'package:workmate_01/controller/visit_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,6 +28,7 @@ class _TodayVisitState extends State<TodayVisit> {
   late String formattedTime;
 
   late Position _currentPosition;
+  // ignore: non_constant_identifier_names
   String Address = 'Location';
   File? _capturedImage;
   bool temp = false;
@@ -93,7 +97,9 @@ class _TodayVisitState extends State<TodayVisit> {
   Future<void> GetAddressFromLatLong(Position position) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
-    print(placemarks);
+    if (kDebugMode) {
+      print(placemarks);
+    }
     Placemark place = placemarks[0];
     Address =
         '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
@@ -215,36 +221,54 @@ class _TodayVisitState extends State<TodayVisit> {
                       ),
                     ),
                     Center(child: Text(formattedDate)),
-                    Container(
-                      alignment: Alignment.center,
-                      height: 200,
-                      child: CheckInButton(
-                          checkIn: controller.visitAttendanceModel!.data
-                                      .visitAttendance[0].checkIn ==
-                                  1
-                              ? false
-                              : true,
-                          onPressed: () {
-                            controller.visitAttendanceModel!.data
-                                        .visitAttendance[0].checkOut ==
-                                    1
-                                ? constToast("Attendance Completed!")
-                                : controller.markAttendance(
-                                    add: Address,
-                                    log: _currentPosition.longitude
-                                        .toStringAsFixed(4),
-                                    lat: _currentPosition.latitude
-                                        .toStringAsFixed(4),
-                                    attType: controller
-                                                .visitAttendanceModel!
-                                                .data
-                                                .visitAttendance[0]
-                                                .checkOutTime !=
-                                            'null'
-                                        ? 'out'
-                                        : 'in');
-                          }),
+                    SizedBox(
+                      height: 10,
                     ),
+                    controller.dataPresent.isFalse
+                        ? Container(
+                            alignment: Alignment.center,
+                            child: CheckInButton(
+                                checkIn: true,
+                                onPressed: () {
+                                  controller.markAttendance(
+                                      add: Address,
+                                      log: _currentPosition.longitude
+                                          .toStringAsFixed(4),
+                                      lat: _currentPosition.latitude
+                                          .toStringAsFixed(4),
+                                      attType: 'in');
+                                }),
+                          )
+                        : Container(
+                            alignment: Alignment.center,
+                            height: 200,
+                            child: CheckInButton(
+                                checkIn: controller.visitAttendanceModel!.data
+                                            .visitAttendance[0].checkIn ==
+                                        1
+                                    ? false
+                                    : true,
+                                onPressed: () {
+                                  controller.visitAttendanceModel!.data
+                                              .visitAttendance[0].checkOut ==
+                                          1
+                                      ? constToast("Attendance Completed!")
+                                      : controller.markAttendance(
+                                          add: Address,
+                                          log: _currentPosition.longitude
+                                              .toStringAsFixed(4),
+                                          lat: _currentPosition.latitude
+                                              .toStringAsFixed(4),
+                                          attType: controller
+                                                      .visitAttendanceModel!
+                                                      .data
+                                                      .visitAttendance[0]
+                                                      .checkOutTime !=
+                                                  'null'
+                                              ? 'out'
+                                              : 'in');
+                                }),
+                          ),
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -279,7 +303,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                   color: Colors.blue,
                                 ),
                                 Text(
-                                    "   ${_currentPosition.longitude.toStringAsFixed(4) ?? "--"}",
+                                    "   ${_currentPosition.longitude.toStringAsFixed(4)}",
                                     style: const TextStyle(
                                         color: textLightColor,
                                         fontSize: 12,
@@ -302,7 +326,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                   color: Colors.blue,
                                 ),
                                 Text(
-                                    "   ${_currentPosition.latitude.toStringAsFixed(4) ?? "--"}",
+                                    "   ${_currentPosition.latitude.toStringAsFixed(4)}",
                                     style: const TextStyle(
                                         color: textLightColor,
                                         fontSize: 12,
@@ -314,79 +338,104 @@ class _TodayVisitState extends State<TodayVisit> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: secondaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              // _buildRow(
-                              //     convertTimestampToTime(controller
-                              //         .visitAttendanceModel!
-                              //         .data
-                              //         .visitAttendance[0]
-                              //         .checkInTime
-                              //         .toString()),
-                              //     "Check-in"),
-                              _buildRow(
-                                  controller.visitAttendanceModel!.data
-                                              .visitAttendance[0].checkInTime
-                                              .toString() ==
-                                          "null"
-                                      ? '-:-'
-                                      : (convertTimestampToTime(controller
-                                          .visitAttendanceModel!
-                                          .data
-                                          .visitAttendance[0]
-                                          .checkInTime
-                                          .toString())),
-                                  "Check-in"),
-                              _buildRow(
-                                  controller.visitAttendanceModel!.data
-                                              .visitAttendance[0].checkOutTime
-                                              .toString() ==
-                                          "null"
-                                      ? '-:-'
-                                      : (convertTimestampToTime(controller
-                                          .visitAttendanceModel!
-                                          .data
-                                          .visitAttendance[0]
-                                          .checkOutTime
-                                          .toString())),
-                                  "Check-out"),
-                              _buildRow(
-                                  controller
-                                                  .visitAttendanceModel!
-                                                  .data
-                                                  .visitAttendance[0]
-                                                  .checkOutTime
-                                                  .toString() ==
-                                              "null" ||
-                                          controller
-                                                  .visitAttendanceModel!
-                                                  .data
-                                                  .visitAttendance[0]
-                                                  .checkOutTime
-                                                  .toString() ==
-                                              'null'
-                                      ? controller
-                                                  .visitAttendanceModel!
-                                                  .data
-                                                  .visitAttendance[0]
-                                                  .checkInTime
-                                                  .toString() !=
-                                              "null"
-                                          ? "process"
-                                          : '-:-'
-                                      : "Done",
-                                  "Status")
-                            ]),
-                      ),
-                    ),
+                    controller.dataPresent.isTrue
+                        ? Container(
+                            decoration: BoxDecoration(
+                              color: secondaryColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    _buildRow(
+                                        convertTimestampToTime(controller
+                                            .visitAttendanceModel!
+                                            .data
+                                            .visitAttendance[0]
+                                            .checkInTime
+                                            .toString()),
+                                        "Check-in"),
+                                    _buildRow(
+                                        controller
+                                                    .visitAttendanceModel!
+                                                    .data
+                                                    .visitAttendance[0]
+                                                    .checkInTime
+                                                    .toString() ==
+                                                "null"
+                                            ? '-:-'
+                                            : (convertTimestampToTime(controller
+                                                .visitAttendanceModel!
+                                                .data
+                                                .visitAttendance[0]
+                                                .checkInTime
+                                                .toString())),
+                                        "Check-in"),
+                                    _buildRow(
+                                        controller
+                                                    .visitAttendanceModel!
+                                                    .data
+                                                    .visitAttendance[0]
+                                                    .checkOutTime
+                                                    .toString() ==
+                                                "null"
+                                            ? '-:-'
+                                            : (convertTimestampToTime(controller
+                                                .visitAttendanceModel!
+                                                .data
+                                                .visitAttendance[0]
+                                                .checkOutTime
+                                                .toString())),
+                                        "Check-out"),
+                                    _buildRow(
+                                        controller
+                                                        .visitAttendanceModel!
+                                                        .data
+                                                        .visitAttendance[0]
+                                                        .checkOutTime
+                                                        .toString() ==
+                                                    "null" ||
+                                                controller
+                                                        .visitAttendanceModel!
+                                                        .data
+                                                        .visitAttendance[0]
+                                                        .checkOutTime
+                                                        .toString() ==
+                                                    'null'
+                                            ? controller
+                                                        .visitAttendanceModel!
+                                                        .data
+                                                        .visitAttendance[0]
+                                                        .checkInTime
+                                                        .toString() !=
+                                                    "null"
+                                                ? "process"
+                                                : '-:-'
+                                            : "Done",
+                                        "Status")
+                                  ]),
+                            ),
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                              color: secondaryColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    _buildRow('-:-', "Check-in"),
+                                    _buildRow('-:-', "Check-out"),
+                                    _buildRow('-:-', "Status")
+                                  ]),
+                            ),
+                          ),
                     const SizedBox(
                       height: 10,
                     ),
@@ -421,7 +470,7 @@ class _TodayVisitState extends State<TodayVisit> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
+                                SizedBox(
                                   height: 100,
                                   width: 100,
                                   child: _capturedImage != null
@@ -444,29 +493,40 @@ class _TodayVisitState extends State<TodayVisit> {
                                           color: Colors.white,
                                         ),
                                 ),
-                                Container(
-                                    width: 100,
-                                    child: Text(
-                                      controller
-                                                  .visitAttendanceModel!
-                                                  .data
-                                                  .visitAttendance[0]
-                                                  .checkInTime
-                                                  .toString() ==
-                                              "null"
-                                          ? '-:-'
-                                          : convertTimestampToTime(controller
-                                              .visitAttendanceModel!
-                                              .data
-                                              .visitAttendance[0]
-                                              .checkInTime
-                                              .toString()),
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.w500),
-                                    )),
-                                Container(
+                                controller.dataPresent.isTrue
+                                    ? SizedBox(
+                                        width: 100,
+                                        child: Text(
+                                          controller
+                                                      .visitAttendanceModel!
+                                                      .data
+                                                      .visitAttendance[0]
+                                                      .checkInTime
+                                                      .toString() ==
+                                                  "null"
+                                              ? '-:-'
+                                              : convertTimestampToTime(
+                                                  controller
+                                                      .visitAttendanceModel!
+                                                      .data
+                                                      .visitAttendance[0]
+                                                      .checkInTime
+                                                      .toString()),
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.w500),
+                                        ))
+                                    : const SizedBox(
+                                        width: 100,
+                                        child: Text(
+                                          '-:-',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.w500),
+                                        )),
+                                SizedBox(
                                   width: 100,
                                   child: Row(
                                     children: [
@@ -516,7 +576,7 @@ class _TodayVisitState extends State<TodayVisit> {
   }
 
   Widget _punchBuild(text) {
-    return Container(
+    return SizedBox(
         width: 110,
         child: Text(
           text,

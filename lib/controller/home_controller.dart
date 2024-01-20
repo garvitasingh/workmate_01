@@ -7,13 +7,14 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:workmate_01/model/about_app_model.dart';
 import 'package:workmate_01/model/user_model.dart';
+import 'package:workmate_01/view/login_view.dart';
 
 import '../Provider/Api_provider.dart';
 import '../model/menu_model.dart';
 
 class HomeController extends GetxController {
   final menuData = <MenuModel>[].obs;
-  
+
   AboutAppModel? aboutapp;
   UserData? userData;
   final isLoading = true.obs;
@@ -27,7 +28,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-   
+
     getAboutapp();
   }
 
@@ -42,6 +43,7 @@ class HomeController extends GetxController {
       await GetStorage().write("username", userData!.data.userName.toString());
       await GetStorage().write("code", userData!.data.empCode.toString());
       await GetStorage().write("mobile", userData!.data.mobileNo.toString());
+
       isLoading.value = false;
       update();
     } catch (e) {
@@ -92,11 +94,11 @@ class HomeController extends GetxController {
     DateTime now = DateTime.now();
 
     if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
+        now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
       // First time back pressed or exceeds 2 seconds, show a message.
       currentBackPressTime = now;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Press back again to exit.'),
           duration: Duration(seconds: 2),
         ),

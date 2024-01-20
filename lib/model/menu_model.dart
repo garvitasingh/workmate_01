@@ -12,10 +12,10 @@ class MenuModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Id'] = this.id;
-    data['Name'] = this.name;
-    data['Icon'] = this.icon;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['Id'] = id;
+    data['Name'] = name;
+    data['Icon'] = icon;
     return data;
   }
 }

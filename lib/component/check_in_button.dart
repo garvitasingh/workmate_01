@@ -4,7 +4,7 @@ class CheckInButton extends StatelessWidget {
   final bool checkIn;
   final Function onPressed;
 
-  CheckInButton({required this.checkIn, required this.onPressed});
+  const CheckInButton({super.key, required this.checkIn, required this.onPressed});
 
   
 @override
@@ -12,7 +12,7 @@ class CheckInButton extends StatelessWidget {
     Color iconColor = checkIn ? Colors.green : Colors.red;
 
     return Center(
-      child: Container(
+      child: SizedBox(
         width: 150,
         height: 150,
         child: CustomPaint(
@@ -20,7 +20,7 @@ class CheckInButton extends StatelessWidget {
           child: Center(
             child: InkWell(
               onTap: () {
-                onPressed!();
+                onPressed();
               }, // <-- Add a call to the onPressed callback
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -41,7 +41,7 @@ class CheckInButton extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Check ' + (checkIn ? 'In' : 'Out'),
+                    'Check ${checkIn ? 'In' : 'Out'}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,

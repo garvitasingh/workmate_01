@@ -100,14 +100,14 @@ class _LoginViewPageState extends State<LoginViewPage> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5)),
                                 child: controller.isLoading.value
-                                    ? Text(
+                                    ? const Text(
                                         "Login",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 20,
                                             fontWeight: FontWeight.w600),
                                       )
-                                    : Center(
+                                    : const Center(
                                         child: CircularProgressIndicator(
                                         color: Colors.white,
                                       )),

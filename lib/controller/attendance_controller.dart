@@ -1,5 +1,6 @@
-import 'dart:ffi';
+import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +17,7 @@ class AttendanceController extends GetxController {
   AttendanceModel? attendanceData;
   final isLoading = true.obs;
   final isMark = true.obs;
+  final dataPresent = false.obs;
   AttendanceLogModel? attendanceLogModel;
   VisitAttendanceModel? visitAttendanceModel;
   List<String> visits = [];
@@ -46,20 +48,26 @@ class AttendanceController extends GetxController {
   getAttendance() async {
     isLoading.value = true;
     update();
-    print("get attendance called");
+    if (kDebugMode) {
+      print("get attendance called");
+    }
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
               "Attendance/GetAttendanceSummary?EmpCode=${LocalData().getEmpCode()}");
       // print(jsonDecode(res));
-      print(res);
+      if (kDebugMode) {
+        print(res);
+      }
       attendanceData = attendanceModelFromJson(res);
       isLoading.value = false;
       update();
     } catch (e) {
       isLoading.value = false;
       update();
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 
@@ -71,9 +79,13 @@ class AttendanceController extends GetxController {
       if (selectedLocation == "Un-planned") {
         unplaned.value = true;
         update();
-        print(unplaned.value);
+        if (kDebugMode) {
+          print(unplaned.value);
+        }
       } else {
-        print(unplaned.value);
+        if (kDebugMode) {
+          print(unplaned.value);
+        }
         unplaned.value = false;
         update();
       }
@@ -85,25 +97,33 @@ class AttendanceController extends GetxController {
   getAttendanceLogs() async {
     isLoading.value = true;
     update();
-    print("get attendance called");
+    if (kDebugMode) {
+      print("get attendance called");
+    }
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
               "Attendance/GetAttendancelog?EmpCode=${LocalData().getEmpCode()}&VisitId=1");
       attendanceLogModel = attendanceLogModelFromJson(res);
-      print(res);
+      if (kDebugMode) {
+        print(res);
+      }
       isLoading.value = false;
       update();
     } catch (e) {
       isLoading.value = false;
       update();
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 
   getVisitPlans() async {
     isLoading.value = true;
-    print("get leave called");
+    if (kDebugMode) {
+      print("get leave called");
+    }
     try {
       var res = await ApiProvider().getRequest(
           apiUrl: "Claim/GetVisitPlan?EmpCode=${LocalData().getEmpCode()}");
@@ -120,32 +140,50 @@ class AttendanceController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       update();
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 
   getVisitAttendance(id) async {
     isLoading.value = true;
     update();
-    print("get visit attendance called");
+    if (kDebugMode) {
+      print("get visit attendance called");
+    }
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
               "Attendance/GetVisitAttendance?EmpCode=${LocalData().getEmpCode()}&VisitId=$id");
       visitAttendanceModel = visitAttendanceModelFromJson(res);
-      print(res);
+      dataPresent.value = true;
       isLoading.value = false;
       update();
     } catch (e) {
-      visitAttendanceModel!.data.visitAttendance[0].checkIn = 0;
-      visitAttendanceModel!.data.visitAttendance[0].checkIn = 1;
-      visitAttendanceModel!.data.visitAttendance[0].checkInTime = 'null';
-      visitAttendanceModel!.data.visitAttendance[0].checkOutTime = "null";
-      visitAttendanceModel!.data.visitAttendance[0].checkIn = 0;
-      visitAttendanceModel!.data.visitAttendance[0].checkOut = 0;
+      print(e);
+      // visitAttendanceModel!.data.visitAttendance.add(VisitAttendance(
+      //   empCode: "ABC123",
+      //   visitId: 1,
+      //   attendanceDate: DateTime.now(),
+      //   checkIn: 1,
+      //   checkOut: 0,
+      //   checkInTime: "09:00 AM",
+      //   checkOutTime: null,
+      // ));
+
+      // visitAttendanceModel!.data.visitAttendance[0].checkIn = 0;
+      // visitAttendanceModel!.data.visitAttendance[0].checkIn = 1;
+      // visitAttendanceModel!.data.visitAttendance[0].checkInTime = 'null';
+      // visitAttendanceModel!.data.visitAttendance[0].checkOutTime = "null";
+      // visitAttendanceModel!.data.visitAttendance[0].checkIn = 0;
+      // visitAttendanceModel!.data.visitAttendance[0].checkOut = 0;
+      dataPresent.value = false;
       isLoading.value = false;
       update();
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 
@@ -156,10 +194,14 @@ class AttendanceController extends GetxController {
     String? attType,
   }) async {
     isMark.value = false;
-    print("apply mark called");
+    if (kDebugMode) {
+      print("apply mark called");
+    }
     DateTime currentDateTime = DateTime.now();
     String formattedDateTime = formatDateTime(currentDateTime);
-    print(formattedDateTime);
+    if (kDebugMode) {
+      print(formattedDateTime);
+    }
     try {
       if (unplaned.isTrue) {
         if (from.text.isEmpty || to.text.isEmpty) {
@@ -183,12 +225,18 @@ class AttendanceController extends GetxController {
         "FromVisit": unplaned.isTrue ? from.text : "",
         "ToVisit": unplaned.isTrue ? to.text : "",
       };
-      print(data);
+      if (kDebugMode) {
+        print(data);
+      }
       var res = await ApiProvider().postRequestToken(
           apiUrl: "http://14.99.179.131/wsnapi/api/Attendance/MarkAttendance",
           data: data);
-      print(res);
-      print(res);
+      if (kDebugMode) {
+        print(res);
+      }
+      if (kDebugMode) {
+        print(res);
+      }
       from.clear();
       to.clear();
       getVisitAttendance(visitid);
@@ -197,7 +245,9 @@ class AttendanceController extends GetxController {
     } catch (e) {
       isMark.value = true;
       update();
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 }

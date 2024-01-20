@@ -17,7 +17,7 @@ class VisitScreen extends StatelessWidget {
             onPressed: () {
               Get.back();
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: secondaryColor,
             )),
@@ -154,9 +154,48 @@ class VisitScreen extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              Row(children: [
-                                Expanded(child: Container(width: 150,child: Text(""),)),
-                              ],)
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                    //height: 40,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    width: 100,
+                                    child: TextFormField(
+                                      maxLines: 12,
+                                      minLines: 1,
+                                      //cursorHeight: 12,
+                                      decoration: const InputDecoration(
+                                          hintText: "Feedback",
+                                          border: InputBorder.none),
+                                    ),
+                                  )),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  MaterialButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      height: 35,
+                                      color: darkColor,
+                                      onPressed: () {},
+                                      child: const Text(
+                                        "Submit",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 15),
+                                      )),
+                                ],
+                              )
                             ],
                           ),
                         );
@@ -166,7 +205,7 @@ class VisitScreen extends StatelessWidget {
                 ],
               ),
             )
-          : Center(
+          : const Center(
               child: CircularProgressIndicator(),
             )),
     );

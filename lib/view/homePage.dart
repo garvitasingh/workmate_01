@@ -2,7 +2,6 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:workmate_01/controller/home_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
@@ -30,6 +29,7 @@ class _HomePageViewState extends State<HomePageView> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async => controller.onWillPop(context),
       child: Scaffold(
@@ -76,10 +76,10 @@ class _HomePageViewState extends State<HomePageView> {
                         ),
                         title: const Text(
                           'Visits',
-                          style: TextStyle(fontSize: 24.0,color: darkColor),
+                          style: TextStyle(fontSize: 24.0, color: darkColor),
                         ),
                         onTap: () {
-                          Get.to(VisitScreen());
+                          Get.to(const VisitScreen());
                         },
                       ),
                       ListTile(
@@ -89,7 +89,7 @@ class _HomePageViewState extends State<HomePageView> {
                         ),
                         title: const Text(
                           'About App',
-                          style: TextStyle(fontSize: 24.0,color: darkColor),
+                          style: TextStyle(fontSize: 24.0, color: darkColor),
                         ),
                         onTap: () {
                           Get.to(const AboutAppPage());
@@ -102,7 +102,7 @@ class _HomePageViewState extends State<HomePageView> {
                         ),
                         title: const Text(
                           'Logout',
-                          style: TextStyle(fontSize: 24.0,color: darkColor),
+                          style: TextStyle(fontSize: 24.0, color: darkColor),
                         ),
                         onTap: () {
                           AwesomeDialog(
@@ -123,7 +123,7 @@ class _HomePageViewState extends State<HomePageView> {
                       ),
                     ],
                   )
-                : Center(child: const CircularProgressIndicator()))),
+                : const Center(child: CircularProgressIndicator()))),
         backgroundColor: backgroundColor,
         appBar: AppBar(
           centerTitle: false,
@@ -135,7 +135,9 @@ class _HomePageViewState extends State<HomePageView> {
                 color:
                     secondaryColor, // Change this color to your desired color
                 onPressed: () {
-                  _scaffoldKey.currentState!.openDrawer();
+                  controller.menuData.isEmpty
+                      ? ''
+                      : _scaffoldKey.currentState!.openDrawer();
                 },
               );
             },
@@ -200,55 +202,59 @@ class _HomePageViewState extends State<HomePageView> {
                         const SizedBox(
                           height: 20,
                         ),
-                        GridView.builder(
-                          shrinkWrap: true,
-                          itemCount: controller.menuData.length,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 1,
-                                  mainAxisSpacing: 10,
-                                  mainAxisExtent: 120),
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => routes[index],
-                                    ));
-                              },
-                              child: Card(
-                                color: getColorByIndex(index),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        "assets/${iconss[index]}.png",
-                                        height: 40,
-                                        fit: BoxFit.cover,
+                        controller.menuData.isEmpty
+                            ? Text("")
+                            : GridView.builder(
+                                shrinkWrap: true,
+                                itemCount: controller.menuData.length,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 1,
+                                        mainAxisSpacing: 10,
+                                        mainAxisExtent: 120),
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => routes[index],
+                                          ));
+                                    },
+                                    child: Card(
+                                      color: getColorByIndex(index),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              "assets/${iconss[index]}.png",
+                                              height: 40,
+                                              fit: BoxFit.cover,
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              controller.menuData[index].name ??
+                                                  "",
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                  color: darkColor,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        controller.menuData[index].name ?? "",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            color: darkColor,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ],
                     )
                   : const Center(child: CircularProgressIndicator()))

@@ -17,8 +17,8 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
   @override
   Widget build(BuildContext context) {
     Get.lazyPut(() => AttendanceController());
-    var h = MediaQuery.of(context).size.height;
-    var w = MediaQuery.of(context).size.width;
+    // var h = MediaQuery.of(context).size.height;
+    // var w = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
@@ -104,7 +104,7 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
                         )
                       ]),
                 )
-              : Center(child: CircularProgressIndicator()),
+              : const Center(child: CircularProgressIndicator()),
         ));
   }
 
@@ -119,14 +119,14 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              "assets/${icon}.png",
+              "assets/$icon.png",
               height: 40,
             ),
             const SizedBox(
               height: 10,
             ),
             Text(
-              "#$count" ?? "0",
+              "#$count",
               textAlign: TextAlign.center,
               style: const TextStyle(
                   color: Colors.black,

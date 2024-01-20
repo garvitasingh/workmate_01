@@ -12,8 +12,8 @@ constToast(msg) {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.white,
-      textColor: Colors.black);
+      backgroundColor: Colors.red,
+      textColor: Colors.white);
 }
 
 String convertTimestampToTime(String timestamp) {

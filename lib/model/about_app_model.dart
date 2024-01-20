@@ -1,8 +1,6 @@
 // To parse this JSON data, do
 //
 //     final aboutAppModel = aboutAppModelFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 AboutAppModel aboutAppModelFromJson(String str) => AboutAppModel.fromJson(json.decode(str));
