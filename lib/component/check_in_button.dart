@@ -3,20 +3,27 @@ import 'package:flutter/material.dart';
 class CheckInButton extends StatelessWidget {
   final bool checkIn;
   final Function onPressed;
+  final bool checkOut;
+  const CheckInButton(
+      {super.key,
+      required this.checkIn,
+      required this.onPressed,
+      required this.checkOut});
 
-  const CheckInButton({super.key, required this.checkIn, required this.onPressed});
-
-  
-@override
+  @override
   Widget build(BuildContext context) {
-    Color iconColor = checkIn ? Colors.green : Colors.red;
+    Color iconColor = checkIn
+        ? Colors.green
+        : checkOut
+            ? Colors.blue
+            : Colors.red;
 
     return Center(
       child: SizedBox(
         width: 150,
         height: 150,
         child: CustomPaint(
-          painter: CirclePainter(checkIn: checkIn),
+          painter: CirclePainter(checkIn: checkIn, checkOut: checkOut),
           child: Center(
             child: InkWell(
               onTap: () {
@@ -40,14 +47,32 @@ class CheckInButton extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  Text(
-                    'Check ${checkIn ? 'In' : 'Out'}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  checkIn
+                      ? Text(
+                          'Check ${checkIn ? 'In' : 'Out'}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : checkOut
+                          ? Text(
+                              'Done',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          : Text(
+                              'Check ${checkIn ? 'In' : 'Out'}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                 ],
               ),
             ),
@@ -56,17 +81,21 @@ class CheckInButton extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class CirclePainter extends CustomPainter {
   final bool checkIn;
+  final bool checkOut;
 
-  CirclePainter({required this.checkIn});
+  CirclePainter({required this.checkIn, required this.checkOut});
 
   @override
   void paint(Canvas canvas, Size size) {
-    Color iconColor = checkIn ? Colors.green : Colors.red;
+    Color iconColor = checkIn
+        ? Colors.green
+        : checkOut
+            ? Colors.blue
+            : Colors.red;
 
     Paint whitePaint = Paint()
       ..color = Colors.white

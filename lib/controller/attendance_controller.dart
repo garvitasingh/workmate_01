@@ -1,20 +1,25 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/model/attendance_log.dart';
 import 'package:workmate_01/model/attendance_model.dart';
+import 'package:workmate_01/model/monthl_attendance_model.dart';
 import 'package:workmate_01/model/visit_attendance_model.dart';
 import 'package:workmate_01/model/visit_plan_model.dart';
 import 'package:workmate_01/utils/constants.dart';
 import 'package:workmate_01/utils/local_data.dart';
+import 'package:http/http.dart' as http;
 
 import '../Provider/Api_provider.dart';
 
 class AttendanceController extends GetxController {
   AttendanceModel? attendanceData;
+  MonthlyAttendance? monthlyAttendance;
   final isLoading = true.obs;
   final isMark = true.obs;
   final dataPresent = false.obs;
@@ -31,10 +36,27 @@ class AttendanceController extends GetxController {
     return DateFormat('MM-dd-yyyy HH:mm').format(dateTime);
   }
 
+  final List<DateTime> leaveDates = [];
+  final List<DateTime> absentDates = [];
+  addLeave(date) {
+    String presentDateString = date;
+    DateTime presentDate = DateFormat("dd-MM-yyyy").parse(presentDateString);
+    leaveDates.add(presentDate);
+    update();
+  }
+
+  addAbsent(date) {
+    String presentDateString = date;
+    DateTime presentDate = DateFormat("dd-MM-yyyy").parse(presentDateString);
+    absentDates.add(presentDate);
+    update();
+  }
+
   @override
   void onInit() {
     super.onInit();
     getAttendance();
+    getAttendanceMonthly();
     getAttendanceLogs();
     getVisitAttendance(1);
     getVisitPlans();
@@ -60,6 +82,50 @@ class AttendanceController extends GetxController {
         print(res);
       }
       attendanceData = attendanceModelFromJson(res);
+      isLoading.value = false;
+      update();
+    } catch (e) {
+      isLoading.value = false;
+      update();
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  getAttendanceMonthly() async {
+    isLoading.value = true;
+    update();
+    if (kDebugMode) {
+      print("get attendance called");
+    }
+    try {
+      var res = await ApiProvider().getRequest(
+          apiUrl:
+              "Attendance/MonthlyAttendance?EmpCode=${LocalData().getEmpCode()}");
+      // print(jsonDecode(res));
+      if (kDebugMode) {
+        print(res);
+      }
+      monthlyAttendance = monthlyAttendanceFromJson(res);
+      for (var i = 0;
+          i < monthlyAttendance!.data!.visitAttendance!.absent!.length;
+          i++) {
+        String ab = monthlyAttendance!
+            .data!.visitAttendance!.absent![i].absentDate
+            .toString();
+        //print(ab);
+        addAbsent(ab);
+      }
+      for (var i = 0;
+          i < monthlyAttendance!.data!.visitAttendance!.holiday!.length;
+          i++) {
+        String ab = monthlyAttendance!
+            .data!.visitAttendance!.holiday![i].holidayDate
+            .toString();
+        //print(ab);
+        addLeave(ab);
+      }
       isLoading.value = false;
       update();
     } catch (e) {
@@ -192,10 +258,14 @@ class AttendanceController extends GetxController {
     String? log,
     String? add,
     String? attType,
+    File? img,
   }) async {
     isMark.value = false;
     if (kDebugMode) {
       print("apply mark called");
+    }
+    if (img == null) {
+      constToast("Please Punch Image");
     }
     DateTime currentDateTime = DateTime.now();
     String formattedDateTime = formatDateTime(currentDateTime);
@@ -212,31 +282,23 @@ class AttendanceController extends GetxController {
         }
       }
 
-      var data = {
-        "EMPCode": LocalData().getEmpCode(),
-        "CellEMIENo": LocalData().getdeviceid(),
-        "Latitude": lat.toString(),
-        "Longitude": log.toString(),
-        "Address": add.toString(),
-        "AddressImage": "Doe",
-        "AttendanceType": attType.toString(),
-        "AttendanceDate": formattedDateTime,
-        "VisitId": visitid.toString(),
-        "FromVisit": unplaned.isTrue ? from.text : "",
-        "ToVisit": unplaned.isTrue ? to.text : "",
-      };
-      if (kDebugMode) {
-        print(data);
-      }
-      var res = await ApiProvider().postRequestToken(
-          apiUrl: "http://14.99.179.131/wsnapi/api/Attendance/MarkAttendance",
-          data: data);
-      if (kDebugMode) {
-        print(res);
-      }
-      if (kDebugMode) {
-        print(res);
-      }
+      var token = GetStorage().read("token");
+
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'http://14.99.179.131/wsnapi/api/Attendance/MarkAttendance'));
+      request.fields.addAll({
+        'value':
+            '{"EMPCode": "${LocalData().getEmpCode()}","CellEMIENo":"${LocalData().getdeviceid()}","Latitude": "${lat.toString()}","Longitude": "${log.toString()}","Address": "${add.toString()}","AttendanceType": "${attType.toString()}","AttendanceDate": "${formattedDateTime}","VisitId":"${visitid.toString()}","FromVisit":"${unplaned.isTrue ? from.text : ""}","ToVisit":"${unplaned.isTrue ? to.text : ""}"\n}'
+      });
+      request.files.add(await http.MultipartFile.fromPath('Image', img!.path));
+      request.headers.addAll({'Authorization': 'Bearer $token'});
+
+      http.StreamedResponse response = await request.send();
+      var dec = jsonDecode(await response.stream.bytesToString());
+      print(dec);
+      constToast("Attendance Marked!");
       from.clear();
       to.clear();
       getVisitAttendance(visitid);

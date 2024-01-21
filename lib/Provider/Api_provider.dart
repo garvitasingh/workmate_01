@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:http_parser/http_parser.dart';
 import '../utils/constants.dart';
 import '../view/login_view.dart';
 
@@ -32,6 +32,29 @@ class ApiProvider {
       return Future.error(res.body);
     } else {
       return Future.error('Network Problem');
+    }
+  }
+
+  Future<dynamic> markAtt({data, file}) async {
+    var request = http.MultipartRequest('POST',
+        Uri.parse('http://14.99.179.131/wsnapi/api/Attendance/MarkAttendance'));
+    request.fields.addAll({'value': data});
+    print(data);
+    print(file);
+    if (file != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'Image',
+        file.path,
+        contentType: MediaType('Image', 'png'),
+      ));
+
+      http.StreamedResponse response = await request.send();
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        print(await response.stream.bytesToString());
+      } else {
+        print(response.reasonPhrase);
+      }
     }
   }
 

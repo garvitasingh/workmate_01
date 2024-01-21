@@ -79,7 +79,7 @@ class _HomePageViewState extends State<HomePageView> {
                           style: TextStyle(fontSize: 24.0, color: darkColor),
                         ),
                         onTap: () {
-                          Get.to(const VisitScreen());
+                          Get.to( VisitScreen());
                         },
                       ),
                       ListTile(
@@ -281,7 +281,7 @@ class _HomePageViewState extends State<HomePageView> {
   List routes = [
     const MarkAttendanceView(),
     const MyAttendanceView(),
-    const VisitScreen(),
+     VisitScreen(),
     const ExpanseManagementView(),
     const LeaveView(),
     const OthersView(),

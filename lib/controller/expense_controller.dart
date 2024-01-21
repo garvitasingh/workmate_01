@@ -1,8 +1,12 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:workmate_01/model/conve_mode_model.dart';
+import 'package:workmate_01/model/visit_plan_ex_mode.dart';
 
 import 'package:workmate_01/model/visit_plan_model.dart';
 import 'package:workmate_01/utils/local_data.dart';
@@ -25,12 +29,16 @@ class ExpenseController extends GetxController {
   final unplaned = true.obs;
   String? convModeString;
   VisitPlanModel? visitPlanModel;
+  VisitPlanExpModel? visitPlanExpModel;
   ConvModeModel? convModeModel;
   String? selectedLocation = ' ';
+  final seleExpLocation = ''.obs;
   List<String> visits = [];
   List<String> convMode = [];
+  List<String> convExpMode = [];
   int? expenseId;
   int? convModeId;
+  File? capturedImage;
 
   @override
   void onInit() {
@@ -38,6 +46,7 @@ class ExpenseController extends GetxController {
 
     getVisitPlans();
     getMstConvMode();
+    getMstExpMode();
   }
 
   @override
@@ -51,6 +60,16 @@ class ExpenseController extends GetxController {
     remarksController.dispose();
     visitPurposeController.dispose();
     super.dispose();
+  }
+
+  openCamera() async {
+    final imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      capturedImage = File(pickedFile.path);
+      update();
+    }
   }
 
   getVisitPlans() async {
@@ -90,6 +109,24 @@ class ExpenseController extends GetxController {
       }
 
       isLoading.value = false;
+      update();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  getMstExpMode() async {
+    print("get leave called");
+    try {
+      var res = await ApiProvider().getRequest(apiUrl: "Claim/MstExpMode");
+      // print(jsonDecode(res));
+      visitPlanExpModel = visitPlanExpModelFromJson(res);
+      for (var i = 0; i < visitPlanExpModel!.data!.visitPlan!.length; i++) {
+        convExpMode
+            .add(visitPlanExpModel!.data!.visitPlan![i].ddlDesc.toString());
+        update();
+      }
+
       update();
     } catch (e) {
       print(e.toString());

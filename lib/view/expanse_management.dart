@@ -133,7 +133,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                               .format(fromDate);
                                       if (kDebugMode) {
                                         print(DateFormat('yyyy-MM-dd')
-                                          .format(fromDate));
+                                            .format(fromDate));
                                       }
                                     }
                                   },
@@ -229,22 +229,24 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                 ),
                                 FormBuilderDropdown(
                                   onChanged: (value) {
-                                    controller.convModeString = value;
-                                    controller.calculateAmount();
-                                    double rate = double.tryParse(
-                                            controller.rateController.text) ??
-                                        0.0;
-                                    double distance = double.tryParse(controller
-                                            .locationDistanceController.text) ??
-                                        0.0;
+                                    controller.seleExpLocation.value = value!;
+                                    print(value);
+                                    // controller.calculateAmount();
+                                    // double rate = double.tryParse(
+                                    //         controller.rateController.text) ??
+                                    //     0.0;
+                                    // double distance = double.tryParse(controller
+                                    //         .locationDistanceController.text) ??
+                                    //     0.0;
 
-                                    double amount = rate * distance;
+                                    // double amount = rate * distance;
 
-                                    controller.amountController.text =
-                                        amount.toString();
+                                    // controller.amountController.text =
+                                    //     amount.toString();
+
                                     controller.update();
                                   },
-                                  name: 'ConvModeId',
+                                  name: 'ExpModeId',
                                   decoration: InputDecoration(
                                       border: OutlineInputBorder(
                                           borderRadius:
@@ -253,8 +255,8 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                             color: Colors.blue,
                                             width: 1.0,
                                           )),
-                                      labelText: 'Conv Mode ID'),
-                                  items: controller.convMode
+                                      labelText: 'Exp Mode ID'),
+                                  items: controller.convExpMode
                                       .map<DropdownMenuItem<String>>(
                                     (String value) {
                                       return DropdownMenuItem<String>(
@@ -268,74 +270,140 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                     },
                                   ).toList(),
                                 ),
-                                const SizedBox(height: 10),
-                                FormBuilderTextField(
-                                  readOnly: true,
-                                  controller: controller.rateController,
-                                  name: 'Rate per (km)',
-                                  decoration: InputDecoration(
-                                    labelText: 'Rate',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                        color: Colors.blue,
-                                        width: 1.0,
-                                      ),
-                                    ),
-                                  ),
-                                  // validator: (value) {
-                                  //   if (value == '') {
-                                  //     return 'required';
-                                  //   }
-                                  //   return null;
-                                  // },
+                                const SizedBox(
+                                  height: 10,
                                 ),
-                                const SizedBox(height: 10),
-                                FormBuilderTextField(
-                                    keyboardType: TextInputType.number,
-                                    onChanged: (value) {
-                                      double rate = double.tryParse(
-                                              controller.rateController.text) ??
-                                          0.0;
-                                      double distance = double.tryParse(
-                                              controller
-                                                  .locationDistanceController
-                                                  .text) ??
-                                          0.0;
+                                controller.seleExpLocation.value == 'Vehicle'
+                                    ? Column(
+                                        children: [
+                                          FormBuilderDropdown(
+                                            onChanged: (value) {
+                                              controller.convModeString = value;
+                                              controller.calculateAmount();
+                                              double rate = double.tryParse(
+                                                      controller.rateController
+                                                          .text) ??
+                                                  0.0;
+                                              double distance = double.tryParse(
+                                                      controller
+                                                          .locationDistanceController
+                                                          .text) ??
+                                                  0.0;
 
-                                      double amount = rate * distance;
+                                              double amount = rate * distance;
 
-                                      controller.amountController.text =
-                                          amount.toString();
-                                      controller.update();
-                                      if (kDebugMode) {
-                                        print(amount);
-                                      }
-                                    },
-                                    controller:
-                                        controller.locationDistanceController,
-                                    name: 'Dis in (Km)',
-                                    decoration: InputDecoration(
-                                      labelText: 'Distance',
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                          color: Colors.blue,
-                                          width: 1.0,
-                                        ),
+                                              controller.amountController.text =
+                                                  amount.toString();
+                                              controller.update();
+                                            },
+                                            name: 'ConvModeId',
+                                            decoration: InputDecoration(
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                    borderSide:
+                                                        const BorderSide(
+                                                      color: Colors.blue,
+                                                      width: 1.0,
+                                                    )),
+                                                labelText: 'Conv Mode ID'),
+                                            items: controller.convMode
+                                                .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(
+                                                    value,
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                );
+                                              },
+                                            ).toList(),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          FormBuilderTextField(
+                                            readOnly: true,
+                                            controller:
+                                                controller.rateController,
+                                            name: 'Rate per (km)',
+                                            decoration: InputDecoration(
+                                              labelText: 'Rate',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                borderSide: const BorderSide(
+                                                  color: Colors.blue,
+                                                  width: 1.0,
+                                                ),
+                                              ),
+                                            ),
+                                            // validator: (value) {
+                                            //   if (value == '') {
+                                            //     return 'required';
+                                            //   }
+                                            //   return null;
+                                            // },
+                                          ),
+                                          const SizedBox(height: 10),
+                                          FormBuilderTextField(
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              onChanged: (value) {
+                                                double rate = double.tryParse(
+                                                        controller
+                                                            .rateController
+                                                            .text) ??
+                                                    0.0;
+                                                double distance =
+                                                    double.tryParse(controller
+                                                            .locationDistanceController
+                                                            .text) ??
+                                                        0.0;
+
+                                                double amount = rate * distance;
+
+                                                controller.amountController
+                                                    .text = amount.toString();
+                                                controller.update();
+                                                if (kDebugMode) {
+                                                  print(amount);
+                                                }
+                                              },
+                                              controller: controller
+                                                  .locationDistanceController,
+                                              name: 'Dis in (Km)',
+                                              decoration: InputDecoration(
+                                                labelText: 'Distance',
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                  borderSide: const BorderSide(
+                                                    color: Colors.blue,
+                                                    width: 1.0,
+                                                  ),
+                                                ),
+                                              ),
+                                              // validator: (value) {
+                                              //   if (value == '') {
+                                              //     return 'required';
+                                              //   }
+                                              //   return null;
+                                              // },
+                                              autofocus: false),
+                                          const SizedBox(height: 10),
+                                        ],
+                                      )
+                                    : SizedBox(
+                                        height: 0,
                                       ),
-                                    ),
-                                    // validator: (value) {
-                                    //   if (value == '') {
-                                    //     return 'required';
-                                    //   }
-                                    //   return null;
-                                    // },
-                                    autofocus: false),
-                                const SizedBox(height: 10),
                                 FormBuilderTextField(
-                                  readOnly: true,
+                                  readOnly:
+                                      controller.seleExpLocation.value == 'Vehicle'
+                                          ? true
+                                          : false,
                                   controller: controller.amountController,
                                   name: 'Amount in (Rs)',
                                   decoration: InputDecoration(
@@ -377,6 +445,53 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                     //   return null;
                                     // },
                                     autofocus: false),
+                                const SizedBox(height: 10),
+                                const Row(
+                                  children: [
+                                    Text(
+                                      "Attachment",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w400,
+                                          color: darkColor),
+                                    ),
+                                  ],
+                                ),
+                                GetBuilder<ExpenseController>(
+                                  builder: (contrr) {
+                                    return ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            border:
+                                                Border.all(color: Colors.grey),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        height: 100,
+                                        width: w,
+                                        child: contrr.capturedImage != null
+                                            ? InkWell(
+                                                onTap: contrr.openCamera,
+                                                child: Image.file(
+                                                  contrr.capturedImage!,
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              )
+                                            : IconButton(
+                                                icon: const Icon(
+                                                  Icons.file_copy,
+                                                  color: Colors.red,
+                                                  size: 40,
+                                                ),
+                                                onPressed: contrr.openCamera,
+                                                iconSize: 20,
+                                                color: Colors.white,
+                                              ),
+                                      ),
+                                    );
+                                  },
+                                ),
                                 const SizedBox(height: 20),
                                 MaterialButton(
                                     minWidth: 200,

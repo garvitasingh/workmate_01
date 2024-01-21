@@ -228,6 +228,7 @@ class _TodayVisitState extends State<TodayVisit> {
                         ? Container(
                             alignment: Alignment.center,
                             child: CheckInButton(
+                                checkOut: false,
                                 checkIn: true,
                                 onPressed: () {
                                   controller.markAttendance(
@@ -236,13 +237,19 @@ class _TodayVisitState extends State<TodayVisit> {
                                           .toStringAsFixed(4),
                                       lat: _currentPosition.latitude
                                           .toStringAsFixed(4),
-                                      attType: 'in');
+                                      attType: 'in',
+                                      img: _capturedImage);
                                 }),
                           )
                         : Container(
                             alignment: Alignment.center,
                             height: 200,
                             child: CheckInButton(
+                                checkOut: controller.visitAttendanceModel!.data
+                                            .visitAttendance[0].checkOut ==
+                                        0
+                                    ? false
+                                    : true,
                                 checkIn: controller.visitAttendanceModel!.data
                                             .visitAttendance[0].checkIn ==
                                         1
@@ -266,7 +273,8 @@ class _TodayVisitState extends State<TodayVisit> {
                                                       .checkOutTime !=
                                                   'null'
                                               ? 'out'
-                                              : 'in');
+                                              : 'in',
+                                          img: _capturedImage);
                                 }),
                           ),
                     const Row(
@@ -350,14 +358,6 @@ class _TodayVisitState extends State<TodayVisit> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [
-                                    _buildRow(
-                                        convertTimestampToTime(controller
-                                            .visitAttendanceModel!
-                                            .data
-                                            .visitAttendance[0]
-                                            .checkInTime
-                                            .toString()),
-                                        "Check-in"),
                                     _buildRow(
                                         controller
                                                     .visitAttendanceModel!

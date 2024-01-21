@@ -22,13 +22,6 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
 
   AttendanceController controller = Get.put(AttendanceController());
 
-  final List<DateTime> _leaveDates = [
-    DateTime(2024, 1, 4),
-    DateTime(2024, 1, 6),
-  ];
-  final List<DateTime> _absentDates = [
-    DateTime(2024, 1, 3),
-  ];
   // final List<DateTime> _presentDates = [
   //   DateTime(2024, 1, 14),
   //   DateTime(2024, 1, 25),
@@ -104,12 +97,14 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                     .subtract(const Duration(days: 1)))) {
                                   return true;
                                 }
-                                for (DateTime leaveDate in _leaveDates) {
+                                for (DateTime leaveDate
+                                    in controller.leaveDates) {
                                   if (_isSameDay(day, leaveDate)) {
                                     return true;
                                   }
                                 }
-                                for (DateTime absentDate in _absentDates) {
+                                for (DateTime absentDate
+                                    in controller.absentDates) {
                                   if (_isSameDay(day, absentDate)) {
                                     return true;
                                   }
@@ -123,6 +118,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                 });
                                 if (kDebugMode) {
                                   print(_selectedDay);
+                                 
                                 }
                                 if (_isSameDay(selectedDay, DateTime.now())) {
                                   Navigator.push(
@@ -136,7 +132,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                               calendarBuilders: CalendarBuilders(
                                 defaultBuilder: (context, day, focusedDay) {
                                   for (DateTime highlightedDate
-                                      in _leaveDates) {
+                                      in controller.leaveDates) {
                                     if (_isSameDay(day, highlightedDate)) {
                                       return Container(
                                         margin: const EdgeInsets.all(5),
@@ -157,7 +153,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                     }
                                   }
                                   for (DateTime highlightedDate
-                                      in _absentDates) {
+                                      in controller.absentDates) {
                                     if (_isSameDay(day, highlightedDate)) {
                                       return Container(
                                         margin: const EdgeInsets.all(5),
