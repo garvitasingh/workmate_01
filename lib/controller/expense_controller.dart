@@ -1,13 +1,15 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:workmate_01/model/conve_mode_model.dart';
 import 'package:workmate_01/model/visit_plan_ex_mode.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:workmate_01/model/visit_plan_model.dart';
 import 'package:workmate_01/utils/local_data.dart';
 
@@ -27,6 +29,7 @@ class ExpenseController extends GetxController {
   final isLoading = true.obs;
   final isSubmit = true.obs;
   final unplaned = true.obs;
+  final expModeIdText = "ExpModeId".obs;
   String? convModeString;
   VisitPlanModel? visitPlanModel;
   VisitPlanExpModel? visitPlanExpModel;
@@ -37,7 +40,8 @@ class ExpenseController extends GetxController {
   List<String> convMode = [];
   List<String> convExpMode = [];
   int? expenseId;
-  int? convModeId;
+  int? convModeId = 1;
+  int? expModeId;
   File? capturedImage;
 
   @override
@@ -62,7 +66,7 @@ class ExpenseController extends GetxController {
     super.dispose();
   }
 
-  openCamera() async {
+  openGallery() async {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
 
@@ -72,17 +76,64 @@ class ExpenseController extends GetxController {
     }
   }
 
-  getVisitPlans() async {
-    isLoading.value = true;
+  openCamera() async {
+    final imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
 
-    print("get leave called");
+    if (pickedFile != null) {
+      capturedImage = File(pickedFile.path);
+      update();
+    }
+  }
+
+  openSheet(context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+        ),
+        builder: (context) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.camera_enhance),
+                title: Text('Camera'),
+                onTap: () {
+                  openCamera();
+                  Get.back();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.file_copy),
+                title: Text('Gallery'),
+                onTap: () {
+                  openGallery();
+                  Get.back();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  getVisitPlans() async {
+    isLoading.value = true; 
+    visits.clear();
+    print("get visits called");
     try {
       var res = await ApiProvider().getRequest(
           apiUrl: "Claim/GetVisitPlan?EmpCode=${LocalData().getEmpCode()}");
-      // print(jsonDecode(res));
+       print(jsonDecode(res));
       visitPlanModel = visitPlanModelFromJson(res);
       for (var i = 0; i < visitPlanModel!.dataCount; i++) {
-        visits.add(visitPlanModel!.data.visitPlan[i].visitLocation);
+        if (visitPlanModel!.data.visitPlan[i].visitLocation == "Un-planned") {
+        } else {
+          visits.add(visitPlanModel!.data.visitPlan[i].visitLocation);
+        }
         update();
       }
       selectedLocation = visitPlanModel!.data.visitPlan[0].visitLocation;
@@ -133,6 +184,17 @@ class ExpenseController extends GetxController {
     }
   }
 
+  expIdGet() {
+    for (var i = 0; i < visitPlanExpModel!.data!.visitPlan!.length; i++) {
+      if (seleExpLocation.value ==
+          visitPlanExpModel!.data!.visitPlan![i].ddlDesc) {
+        expModeId = visitPlanExpModel!.data!.visitPlan![i].ddlId;
+        update();
+      }
+    }
+    print(expModeId);
+  }
+
   calculateAmount() {
     print("object");
     for (var i = 0; i < convModeModel!.dataCount; i++) {
@@ -173,28 +235,50 @@ class ExpenseController extends GetxController {
     isSubmit.value = false;
     print("apply leave called");
     try {
-      var data = {
-        "ExpenseId": expenseId.toString(),
-        "ConvModeId": convModeId.toString(),
-        "Rate": rateController.text,
-        "LocationDistance": locationDistanceController.text,
-        "Amount": amountController.text,
-        "Remarks": remarksController.text,
-        "VisitPurpose": visitPurposeController.text
-      };
-      print(data);
-      var res = await ApiProvider().postRequestToken(
-          apiUrl: "http://14.99.179.131/wsnapi/api/Claim/AddClaim", data: data);
-      // print(jsonDecode(res));
-      print(res);
-      if (res['Status'] == true) {
+      if(capturedImage == null) {
         isSubmit.value = true;
-        constToast("Claim Added successfully");
+        update();
+        constToast("Please Select file");
+        return;
+      }
+      if (rateController.text.isEmpty) {
+        rateController.text = "00";
+        locationDistanceController.text = "00";
+        convModeId = 0;
+        update();
+      }
+      var token = GetStorage().read("token");
+
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('http://14.99.179.131/wsnapi/api/Claim/AddClaim'));
+      request.fields.addAll({
+        'Value':
+            '{"ExpenseId": ${expenseId.toString()},"ExpModeId":${expModeId.toString()},"ConvModeId": ${convModeId.toString()},"Rate": ${rateController.text},"LocationDistance":${locationDistanceController.text},"Amount": ${amountController.text},"ClaimDoc":"test","Remarks": "${remarksController.text}","VisitPurpose": "${visitPurposeController.text}"}'
+      });
+      request.files
+          .add(await http.MultipartFile.fromPath('Image', capturedImage!.path));
+      request.headers.addAll({'Authorization': 'Bearer $token'});
+      print(request.fields);
+      http.StreamedResponse response = await request.send();
+      var dec = jsonDecode(await response.stream.bytesToString());
+      print(dec);
+      // print(data);
+      // var res = await ApiProvider().postRequestToken(
+      //     apiUrl: "http://14.99.179.131/wsnapi/api/Claim/AddClaim", data: data);
+      // print(jsonDecode(res));
+
+      if (dec['Status'] == true) {
+        isSubmit.value = true;
+        constToast(dec['Data']['ResponseMessage']);
         fromdistanse.clear();
         todistanse.clear();
+        capturedImage = null;
         locationDistanceController.clear();
+        rateController.clear();
         remarksController.clear();
         visitPurposeController.clear();
+      } else if (dec['Status'] == false) {
+        constToast(dec['Data']['ResponseMessage']);
       }
 
       isSubmit.value = true;

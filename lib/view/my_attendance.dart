@@ -118,15 +118,41 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                 });
                                 if (kDebugMode) {
                                   print(_selectedDay);
-                                 
                                 }
                                 if (_isSameDay(selectedDay, DateTime.now())) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const TodayVisit(),
-                                    ),
-                                  );
+                                  if (controller.leaveDates.isNotEmpty) {
+                                    for (var i = 0;
+                                        i < controller.leaveDates.length;
+                                        i++) {
+                                      DateTime dateTime = DateTime.parse(
+                                          selectedDay.toString());
+                                      int curre = dateTime.day;
+                                      DateTime leave = DateTime.parse(
+                                          controller.leaveDates[i].toString());
+                                      int dayOfMonth = leave.day;
+
+                                      if (curre == dayOfMonth) {
+                                        constToast(
+                                            "You are on leave today, cannot mark attendance.");
+                                        return;
+                                      }
+                                    }
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const TodayVisit(),
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const TodayVisit(),
+                                      ),
+                                    );
+                                  }
                                 }
                               },
                               calendarBuilders: CalendarBuilders(
@@ -173,26 +199,27 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                       );
                                     }
                                   }
-                                  // for (DateTime highlightedDate in _presentDates) {
-                                  //   if (_isSameDay(day, highlightedDate)) {
-                                  //     return Container(
-                                  //       margin: const EdgeInsets.all(5),
-                                  //       decoration: BoxDecoration(
-                                  //           color: Colors.greenAccent.shade100,
-                                  //           border: Border.all(
-                                  //               color: Colors.greenAccent,
-                                  //               width: 2),
-                                  //           shape: BoxShape.circle),
-                                  //       child: Center(
-                                  //         child: Text(
-                                  //           '${day.day}',
-                                  //           style: const TextStyle(
-                                  //               color: Colors.black),
-                                  //         ),
-                                  //       ),
-                                  //     );
-                                  //   }
-                                  // }
+                                  for (DateTime highlightedDate
+                                      in controller.holidayDates) {
+                                    if (_isSameDay(day, highlightedDate)) {
+                                      return Container(
+                                        margin: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                            color: Colors.greenAccent.shade100,
+                                            border: Border.all(
+                                                color: Colors.greenAccent,
+                                                width: 2),
+                                            shape: BoxShape.circle),
+                                        child: Center(
+                                          child: Text(
+                                            '${day.day}',
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
                                   return null;
                                 },
                               ),
@@ -224,23 +251,28 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                           //scrollDirection: Axis.horizontal,
                                           children: [
                                             _buildStatusContainer(
-                                                "Present",
+                                                " Present ",
                                                 controller.attendanceData!.data
                                                     .claimDetails[0].present
                                                     .toString(),
                                                 Colors.green),
                                             _buildStatusContainer(
-                                                "Absent",
+                                                " Absent ",
                                                 controller.attendanceData!.data
                                                     .claimDetails[0].absent
                                                     .toString(),
                                                 Colors.red),
                                             _buildStatusContainer(
-                                                "Leave",
+                                                " Leave ",
                                                 controller.attendanceData!.data
                                                     .claimDetails[0].leave
                                                     .toString(),
                                                 Colors.orange),
+                                            _buildStatusContainer(
+                                                " Holiday ",
+                                                controller.holidayDates.length
+                                                    .toString(),
+                                                Colors.greenAccent),
                                           ],
                                         ),
                                       ),
@@ -277,57 +309,62 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                 const SizedBox(
                                   height: 5,
                                 ),
-                                ListView.separated(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemBuilder: (context, index) {
-                                      final data = controller
-                                          .attendanceLogModel!
-                                          .data
-                                          .attendancelog[index];
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              color: getColorByIndex(index),
-                                              borderRadius:
-                                                  BorderRadiusDirectional
-                                                      .circular(12)),
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                data.presentTimeIn == null
-                                                    ? const SizedBox(
-                                                        width: 60,
-                                                        child: Card(
-                                                          color: Colors.white,
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    8.0),
-                                                            child: Column(
-                                                              children: [
-                                                                Text("-:-")
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ))
-                                                    : DateHeader(controller
-                                                        .attendanceLogModel!
-                                                        .data
-                                                        .attendancelog[index]
-                                                        .presentTimeIn
-                                                        .toString()),
-                                                data.presentTimeIn == null
-                                                    ? const SizedBox(
-                                                        width: 60,
-                                                        child: Center(
-                                                            child: Text("-:-")))
-                                                    : _buildLog1(
-                                                        convertTimestampToTime(
+                                !controller.checkLog.value
+                                    ? SizedBox()
+                                    : ListView.separated(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          final data = controller
+                                              .attendanceLogModel!
+                                              .data
+                                              .attendancelog[index];
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: getColorByIndex(index),
+                                                  borderRadius:
+                                                      BorderRadiusDirectional
+                                                          .circular(12)),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    data.presentTimeIn == null
+                                                        ? const SizedBox(
+                                                            width: 60,
+                                                            child: Card(
+                                                              color:
+                                                                  Colors.white,
+                                                              child: Padding(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(
+                                                                            8.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Text("-:-")
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ))
+                                                        : DateHeader(controller
+                                                            .attendanceLogModel!
+                                                            .data
+                                                            .attendancelog[
+                                                                index]
+                                                            .presentTimeIn
+                                                            .toString()),
+                                                    data.presentTimeIn == null
+                                                        ? const SizedBox(
+                                                            width: 60,
+                                                            child: Center(
+                                                                child: Text(
+                                                                    "-:-")))
+                                                        : _buildLog1(convertTimestampToTime(
                                                             controller
                                                                 .attendanceLogModel!
                                                                 .data
@@ -335,13 +372,13 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                                                     index]
                                                                 .presentTimeIn
                                                                 .toString())),
-                                                data.presentTimeOut == null
-                                                    ? const SizedBox(
-                                                        width: 60,
-                                                        child: Center(
-                                                            child: Text("-:-")))
-                                                    : _buildLog1(
-                                                        convertTimestampToTime(
+                                                    data.presentTimeOut == null
+                                                        ? const SizedBox(
+                                                            width: 60,
+                                                            child: Center(
+                                                                child: Text(
+                                                                    "-:-")))
+                                                        : _buildLog1(convertTimestampToTime(
                                                             controller
                                                                 .attendanceLogModel!
                                                                 .data
@@ -349,25 +386,25 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                                                     index]
                                                                 .presentTimeOut
                                                                 .toString())),
-                                                _buildLog1(controller
-                                                            .attendanceLogModel!
-                                                            .data
-                                                            .attendancelog[
-                                                                index]
-                                                            .checkOut ==
-                                                        1
-                                                    ? "Check-Out"
-                                                    : "Check-In"),
-                                              ]),
-                                        ),
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) =>
-                                        const SizedBox(
-                                          height: 3,
-                                        ),
-                                    itemCount: controller
-                                        .attendanceLogModel!.dataCount)
+                                                    _buildLog1(controller
+                                                                .attendanceLogModel!
+                                                                .data
+                                                                .attendancelog[
+                                                                    index]
+                                                                .checkOut ==
+                                                            1
+                                                        ? "Check-Out"
+                                                        : "Check-In"),
+                                                  ]),
+                                            ),
+                                          );
+                                        },
+                                        separatorBuilder: (context, index) =>
+                                            const SizedBox(
+                                              height: 3,
+                                            ),
+                                        itemCount: controller
+                                            .attendanceLogModel!.dataCount)
                               ],
                             ),
                           )
@@ -446,7 +483,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
 
   Widget _buildStatusContainer(String title, String count, Color color) {
     return Container(
-      width: 90,
+      //width: 90,
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(

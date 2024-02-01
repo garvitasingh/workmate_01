@@ -9,27 +9,27 @@ VisitAttendanceModel visitAttendanceModelFromJson(String str) => VisitAttendance
 String visitAttendanceModelToJson(VisitAttendanceModel data) => json.encode(data.toJson());
 
 class VisitAttendanceModel {
-    String responseMessage;
-    bool status;
-    int dataCount;
-    Data data;
-    String responseCode;
-    bool confirmationbox;
+    final String? responseMessage;
+    final bool? status;
+    final int? dataCount;
+    final Data? data;
+    final String? responseCode;
+    final bool? confirmationbox;
 
     VisitAttendanceModel({
-        required this.responseMessage,
-        required this.status,
-        required this.dataCount,
-        required this.data,
-        required this.responseCode,
-        required this.confirmationbox,
+        this.responseMessage,
+        this.status,
+        this.dataCount,
+        this.data,
+        this.responseCode,
+        this.confirmationbox,
     });
 
     factory VisitAttendanceModel.fromJson(Map<String, dynamic> json) => VisitAttendanceModel(
         responseMessage: json["ResponseMessage"],
         status: json["Status"],
         dataCount: json["DataCount"],
-        data: Data.fromJson(json["Data"]),
+        data: json["Data"] == null ? null : Data.fromJson(json["Data"]),
         responseCode: json["ResponseCode"],
         confirmationbox: json["confirmationbox"],
     );
@@ -38,64 +38,80 @@ class VisitAttendanceModel {
         "ResponseMessage": responseMessage,
         "Status": status,
         "DataCount": dataCount,
-        "Data": data.toJson(),
+        "Data": data?.toJson(),
         "ResponseCode": responseCode,
         "confirmationbox": confirmationbox,
     };
 }
 
 class Data {
-    List<VisitAttendance> visitAttendance;
+    final List<VisitAttendance>? visitAttendance;
 
     Data({
-        required this.visitAttendance,
+        this.visitAttendance,
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
-        visitAttendance: List<VisitAttendance>.from(json["VisitAttendance"].map((x) => VisitAttendance.fromJson(x))),
+        visitAttendance: json["VisitAttendance"] == null ? [] : List<VisitAttendance>.from(json["VisitAttendance"]!.map((x) => VisitAttendance.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "VisitAttendance": List<dynamic>.from(visitAttendance.map((x) => x.toJson())),
+        "VisitAttendance": visitAttendance == null ? [] : List<dynamic>.from(visitAttendance!.map((x) => x.toJson())),
     };
 }
 
 class VisitAttendance {
-    String empCode;
-    int visitId;
-    DateTime attendanceDate;
-    int checkIn;
-    int checkOut;
-    String checkInTime;
-    dynamic checkOutTime;
+    final String? empCode;
+    final int? visitId;
+    final DateTime? attendanceDate;
+    final int? checkIn;
+    final int? checkOut;
+    final DateTime? checkInTime;
+    final dynamic checkOutTime;
+    final String? checkInAddress;
+    final dynamic checkOutAddress;
+    final String? checkInImage;
+    final dynamic checkoutImage;
 
     VisitAttendance({
-        required this.empCode,
-        required this.visitId,
-        required this.attendanceDate,
-        required this.checkIn,
-        required this.checkOut,
-        required this.checkInTime,
-        required this.checkOutTime,
+        this.empCode,
+        this.visitId,
+        this.attendanceDate,
+        this.checkIn,
+        this.checkOut,
+        this.checkInTime,
+        this.checkOutTime,
+        this.checkInAddress,
+        this.checkOutAddress,
+        this.checkInImage,
+        this.checkoutImage,
     });
 
     factory VisitAttendance.fromJson(Map<String, dynamic> json) => VisitAttendance(
         empCode: json["EMPCode"],
         visitId: json["VisitId"],
-        attendanceDate: DateTime.parse(json["AttendanceDate"]),
+        attendanceDate: json["AttendanceDate"] == null ? null : DateTime.parse(json["AttendanceDate"]),
         checkIn: json["CheckIn"],
         checkOut: json["CheckOut"],
-        checkInTime: json["CheckInTime"],
+        checkInTime: json["CheckInTime"] == null ? null : DateTime.parse(json["CheckInTime"]),
         checkOutTime: json["CheckOutTime"],
+        checkInAddress: json["CheckInAddress"],
+        checkOutAddress: json["CheckOutAddress"],
+        checkInImage: json["CheckInImage"],
+        checkoutImage: json["CheckoutImage"],
     );
 
     Map<String, dynamic> toJson() => {
         "EMPCode": empCode,
         "VisitId": visitId,
-        "AttendanceDate": attendanceDate.toIso8601String(),
+        "AttendanceDate": attendanceDate?.toIso8601String(),
         "CheckIn": checkIn,
         "CheckOut": checkOut,
-        "CheckInTime": checkInTime,
+        "CheckInTime": checkInTime?.toIso8601String(),
         "CheckOutTime": checkOutTime,
+        "CheckInAddress": checkInAddress,
+        "CheckOutAddress": checkOutAddress,
+        "CheckInImage": checkInImage,
+        "CheckoutImage": checkoutImage,
     };
 }

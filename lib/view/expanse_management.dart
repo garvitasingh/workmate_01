@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:workmate_01/controller/expense_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:workmate_01/utils/constants.dart';
+import 'package:workmate_01/view/previous_claims.dart';
 
 class ExpanseManagementView extends StatefulWidget {
   const ExpanseManagementView({super.key});
@@ -19,6 +20,13 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
   final _formKey = GlobalKey<FormBuilderState>();
   DateTime fromDate = DateTime.now();
   DateTime toDate = DateTime.now();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+   controller.getVisitPlans();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +69,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                     onChanged: (String? newValue) {
                       setState(() {
                         controller.selectedLocation = newValue!;
-                        controller.getVisitLocation();
+                       controller.getVisitLocation();
                       });
                     },
                     elevation: 2,
@@ -227,48 +235,38 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                FormBuilderDropdown(
-                                  onChanged: (value) {
-                                    controller.seleExpLocation.value = value!;
-                                    print(value);
-                                    // controller.calculateAmount();
-                                    // double rate = double.tryParse(
-                                    //         controller.rateController.text) ??
-                                    //     0.0;
-                                    // double distance = double.tryParse(controller
-                                    //         .locationDistanceController.text) ??
-                                    //     0.0;
-
-                                    // double amount = rate * distance;
-
-                                    // controller.amountController.text =
-                                    //     amount.toString();
-
-                                    controller.update();
-                                  },
-                                  name: 'ExpModeId',
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          borderSide: const BorderSide(
-                                            color: Colors.blue,
-                                            width: 1.0,
-                                          )),
-                                      labelText: 'Exp Mode ID'),
-                                  items: controller.convExpMode
-                                      .map<DropdownMenuItem<String>>(
-                                    (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(
-                                          value,
-                                          style: const TextStyle(
-                                              color: Colors.black),
-                                        ),
-                                      );
+                                Obx(
+                                  () => FormBuilderDropdown(
+                                    onChanged: (value) {
+                                      controller.seleExpLocation.value = value!;
+                                      print(value);
+                                      controller.expIdGet();
+                                      controller.update();
                                     },
-                                  ).toList(),
+                                    name: controller.expModeIdText.value,
+                                    decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            borderSide: const BorderSide(
+                                              color: Colors.blue,
+                                              width: 1.0,
+                                            )),
+                                        labelText: 'Exp Mode ID'),
+                                    items: controller.convExpMode
+                                        .map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                          ),
+                                        );
+                                      },
+                                    ).toList(),
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 10,
@@ -396,14 +394,14 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                           const SizedBox(height: 10),
                                         ],
                                       )
-                                    : SizedBox(
+                                    : const SizedBox(
                                         height: 0,
                                       ),
                                 FormBuilderTextField(
-                                  readOnly:
-                                      controller.seleExpLocation.value == 'Vehicle'
-                                          ? true
-                                          : false,
+                                  readOnly: controller.seleExpLocation.value ==
+                                          'Vehicle'
+                                      ? true
+                                      : false,
                                   controller: controller.amountController,
                                   name: 'Amount in (Rs)',
                                   decoration: InputDecoration(
@@ -471,7 +469,9 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                         width: w,
                                         child: contrr.capturedImage != null
                                             ? InkWell(
-                                                onTap: contrr.openCamera,
+                                                onTap: (){
+                                                  controller.openSheet(context);
+                                                },
                                                 child: Image.file(
                                                   contrr.capturedImage!,
                                                   height: 50,
@@ -484,7 +484,9 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                                   color: Colors.red,
                                                   size: 40,
                                                 ),
-                                                onPressed: contrr.openCamera,
+                                                onPressed: (){
+                                                  controller.openSheet(context);
+                                                },
                                                 iconSize: 20,
                                                 color: Colors.white,
                                               ),
@@ -504,18 +506,25 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                       if (_formKey.currentState!
                                           .saveAndValidate()) {
                                         // Form data is valid, process it here
-
-                                        if (controller.visitPurposeController
-                                            .text.isEmpty) {
-                                          constToast("Purpose Required!");
+                                        if (controller.seleExpLocation.value ==
+                                            'Vehicle') {
+                                          if (controller.visitPurposeController
+                                              .text.isEmpty) {
+                                            constToast("Purpose Required!");
+                                          } else if (controller
+                                              .locationDistanceController
+                                              .text
+                                              .isEmpty) {
+                                            constToast("Distance Required!");
+                                          } else if (controller
+                                              .remarksController.text.isEmpty) {
+                                            constToast("Remarks Required!");
+                                          } else {
+                                            controller.addClaim();
+                                          }
                                         } else if (controller
-                                            .locationDistanceController
-                                            .text
-                                            .isEmpty) {
-                                          constToast("Distance Required!");
-                                        } else if (controller
-                                            .remarksController.text.isEmpty) {
-                                          constToast("Remarks Required!");
+                                            .amountController.text.isEmpty) {
+                                          constToast("Amount Required!");
                                         } else {
                                           controller.addClaim();
                                         }
@@ -533,6 +542,29 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                               child:
                                                   CircularProgressIndicator()),
                                     )),
+                                    const SizedBox(height: 10,),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Get.to(ShowPreviousClaimsView(
+                                          id: controller.expenseId!,
+                                        ));
+                                      },
+                                      child: const Text(
+                                        "Previous Claims",
+                                        style: TextStyle(
+                                            decoration:
+                                                TextDecoration.underline,
+                                            decorationColor: Colors.blue,
+                                            color: Colors.blue,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                 const SizedBox(height: 10,),
                               ],
                             ),
                           ),
@@ -546,4 +578,5 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
           : const Center(child: CircularProgressIndicator())),
     );
   }
+  
 }

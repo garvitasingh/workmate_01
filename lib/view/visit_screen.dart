@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:workmate_01/controller/visit_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
+import 'package:workmate_01/view/previous_claims.dart';
 
 class VisitScreen extends StatelessWidget {
   VisitScreen({super.key});
@@ -58,11 +59,10 @@ class VisitScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               dd("VisitPurpose", data['VisitPurpose']),
-                              dd("VisitDate", data['VisitDate']),
-                              dd("VisitFrom", data['VisitFrom']),
-                              dd("VisitTo", data['VisitTo']),
-                              dd("VisitRemarks",
-                                  data['VisitRemarks'].toString()),
+                              dd("Date", data['VisitDate']),
+                              dd("From", data['VisitFrom']),
+                              dd("To", data['VisitTo']),
+                              dd("Remarks", data['VisitRemarks'].toString()),
                               data['FillRemarks'] == 0
                                   ? Row(
                                       crossAxisAlignment:
@@ -121,13 +121,39 @@ class VisitScreen extends StatelessWidget {
                                             )),
                                       ],
                                     )
-                                  : SizedBox()
+                                  : const SizedBox(),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      Get.to(ShowPreviousClaimsView(
+                                        id: data['ExpenseId'],
+                                      ));
+                                    },
+                                    child: const Text(
+                                      "Previous Claims",
+                                      style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          decorationColor: Colors.blue,
+                                          color: Colors.blue,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                         );
                       },
                     ),
                   ),
+                  controller.visitData.isEmpty
+                      ? const Expanded(child: Text("No Visits Found!"))
+                      : const SizedBox()
                 ],
               ),
             )
@@ -141,7 +167,7 @@ class VisitScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Container(
+        SizedBox(
           width: 150,
           child: Text(
             "${text} : ",
@@ -149,7 +175,7 @@ class VisitScreen extends StatelessWidget {
                 color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
           ),
         ),
-        Container(width: 150, child: Text(text2)),
+        SizedBox(width: 150, child: Text(text2 == "null" ? '-:-' : text2)),
       ],
     );
   }

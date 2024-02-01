@@ -108,7 +108,7 @@ class _TodayVisitState extends State<TodayVisit> {
 
   Future<void> _openCamera() async {
     final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
@@ -245,19 +245,19 @@ class _TodayVisitState extends State<TodayVisit> {
                             alignment: Alignment.center,
                             height: 200,
                             child: CheckInButton(
-                                checkOut: controller.visitAttendanceModel!.data
-                                            .visitAttendance[0].checkOut ==
+                                checkOut: controller.visitAttendanceModel!.data!
+                                            .visitAttendance![0].checkOut ==
                                         0
                                     ? false
                                     : true,
-                                checkIn: controller.visitAttendanceModel!.data
-                                            .visitAttendance[0].checkIn ==
+                                checkIn: controller.visitAttendanceModel!.data!
+                                            .visitAttendance![0].checkIn ==
                                         1
                                     ? false
                                     : true,
                                 onPressed: () {
-                                  controller.visitAttendanceModel!.data
-                                              .visitAttendance[0].checkOut ==
+                                  controller.visitAttendanceModel!.data!
+                                              .visitAttendance![0].checkOut ==
                                           1
                                       ? constToast("Attendance Completed!")
                                       : controller.markAttendance(
@@ -268,8 +268,8 @@ class _TodayVisitState extends State<TodayVisit> {
                                               .toStringAsFixed(4),
                                           attType: controller
                                                       .visitAttendanceModel!
-                                                      .data
-                                                      .visitAttendance[0]
+                                                      .data!
+                                                      .visitAttendance![0]
                                                       .checkOutTime !=
                                                   'null'
                                               ? 'out'
@@ -361,54 +361,54 @@ class _TodayVisitState extends State<TodayVisit> {
                                     _buildRow(
                                         controller
                                                     .visitAttendanceModel!
-                                                    .data
-                                                    .visitAttendance[0]
+                                                    .data!
+                                                    .visitAttendance![0]
                                                     .checkInTime
                                                     .toString() ==
                                                 "null"
                                             ? '-:-'
                                             : (convertTimestampToTime(controller
                                                 .visitAttendanceModel!
-                                                .data
-                                                .visitAttendance[0]
+                                                .data!
+                                                .visitAttendance![0]
                                                 .checkInTime
                                                 .toString())),
                                         "Check-in"),
                                     _buildRow(
                                         controller
                                                     .visitAttendanceModel!
-                                                    .data
-                                                    .visitAttendance[0]
+                                                    .data!
+                                                    .visitAttendance![0]
                                                     .checkOutTime
                                                     .toString() ==
                                                 "null"
                                             ? '-:-'
                                             : (convertTimestampToTime(controller
                                                 .visitAttendanceModel!
-                                                .data
-                                                .visitAttendance[0]
+                                                .data!
+                                                .visitAttendance![0]
                                                 .checkOutTime
                                                 .toString())),
                                         "Check-out"),
                                     _buildRow(
                                         controller
                                                         .visitAttendanceModel!
-                                                        .data
-                                                        .visitAttendance[0]
+                                                        .data!
+                                                        .visitAttendance![0]
                                                         .checkOutTime
                                                         .toString() ==
                                                     "null" ||
                                                 controller
                                                         .visitAttendanceModel!
-                                                        .data
-                                                        .visitAttendance[0]
+                                                        .data!
+                                                        .visitAttendance![0]
                                                         .checkOutTime
                                                         .toString() ==
                                                     'null'
                                             ? controller
                                                         .visitAttendanceModel!
-                                                        .data
-                                                        .visitAttendance[0]
+                                                        .data!
+                                                        .visitAttendance![0]
                                                         .checkInTime
                                                         .toString() !=
                                                     "null"
@@ -470,48 +470,103 @@ class _TodayVisitState extends State<TodayVisit> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(
-                                  height: 100,
-                                  width: 100,
-                                  child: _capturedImage != null
-                                      ? InkWell(
-                                          onTap: _openCamera,
-                                          child: Image.file(
-                                            _capturedImage!,
-                                            height: 50,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        )
-                                      : IconButton(
-                                          icon: const Icon(
-                                            Icons.camera_alt,
-                                            color: Colors.red,
-                                            size: 40,
-                                          ),
-                                          onPressed: _openCamera,
-                                          iconSize: 20,
-                                          color: Colors.white,
-                                        ),
-                                ),
+                                controller.dataPresent.value
+                                    ? controller
+                                                .visitAttendanceModel!
+                                                .data!
+                                                .visitAttendance![0]
+                                                .checkoutImage
+                                                .toString() !=
+                                            "null"
+                                        ? Image.network(
+                                            ImageURL +
+                                                controller
+                                                    .visitAttendanceModel!
+                                                    .data!
+                                                    .visitAttendance![0]
+                                                    .checkInImage
+                                                    .toString(),
+                                            height: 100,
+                                          )
+                                        : SizedBox(
+                                            height: 100,
+                                            width: 100,
+                                            child: _capturedImage != null
+                                                ? InkWell(
+                                                    onTap: _openCamera,
+                                                    child: Image.file(
+                                                      _capturedImage!,
+                                                      height: 50,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )
+                                                : IconButton(
+                                                    icon: const Icon(
+                                                      Icons.camera_alt,
+                                                      color: Colors.red,
+                                                      size: 40,
+                                                    ),
+                                                    onPressed: _openCamera,
+                                                    iconSize: 20,
+                                                    color: Colors.white,
+                                                  ),
+                                          )
+                                    : SizedBox(
+                                        height: 100,
+                                        width: 100,
+                                        child: _capturedImage != null
+                                            ? InkWell(
+                                                onTap: _openCamera,
+                                                child: Image.file(
+                                                  _capturedImage!,
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              )
+                                            : IconButton(
+                                                icon: const Icon(
+                                                  Icons.camera_alt,
+                                                  color: Colors.red,
+                                                  size: 40,
+                                                ),
+                                                onPressed: _openCamera,
+                                                iconSize: 20,
+                                                color: Colors.white,
+                                              ),
+                                      ),
                                 controller.dataPresent.isTrue
                                     ? SizedBox(
                                         width: 100,
                                         child: Text(
                                           controller
                                                       .visitAttendanceModel!
-                                                      .data
-                                                      .visitAttendance[0]
+                                                      .data!
+                                                      .visitAttendance![0]
                                                       .checkInTime
                                                       .toString() ==
                                                   "null"
                                               ? '-:-'
-                                              : convertTimestampToTime(
-                                                  controller
-                                                      .visitAttendanceModel!
-                                                      .data
-                                                      .visitAttendance[0]
-                                                      .checkInTime
-                                                      .toString()),
+                                              : controller
+                                                          .visitAttendanceModel!
+                                                          .data!
+                                                          .visitAttendance![0]
+                                                          .checkOutTime
+                                                          .toString() ==
+                                                      "null"
+                                                  ? convertTimestampToTime(
+                                                      controller
+                                                          .visitAttendanceModel!
+                                                          .data!
+                                                          .visitAttendance![0]
+                                                          .checkInTime
+                                                          .toString())
+                                                  : convertTimestampToTime(
+                                                      controller
+                                                          .visitAttendanceModel!
+                                                          .data!
+                                                          .visitAttendance![0]
+                                                          .checkOutTime
+                                                          .toString()),
                                           style: const TextStyle(
                                               fontSize: 16,
                                               color: Colors.green,
@@ -556,7 +611,22 @@ class _TodayVisitState extends State<TodayVisit> {
                             ),
                             temp
                                 ? Text(
-                                    Address,
+                                    controller.dataPresent.value
+                                        ? controller
+                                                    .visitAttendanceModel!
+                                                    .data!
+                                                    .visitAttendance![0]
+                                                    .checkoutImage
+                                                    .toString() !=
+                                                "null"
+                                            ? controller
+                                                .visitAttendanceModel!
+                                                .data!
+                                                .visitAttendance![0]
+                                                .checkOutAddress
+                                                .toString()
+                                            : Address
+                                        : Address,
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 15,

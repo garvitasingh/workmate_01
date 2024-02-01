@@ -2,7 +2,6 @@
 //
 //     final leaveModel = leaveModelFromJson(jsonString);
 
-
 import 'dart:convert';
 
 LeaveModel leaveModelFromJson(String str) => LeaveModel.fromJson(json.decode(str));
@@ -10,27 +9,27 @@ LeaveModel leaveModelFromJson(String str) => LeaveModel.fromJson(json.decode(str
 String leaveModelToJson(LeaveModel data) => json.encode(data.toJson());
 
 class LeaveModel {
-    String responseMessage;
-    bool status;
-    int dataCount;
-    Data data;
-    String responseCode;
-    bool confirmationbox;
+    final String? responseMessage;
+    final bool? status;
+    final int? dataCount;
+    final Data? data;
+    final String? responseCode;
+    final bool? confirmationbox;
 
     LeaveModel({
-        required this.responseMessage,
-        required this.status,
-        required this.dataCount,
-        required this.data,
-        required this.responseCode,
-        required this.confirmationbox,
+        this.responseMessage,
+        this.status,
+        this.dataCount,
+        this.data,
+        this.responseCode,
+        this.confirmationbox,
     });
 
     factory LeaveModel.fromJson(Map<String, dynamic> json) => LeaveModel(
         responseMessage: json["ResponseMessage"],
         status: json["Status"],
         dataCount: json["DataCount"],
-        data: Data.fromJson(json["Data"]),
+        data: json["Data"] == null ? null : Data.fromJson(json["Data"]),
         responseCode: json["ResponseCode"],
         confirmationbox: json["confirmationbox"],
     );
@@ -39,65 +38,65 @@ class LeaveModel {
         "ResponseMessage": responseMessage,
         "Status": status,
         "DataCount": dataCount,
-        "Data": data.toJson(),
+        "Data": data?.toJson(),
         "ResponseCode": responseCode,
         "confirmationbox": confirmationbox,
     };
 }
 
 class Data {
-    List<VisitPlan> visitPlan;
+    final List<VisitPlan>? visitPlan;
 
     Data({
-        required this.visitPlan,
+        this.visitPlan,
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
-        visitPlan: List<VisitPlan>.from(json["VisitPlan"].map((x) => VisitPlan.fromJson(x))),
+        visitPlan: json["VisitPlan"] == null ? [] : List<VisitPlan>.from(json["VisitPlan"]!.map((x) => VisitPlan.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "VisitPlan": List<dynamic>.from(visitPlan.map((x) => x.toJson())),
+        "VisitPlan": visitPlan == null ? [] : List<dynamic>.from(visitPlan!.map((x) => x.toJson())),
     };
 }
 
 class VisitPlan {
-    int employeeId;
-    String empCode;
-    int totalLeave;
-    int totalApproved;
-    int totalBalance;
-    int totalCl;
-    int totalSl;
-    int totalEl;
-    int approvedCl;
-    int approvedSl;
-    int approvedEl;
-    int balanceCl;
-    int balanceSl;
-    int balanceEl;
-    int pending;
-    int approved;
-    int rejected;
+    final int? employeeId;
+    final String? empCode;
+    final int? totalLeave;
+    final int? totalApproved;
+    final int? totalBalance;
+    final int? totalCl;
+    final int? totalSl;
+    final int? totalEl;
+    final int? approvedCl;
+    final int? approvedSl;
+    final int? approvedEl;
+    final int? balanceCl;
+    final int? balanceSl;
+    final int? balanceEl;
+    final dynamic pending;
+    final dynamic approved;
+    final dynamic rejected;
 
     VisitPlan({
-        required this.employeeId,
-        required this.empCode,
-        required this.totalLeave,
-        required this.totalApproved,
-        required this.totalBalance,
-        required this.totalCl,
-        required this.totalSl,
-        required this.totalEl,
-        required this.approvedCl,
-        required this.approvedSl,
-        required this.approvedEl,
-        required this.balanceCl,
-        required this.balanceSl,
-        required this.balanceEl,
-        required this.pending,
-        required this.approved,
-        required this.rejected,
+        this.employeeId,
+        this.empCode,
+        this.totalLeave,
+        this.totalApproved,
+        this.totalBalance,
+        this.totalCl,
+        this.totalSl,
+        this.totalEl,
+        this.approvedCl,
+        this.approvedSl,
+        this.approvedEl,
+        this.balanceCl,
+        this.balanceSl,
+        this.balanceEl,
+        this.pending,
+        this.approved,
+        this.rejected,
     });
 
     factory VisitPlan.fromJson(Map<String, dynamic> json) => VisitPlan(

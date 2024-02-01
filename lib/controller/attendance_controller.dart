@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:workmate_01/controller/expense_controller.dart';
 import 'package:workmate_01/model/attendance_log.dart';
 import 'package:workmate_01/model/attendance_model.dart';
 import 'package:workmate_01/model/monthl_attendance_model.dart';
@@ -24,6 +25,7 @@ class AttendanceController extends GetxController {
   final isMark = true.obs;
   final dataPresent = false.obs;
   AttendanceLogModel? attendanceLogModel;
+  final checkLog = false.obs;
   VisitAttendanceModel? visitAttendanceModel;
   List<String> visits = [];
   VisitPlanModel? visitPlanModel;
@@ -37,11 +39,18 @@ class AttendanceController extends GetxController {
   }
 
   final List<DateTime> leaveDates = [];
+  final List<DateTime> holidayDates = [];
   final List<DateTime> absentDates = [];
-  addLeave(date) {
+
+  //   List<DateTime> holidays = [
+  //   DateTime.utc(2024, 1, 1),
+  //   DateTime.utc(2024, 1, 5),
+  // ];
+
+  addholiday(date) {
     String presentDateString = date;
     DateTime presentDate = DateFormat("dd-MM-yyyy").parse(presentDateString);
-    leaveDates.add(presentDate);
+    holidayDates.add(presentDate);
     update();
   }
 
@@ -52,14 +61,20 @@ class AttendanceController extends GetxController {
     update();
   }
 
+  addLeave(date) {
+    String presentDateString = date;
+    DateTime presentDate = DateFormat("dd-MM-yyyy").parse(presentDateString);
+    leaveDates.add(presentDate);
+    update();
+  }
+
   @override
   void onInit() {
     super.onInit();
     getAttendance();
+    getVisitPlans();
     getAttendanceMonthly();
     getAttendanceLogs();
-    getVisitAttendance(1);
-    getVisitPlans();
   }
 
   getall() {
@@ -124,6 +139,15 @@ class AttendanceController extends GetxController {
             .data!.visitAttendance!.holiday![i].holidayDate
             .toString();
         //print(ab);
+        addholiday(ab);
+      }
+      for (var i = 0;
+          i < monthlyAttendance!.data!.visitAttendance!.leave!.length;
+          i++) {
+        String ab = monthlyAttendance!
+            .data!.visitAttendance!.leave![i].leaveDate
+            .toString();
+        //print(ab);
         addLeave(ab);
       }
       isLoading.value = false;
@@ -155,8 +179,11 @@ class AttendanceController extends GetxController {
         unplaned.value = false;
         update();
       }
+      getVisitAttendance(visitid);
+      
     }
     getVisitAttendance(visitid);
+
     update();
   }
 
@@ -171,12 +198,15 @@ class AttendanceController extends GetxController {
           apiUrl:
               "Attendance/GetAttendancelog?EmpCode=${LocalData().getEmpCode()}&VisitId=1");
       attendanceLogModel = attendanceLogModelFromJson(res);
+      checkLog.value = true;
+      update();
       if (kDebugMode) {
         print(res);
       }
       isLoading.value = false;
       update();
     } catch (e) {
+      checkLog.value = false;
       isLoading.value = false;
       update();
       if (kDebugMode) {
@@ -187,13 +217,14 @@ class AttendanceController extends GetxController {
 
   getVisitPlans() async {
     isLoading.value = true;
+    visits.clear();
     if (kDebugMode) {
-      print("get leave called");
+      print("get visits called");
+      print(LocalData().getEmpCode());
     }
     try {
       var res = await ApiProvider().getRequest(
           apiUrl: "Claim/GetVisitPlan?EmpCode=${LocalData().getEmpCode()}");
-      // print(jsonDecode(res));
       visitPlanModel = visitPlanModelFromJson(res);
       for (var i = 0; i < visitPlanModel!.dataCount; i++) {
         visits.add(visitPlanModel!.data.visitPlan[i].visitLocation);
@@ -290,7 +321,7 @@ class AttendanceController extends GetxController {
               'http://14.99.179.131/wsnapi/api/Attendance/MarkAttendance'));
       request.fields.addAll({
         'value':
-            '{"EMPCode": "${LocalData().getEmpCode()}","CellEMIENo":"${LocalData().getdeviceid()}","Latitude": "${lat.toString()}","Longitude": "${log.toString()}","Address": "${add.toString()}","AttendanceType": "${attType.toString()}","AttendanceDate": "${formattedDateTime}","VisitId":"${visitid.toString()}","FromVisit":"${unplaned.isTrue ? from.text : ""}","ToVisit":"${unplaned.isTrue ? to.text : ""}"\n}'
+            '{"EMPCode": "${LocalData().getEmpCode()}","CellEMIENo":"${LocalData().getdeviceid()}","Latitude": "${lat.toString()}","Longitude": "${log.toString()}","Address": "${add.toString()}","AttendanceType": "${attType.toString()}","AttendanceDate": "$formattedDateTime","VisitId":"${visitid.toString()}","FromVisit":"${unplaned.isTrue ? from.text : ""}","ToVisit":"${unplaned.isTrue ? to.text : ""}"\n}'
       });
       request.files.add(await http.MultipartFile.fromPath('Image', img!.path));
       request.headers.addAll({'Authorization': 'Bearer $token'});
@@ -299,17 +330,37 @@ class AttendanceController extends GetxController {
       var dec = jsonDecode(await response.stream.bytesToString());
       print(dec);
       constToast("Attendance Marked!");
-      from.clear();
-      to.clear();
-      getVisitAttendance(visitid);
+      if (unplaned.isTrue) {
+        updatevisits();
+      } else {
+        getVisitAttendance(visitid);
+      }
+
       isMark.value = true;
+      unplaned.value = false;
       update();
     } catch (e) {
+       unplaned.value = false;
       isMark.value = true;
       update();
       if (kDebugMode) {
         print(e.toString());
       }
     }
+  }
+
+  updatevisits() {
+    String newVisit = "${from.text}-${to.text}";
+    getVisitPlans();
+    for (var i = 0; i < visitPlanModel!.data.visitPlan.length; i++) {
+      if (newVisit == visitPlanModel!.data.visitPlan[i].visitLocation) {
+        visitid = visitPlanModel!.data.visitPlan[i].expenseId;
+        getVisitAttendance(visitPlanModel!.data.visitPlan[i].expenseId);
+      }
+    }
+    // visits.add(newVisit);
+    update();
+    from.clear();
+    to.clear();
   }
 }

@@ -62,7 +62,7 @@ class Data {
 
 class VisitAttendance {
     List<Absent>? present;
-    dynamic leave;
+    List<Absent>? leave;
     List<Absent>? absent;
     List<Absent>? holiday;
 
@@ -75,14 +75,14 @@ class VisitAttendance {
 
     factory VisitAttendance.fromJson(Map<String, dynamic> json) => VisitAttendance(
         present: json["Present"] == null ? [] : List<Absent>.from(json["Present"]!.map((x) => Absent.fromJson(x))),
-        leave: json["Leave"],
+        leave: json["Leave"] == null ? [] : List<Absent>.from(json["Leave"]!.map((x) => Absent.fromJson(x))),
         absent: json["Absent"] == null ? [] : List<Absent>.from(json["Absent"]!.map((x) => Absent.fromJson(x))),
         holiday: json["Holiday"] == null ? [] : List<Absent>.from(json["Holiday"]!.map((x) => Absent.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
         "Present": present == null ? [] : List<dynamic>.from(present!.map((x) => x.toJson())),
-        "Leave": leave,
+        "Leave": leave == null ? [] : List<dynamic>.from(leave!.map((x) => x.toJson())),
         "Absent": absent == null ? [] : List<dynamic>.from(absent!.map((x) => x.toJson())),
         "Holiday": holiday == null ? [] : List<dynamic>.from(holiday!.map((x) => x.toJson())),
     };
@@ -94,6 +94,7 @@ class Absent {
     EmpCode? empCode;
     TableName? tableName;
     String? holidayDate;
+    String? leaveDate;
     String? presentDate;
 
     Absent({
@@ -102,6 +103,7 @@ class Absent {
         this.empCode,
         this.tableName,
         this.holidayDate,
+        this.leaveDate,
         this.presentDate,
     });
 
@@ -111,6 +113,7 @@ class Absent {
         empCode: empCodeValues.map[json["EMPCode"]]!,
         tableName: tableNameValues.map[json["TableName"]]!,
         holidayDate: json["HolidayDate"],
+        leaveDate: json["LeaveDate"],
         presentDate: json["PresentDate"],
     );
 
@@ -120,6 +123,7 @@ class Absent {
         "EMPCode": empCodeValues.reverse[empCode],
         "TableName": tableNameValues.reverse[tableName],
         "HolidayDate": holidayDate,
+        "LeaveDate": leaveDate,
         "PresentDate": presentDate,
     };
 }
@@ -135,12 +139,14 @@ final empCodeValues = EnumValues({
 enum TableName {
     ABSENT,
     HOLIDAY,
+    LEAVE,
     PRESENT
 }
 
 final tableNameValues = EnumValues({
     "Absent": TableName.ABSENT,
     "Holiday": TableName.HOLIDAY,
+    "Leave": TableName.LEAVE,
     "Present": TableName.PRESENT
 });
 

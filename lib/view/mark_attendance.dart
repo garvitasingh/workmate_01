@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:workmate_01/utils/colors.dart';
 
 import '../controller/attendance_controller.dart';
@@ -13,10 +14,12 @@ class MarkAttendanceView extends StatefulWidget {
 
 class _MarkAttendanceViewState extends State<MarkAttendanceView> {
   AttendanceController controller = Get.put(AttendanceController());
+  DateTime currentDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     Get.lazyPut(() => AttendanceController());
+    String formattedDate = DateFormat('dd MMM').format(currentDate);
     // var h = MediaQuery.of(context).size.height;
     // var w = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -48,63 +51,71 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
                 ))
           ],
         ),
-        body: Obx(
-          () => controller.isLoading.isFalse
-              ? Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Attendance Status",
-                          style: TextStyle(
-                              color: darkColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Expanded(
-                          child: GridView(
-                            shrinkWrap: true,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 10,
-                                    mainAxisSpacing: 10,
-                                    mainAxisExtent: 150),
-                            children: [
-                              _iconCard(
-                                  "Present",
-                                  controller.attendanceData!.data
-                                      .claimDetails[0].present,
-                                  "present",
-                                  getColorByIndex(0)),
-                              _iconCard(
-                                  "Absent",
-                                  controller.attendanceData!.data
-                                      .claimDetails[0].absent,
-                                  "absent",
-                                  getColorByIndex(1)),
-                              _iconCard(
-                                  "Leaves",
-                                  controller.attendanceData!.data
-                                      .claimDetails[0].leave,
-                                  "leave",
-                                  getColorByIndex(2)),
-                              _iconCard(
-                                  "Working Days",
-                                  controller.attendanceData!.data
-                                      .claimDetails[0].workingDays,
-                                  "my_att",
-                                  getColorByIndex(3)),
-                            ],
+        body: GetBuilder<AttendanceController>(
+          builder: (controller) {
+            return controller.isLoading.value
+                ? Center(child: CircularProgressIndicator())
+                : Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Attendance Status (${formattedDate})",
+                            style: TextStyle(
+                                color: darkColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600),
                           ),
-                        )
-                      ]),
-                )
-              : const Center(child: CircularProgressIndicator()),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Expanded(
+                            child: GridView(
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 10,
+                                      mainAxisExtent: 150),
+                              children: [
+                                _iconCard(
+                                    "Present",
+                                    controller.attendanceData!.data
+                                        .claimDetails[0].present,
+                                    "present",
+                                    getColorByIndex(0)),
+                                _iconCard(
+                                    "Absent",
+                                    controller.attendanceData!.data
+                                        .claimDetails[0].absent,
+                                    "absent",
+                                    getColorByIndex(1)),
+                                _iconCard(
+                                    "Leaves",
+                                    controller.attendanceData!.data
+                                        .claimDetails[0].leave,
+                                    "leave",
+                                    getColorByIndex(2)),
+                                _iconCard(
+                                    "Working Days",
+                                    controller.attendanceData!.data
+                                        .claimDetails[0].workingDays,
+                                    "my_att",
+                                    getColorByIndex(3)),
+                                _iconCard(
+                                    "Holidays",
+                                    controller.attendanceData!.data
+                                        .claimDetails[0].holiday,
+                                    "leave",
+                                    getColorByIndex(3)),
+                              ],
+                            ),
+                          ),
+                        ]),
+                  );
+          },
         ));
   }
 

@@ -245,35 +245,35 @@ class _LeaveViewState extends State<LeaveView> {
                           _leaveCard(
                               "Total Leave",
                               controller
-                                  .leaveData!.data.visitPlan[0].totalLeave,
+                                  .leaveData!.data!.visitPlan![0].totalLeave,
                               getColorByIndex(0)),
                           _leaveCard(
                               "SL",
-                              controller.leaveData!.data.visitPlan[0].totalSl,
+                              controller.leaveData!.data!.visitPlan![0].totalSl,
                               getColorByIndex(1)),
                           _leaveCard(
                               "EL",
-                              controller.leaveData!.data.visitPlan[0].totalEl,
+                              controller.leaveData!.data!.visitPlan![0].totalEl,
                               getColorByIndex(3)),
                           _leaveCard(
                               "CL",
-                              controller.leaveData!.data.visitPlan[0].totalCl,
+                              controller.leaveData!.data!.visitPlan![0].totalCl,
                               getColorByIndex(4)),
                           _leaveCard(
                               "Approve Leave",
-                              controller.leaveData!.data.visitPlan[0].approved,
+                              controller.leaveData!.data!.visitPlan![0].approved,
                               getColorByIndex(5)),
                           _leaveCard(
                               "Pending Leave",
-                              controller.leaveData!.data.visitPlan[0].pending,
+                              controller.leaveData!.data!.visitPlan![0].pending,
                               getColorByIndex(6)),
                           _leaveCard(
                               "Rejected Leave",
-                              controller.leaveData!.data.visitPlan[0].rejected,
+                              controller.leaveData!.data!.visitPlan![0].rejected,
                               getColorByIndex(7)),
                           _leaveCard(
                               "Pending",
-                              controller.leaveData!.data.visitPlan[0].pending,
+                              controller.leaveData!.data!.visitPlan![0].pending,
                               getColorByIndex(8))
                         ],
                       ),
@@ -384,7 +384,12 @@ class _LeaveViewState extends State<LeaveView> {
                   fontSize: 14,
                   fontWeight: FontWeight.w600),
             ),
-            Text(
+           count==null? const Text(
+              "#0",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: darkColor, fontSize: 18, fontWeight: FontWeight.w700),
+            ):Text(
               "#$count",
               textAlign: TextAlign.center,
               style: const TextStyle(
