@@ -188,7 +188,7 @@ class AttendanceController extends GetxController {
   }
 
   getAttendanceLogs() async {
-    isLoading.value = true;
+    //isLoading.value = true;
     update();
     if (kDebugMode) {
       print("get attendance called");
@@ -196,18 +196,18 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "Attendance/GetAttendancelog?EmpCode=${LocalData().getEmpCode()}&VisitId=1");
+              "Attendance/GetAttendancelog?EmpCode=${LocalData().getEmpCode()}&VisitId=0");
       attendanceLogModel = attendanceLogModelFromJson(res);
-      checkLog.value = true;
+     checkLog.value = true;
       update();
       if (kDebugMode) {
         print(res);
       }
-      isLoading.value = false;
+     // isLoading.value = false;
       update();
     } catch (e) {
       checkLog.value = false;
-      isLoading.value = false;
+     // isLoading.value = false;
       update();
       if (kDebugMode) {
         print(e.toString());

@@ -37,12 +37,13 @@ class _TodayVisitState extends State<TodayVisit> {
     super.initState();
     _initializeLocation();
     updateFormattedTime();
-
+   
     // Set up a timer to refresh the time every second
     Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       if (mounted) {
         // Check if the widget is still mounted before updating the state
         updateFormattedTime();
+        controller.getAttendanceLogs();
       }
     });
   }
@@ -108,7 +109,7 @@ class _TodayVisitState extends State<TodayVisit> {
 
   Future<void> _openCamera() async {
     final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
       setState(() {
@@ -277,7 +278,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                           img: _capturedImage);
                                 }),
                           ),
-                    const Row(
+                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Longitude",

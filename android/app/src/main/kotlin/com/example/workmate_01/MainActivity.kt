@@ -1,4 +1,4 @@
-package com.forzanedi.app
+package com.forzamedi.app
 
 import io.flutter.embedding.android.FlutterActivity
 

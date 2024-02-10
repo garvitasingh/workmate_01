@@ -334,7 +334,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                                           .spaceBetween,
                                                   children: [
                                                     data.presentTimeIn == null
-                                                        ? const SizedBox(
+                                                        ?  SizedBox(
                                                             width: 60,
                                                             child: Card(
                                                               color:
