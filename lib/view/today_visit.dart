@@ -109,7 +109,7 @@ class _TodayVisitState extends State<TodayVisit> {
 
   Future<void> _openCamera() async {
     final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
