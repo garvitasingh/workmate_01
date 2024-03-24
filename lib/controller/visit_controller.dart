@@ -10,12 +10,21 @@ import '../Provider/Api_provider.dart';
 class VisitController extends GetxController {
   var visitData = [];
   final isLoading = true.obs;
-  TextEditingController remarkCo = TextEditingController();
+  // TextEditingController remarkCo = TextEditingController();
+  late List<TextEditingController> remarkCo;
 
   @override
   void onInit() {
     super.onInit();
     getVisit();
+  }
+
+  @override
+  void dispose() {
+    for (var controller in remarkCo) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   getVisit() async {
@@ -34,24 +43,25 @@ class VisitController extends GetxController {
         isLoading.value = false;
         update();
       }
+      remarkCo =
+          List.generate(visitData.length, (index) => TextEditingController());
       isLoading.value = false;
-        update();
+      update();
     } catch (e) {
-      
       print(e.toString());
     }
   }
 
-  updateFeedback({int? id}) async {
+  updateFeedback({int? id, index}) async {
     try {
-      if (remarkCo.text.isEmpty) {
+      if (remarkCo[index].text.isEmpty) {
         constToast("Please Enter Remark");
         return;
       }
       print(id);
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "Expense/UpdateVisitFeedback?EmpCode=${LocalData().getEmpCode()}&ExpenseId=$id&VisitRemarks=${remarkCo.text} ");
+              "Expense/UpdateVisitFeedback?EmpCode=${LocalData().getEmpCode()}&ExpenseId=$id&VisitRemarks=${remarkCo[index].text} ");
       // print(jsonDecode(res));
       var data = jsonDecode(res);
       // print(data["Data"]["VisitPlan"].length);

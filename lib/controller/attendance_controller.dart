@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -93,9 +94,7 @@ class AttendanceController extends GetxController {
           apiUrl:
               "Attendance/GetAttendanceSummary?EmpCode=${LocalData().getEmpCode()}");
       // print(jsonDecode(res));
-      if (kDebugMode) {
-        print(res);
-      }
+
       attendanceData = attendanceModelFromJson(res);
       isLoading.value = false;
       update();
@@ -119,9 +118,7 @@ class AttendanceController extends GetxController {
           apiUrl:
               "Attendance/MonthlyAttendance?EmpCode=${LocalData().getEmpCode()}");
       // print(jsonDecode(res));
-      if (kDebugMode) {
-        print(res);
-      }
+
       monthlyAttendance = monthlyAttendanceFromJson(res);
       for (var i = 0;
           i < monthlyAttendance!.data!.visitAttendance!.absent!.length;
@@ -168,10 +165,9 @@ class AttendanceController extends GetxController {
       }
       if (selectedLocation == "Un-planned") {
         unplaned.value = true;
+
+        
         update();
-        if (kDebugMode) {
-          print(unplaned.value);
-        }
       } else {
         if (kDebugMode) {
           print(unplaned.value);
@@ -180,7 +176,6 @@ class AttendanceController extends GetxController {
         update();
       }
       getVisitAttendance(visitid);
-      
     }
     getVisitAttendance(visitid);
 
@@ -197,17 +192,17 @@ class AttendanceController extends GetxController {
       var res = await ApiProvider().getRequest(
           apiUrl:
               "Attendance/GetAttendancelog?EmpCode=${LocalData().getEmpCode()}&VisitId=0");
+
       attendanceLogModel = attendanceLogModelFromJson(res);
-     checkLog.value = true;
+
+      checkLog.value = true;
       update();
-      if (kDebugMode) {
-        print(res);
-      }
-     // isLoading.value = false;
+
+      // isLoading.value = false;
       update();
     } catch (e) {
       checkLog.value = false;
-     // isLoading.value = false;
+      // isLoading.value = false;
       update();
       if (kDebugMode) {
         print(e.toString());
@@ -220,7 +215,6 @@ class AttendanceController extends GetxController {
     visits.clear();
     if (kDebugMode) {
       print("get visits called");
-      print(LocalData().getEmpCode());
     }
     try {
       var res = await ApiProvider().getRequest(
@@ -258,7 +252,6 @@ class AttendanceController extends GetxController {
       isLoading.value = false;
       update();
     } catch (e) {
-      print(e);
       // visitAttendanceModel!.data.visitAttendance.add(VisitAttendance(
       //   empCode: "ABC123",
       //   visitId: 1,
@@ -314,7 +307,10 @@ class AttendanceController extends GetxController {
       }
 
       var token = GetStorage().read("token");
-
+      if (selectedLocation == "Un-planned") {
+        visitid = 0;
+        update();
+      }
       var request = http.MultipartRequest(
           'POST',
           Uri.parse(
@@ -329,7 +325,9 @@ class AttendanceController extends GetxController {
       http.StreamedResponse response = await request.send();
       var dec = jsonDecode(await response.stream.bytesToString());
       print(dec);
+      AudioPlayer().play(AssetSource('audios/wrong_ans.mp3'));
       constToast("Attendance Marked!");
+       getAttendanceLogs();
       if (unplaned.isTrue) {
         updatevisits();
       } else {
@@ -340,7 +338,7 @@ class AttendanceController extends GetxController {
       unplaned.value = false;
       update();
     } catch (e) {
-       unplaned.value = false;
+      unplaned.value = false;
       isMark.value = true;
       update();
       if (kDebugMode) {

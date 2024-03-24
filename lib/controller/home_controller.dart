@@ -5,15 +5,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+
+import 'package:workmate_01/controller/leave_controller.dart';
 import 'package:workmate_01/model/about_app_model.dart';
 import 'package:workmate_01/model/user_model.dart';
-import 'package:workmate_01/view/login_view.dart';
 
 import '../Provider/Api_provider.dart';
 import '../model/menu_model.dart';
 
 class HomeController extends GetxController {
   final menuData = <MenuModel>[].obs;
+  //final leaveController = Get.put(LeaveController());
 
   AboutAppModel? aboutapp;
   UserData? userData;
@@ -30,6 +32,7 @@ class HomeController extends GetxController {
     super.onInit();
 
     getAboutapp();
+    //leaveController.getLeave();
   }
 
   getUser() async {

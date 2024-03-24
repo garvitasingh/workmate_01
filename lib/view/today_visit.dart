@@ -11,6 +11,7 @@ import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/component/check_in_button.dart';
 import 'package:workmate_01/controller/attendance_controller.dart';
+import 'package:workmate_01/swimmer_widget/today_widget_swimmer.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,15 +38,15 @@ class _TodayVisitState extends State<TodayVisit> {
     super.initState();
     _initializeLocation();
     updateFormattedTime();
-   
+
     // Set up a timer to refresh the time every second
-    Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-      if (mounted) {
-        // Check if the widget is still mounted before updating the state
-        updateFormattedTime();
-        controller.getAttendanceLogs();
-      }
-    });
+    // Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+    //   if (mounted) {
+    //     // Check if the widget is still mounted before updating the state
+    //     updateFormattedTime();
+    //     controller.getAttendanceLogs();
+    //   }
+    // });
   }
 
   void updateFormattedTime() {
@@ -145,7 +146,10 @@ class _TodayVisitState extends State<TodayVisit> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             margin: const EdgeInsets.all(8.0),
-            decoration: const BoxDecoration(color: Colors.white30),
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(5),
+            ),
             child: DropdownButton<String>(
               value: controller.selectedLocation,
               onChanged: (String? newValue) {
@@ -170,13 +174,46 @@ class _TodayVisitState extends State<TodayVisit> {
         ],
       ),
       body: Address == "Location"
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: TodayWidgetSwimmer())
           : SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Container(
+                      margin: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Text(
+                                  formattedTime,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Center(
+                                  child: Text(
+                                formattedDate,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500),
+                              )),
+                            ]),
+                      ),
+                    ),
+                    SizedBox(
+                      height: controller.unplaned.isTrue ? 10 : 0,
+                    ),
                     controller.unplaned.isTrue
                         ? Row(
                             children: [
@@ -212,17 +249,7 @@ class _TodayVisitState extends State<TodayVisit> {
                             ],
                           )
                         : const SizedBox(),
-                    Center(
-                      child: Text(
-                        formattedTime,
-                        style: const TextStyle(
-                            color: primaryColor,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Center(child: Text(formattedDate)),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     controller.dataPresent.isFalse
@@ -278,7 +305,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                           img: _capturedImage);
                                 }),
                           ),
-                     Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Longitude",
@@ -648,10 +675,10 @@ class _TodayVisitState extends State<TodayVisit> {
 
   Widget _punchBuild(text) {
     return SizedBox(
-        width: 110,
+        width: 100,
         child: Text(
           text,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ));
   }
 

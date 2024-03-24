@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
-
+# AudioPlayer().play(AssetSource('audios/correct_ans.mp3')
 environment:
   sdk: '>=2.18.4 <3.0.0'
 
@@ -29,12 +29,16 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  audioplayers: null
   awesome_dialog: ^3.2.0
   carousel_slider: ^4.2.1
+  connectivity: null
+  connectivity_plus: ^4.0.1
   cupertino_icons: ^1.0.2
   device_info_plus: ^9.1.1
   flutter:
     sdk: flutter
+  flutter_background_service: null
   flutter_form_builder: ^9.1.1
   flutter_launcher_icons: ^0.13.1
   fluttertoast: ^8.0.8
@@ -46,10 +50,10 @@ dependencies:
   image_picker: ^1.0.7
   intl: null
   package_info_plus: ^5.0.1
+  pie_chart: ^5.4.0
+  shimmer: ^3.0.0
   table_calendar: ^3.0.9
   uuid: ^4.3.3
-  connectivity:
-  flutter_background_service:
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -57,7 +61,7 @@ dev_dependencies:
     sdk: flutter
 
 flutter_icons:
-  image_path: "assets/logoApp.png" 
+  image_path: "assets/logoApp.png"
   android: true
   ios: true
 
@@ -74,6 +78,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/audios/
     - assets/map.png
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -85,13 +90,14 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
+  fonts:
+    - family: Product Sans
+      fonts:
+        - asset: assets/fonts/Product-Sans-Regular.ttf
+        - asset: assets/fonts/Product-Sans-Bold-Italic.ttf
+        - asset: assets/fonts/Product-Sans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Product-Sans-Italic.ttf
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf

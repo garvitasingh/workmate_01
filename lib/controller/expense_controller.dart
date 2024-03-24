@@ -90,7 +90,7 @@ class ExpenseController extends GetxController {
     showModalBottomSheet(
         context: context,
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
         ),
@@ -100,16 +100,16 @@ class ExpenseController extends GetxController {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.camera_enhance),
-                title: Text('Camera'),
+                leading: const Icon(Icons.camera_enhance),
+                title: const Text('Camera'),
                 onTap: () {
                   openCamera();
                   Get.back();
                 },
               ),
               ListTile(
-                leading: Icon(Icons.file_copy),
-                title: Text('Gallery'),
+                leading: const Icon(Icons.file_copy),
+                title: const Text('Gallery'),
                 onTap: () {
                   openGallery();
                   Get.back();

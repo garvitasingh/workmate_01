@@ -51,7 +51,7 @@ class LeaveController extends GetxController {
     }
     try {
       var data = {
-        "EMPCode": fomData['EMPCode'],
+        "EMPCode": employeeId.text,
         "LeaveType": fomData['LeaveType'],
         "FromDate": DateFormat('yyyy-MM-dd').format(fomData['FromDate']),
         "ToDate": DateFormat('yyyy-MM-dd').format(fomData['ToDate']),

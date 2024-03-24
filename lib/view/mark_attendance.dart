@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:workmate_01/swimmer_widget/my_attendance_swimmer.dart';
 import 'package:workmate_01/utils/colors.dart';
 
 import '../controller/attendance_controller.dart';
@@ -20,8 +21,6 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
   Widget build(BuildContext context) {
     Get.lazyPut(() => AttendanceController());
     String formattedDate = DateFormat('dd MMM').format(currentDate);
-    // var h = MediaQuery.of(context).size.height;
-    // var w = MediaQuery.of(context).size.width;
     return Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
@@ -42,19 +41,11 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
                 fontWeight: FontWeight.w600,
                 color: secondaryColor),
           ),
-          actions: [
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.notifications_rounded,
-                  color: secondaryColor,
-                ))
-          ],
         ),
         body: GetBuilder<AttendanceController>(
           builder: (controller) {
-            return controller.isLoading.value
-                ? Center(child: CircularProgressIndicator())
+            return controller.isLoading.isTrue
+                ? Center(child: MyAttendanceSwimmer())
                 : Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Column(

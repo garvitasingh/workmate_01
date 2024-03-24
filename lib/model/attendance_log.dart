@@ -91,7 +91,7 @@ class Attendancelog {
         visitLoc: json["VisitLoc"],
         lat: json["Lat"],
         long: json["Long"],
-        address: json["Address"],
+        address: json["Address"]==null? "" : json["Address"],
         presentTimeIn: json["PresentTimeIn"] == null ? null : DateTime.parse(json["PresentTimeIn"]),
         presentTimeOut: json["PresentTimeOut"] == null ? null : DateTime.parse(json["PresentTimeOut"]),
         checkIn: json["CheckIn"],

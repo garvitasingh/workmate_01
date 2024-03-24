@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:workmate_01/swimmer_widget/mark_attendance_swimmer.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:workmate_01/utils/constants.dart';
 import 'package:workmate_01/view/today_visit.dart';
@@ -334,7 +335,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                                           .spaceBetween,
                                                   children: [
                                                     data.presentTimeIn == null
-                                                        ?  SizedBox(
+                                                        ? SizedBox(
                                                             width: 60,
                                                             child: Card(
                                                               color:
@@ -412,7 +413,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                       ),
                     ),
                   )
-                : const Center(child: CircularProgressIndicator.adaptive());
+                : Center(child: CalendarSwimmer());
           },
         ));
   }
@@ -442,7 +443,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
       padding: const EdgeInsets.all(8.0),
       child: Text(
         text,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
       ),
     );
   }

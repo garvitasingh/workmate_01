@@ -1,13 +1,9 @@
-// ignore_for_file: avoid_print
-
 import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:workmate_01/utils/constants.dart';
-
 import 'package:workmate_01/view/homePage.dart';
 import 'package:workmate_01/view/login_view.dart';
 import 'package:workmate_01/view/verification_screen.dart';
@@ -89,7 +85,7 @@ class AuthController extends GetxController {
       } else {
         isLoading.value = true;
         update();
-        
+
         constToast("Credentials Not Validate");
         Get.offAll(LoginViewPage());
       }
@@ -106,12 +102,13 @@ class AuthController extends GetxController {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      password = androidInfo.id;
+      //  password = 'UP1A.230620.001';
+      password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
       update();
       print('Device ID: ${androidInfo.id}');
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      password = iosInfo.identifierForVendor.toString();
+      password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
       update();
       print('Device ID: ${iosInfo.identifierForVendor}');
     }
