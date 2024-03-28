@@ -1,6 +1,7 @@
 // To parse this JSON data, do
 //
 //     final aboutAppModel = aboutAppModelFromJson(jsonString);
+
 import 'dart:convert';
 
 AboutAppModel aboutAppModelFromJson(String str) => AboutAppModel.fromJson(json.decode(str));
@@ -44,29 +45,29 @@ class AboutAppModel {
 }
 
 class Data {
-    List<ClaimDetail> claimDetails;
+    List<Info> info;
 
     Data({
-        required this.claimDetails,
+        required this.info,
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
-        claimDetails: List<ClaimDetail>.from(json["ClaimDetails"].map((x) => ClaimDetail.fromJson(x))),
+        info: List<Info>.from(json["Info"].map((x) => Info.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "ClaimDetails": List<dynamic>.from(claimDetails.map((x) => x.toJson())),
+        "Info": List<dynamic>.from(info.map((x) => x.toJson())),
     };
 }
 
-class ClaimDetail {
+class Info {
     String clientName;
     String productName;
     String copyrightName;
     String appName;
     String productIcon;
 
-    ClaimDetail({
+    Info({
         required this.clientName,
         required this.productName,
         required this.copyrightName,
@@ -74,7 +75,7 @@ class ClaimDetail {
         required this.productIcon,
     });
 
-    factory ClaimDetail.fromJson(Map<String, dynamic> json) => ClaimDetail(
+    factory Info.fromJson(Map<String, dynamic> json) => Info(
         clientName: json["ClientName"],
         productName: json["ProductName"],
         copyrightName: json["CopyrightName"],

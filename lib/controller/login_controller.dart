@@ -46,8 +46,10 @@ class AuthController extends GetxController {
       };
       box.write("deviceid", password);
       var res = await ApiProvider().postRequestToken(
-          apiUrl: "http://14.99.179.131/wsnapi/token", data: data);
-      print(res);
+          apiUrl:
+              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/auth/token",
+          data: data);
+
       if (res['error_uri'].toString() == "001") {
         Get.to(const VerificationUser());
       } else {
@@ -73,21 +75,19 @@ class AuthController extends GetxController {
       var data = {
         "UserName": phoneController.text,
         "Password": password,
-        "DeviceType": "M"
       };
 
       var res = await ApiProvider().postRequestToken(
-          apiUrl: "http://14.99.179.131/wsnapi/api/data/UserActivate",
+          apiUrl:
+              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/auth/activate-user",
           data: data);
-      print(res);
-      if (res['Status'] == true) {
+      if (res['responseData']['Status'] == true) {
         loginUser();
       } else {
         isLoading.value = true;
         update();
-
         constToast("Credentials Not Validate");
-        Get.offAll(LoginViewPage());
+        Get.offAll(const LoginViewPage());
       }
       isLoading.value = true;
       update();

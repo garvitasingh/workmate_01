@@ -52,11 +52,11 @@ class Data {
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
-        visitPlan: json["VisitPlan"] == null ? [] : List<VisitPlan>.from(json["VisitPlan"]!.map((x) => VisitPlan.fromJson(x))),
+        visitPlan: json["MstExpMode"] == null ? [] : List<VisitPlan>.from(json["MstExpMode"]!.map((x) => VisitPlan.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "VisitPlan": visitPlan == null ? [] : List<dynamic>.from(visitPlan!.map((x) => x.toJson())),
+        "MstExpMode": visitPlan == null ? [] : List<dynamic>.from(visitPlan!.map((x) => x.toJson())),
     };
 }
 

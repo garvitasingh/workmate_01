@@ -38,15 +38,16 @@ class _TodayVisitState extends State<TodayVisit> {
     super.initState();
     _initializeLocation();
     updateFormattedTime();
+    //controller.getVisitPlans();
 
     // Set up a timer to refresh the time every second
-    // Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-    //   if (mounted) {
-    //     // Check if the widget is still mounted before updating the state
-    //     updateFormattedTime();
-    //     controller.getAttendanceLogs();
-    //   }
-    // });
+    Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      if (mounted) {
+        // Check if the widget is still mounted before updating the state
+        updateFormattedTime();
+        controller.getAttendanceLogs();
+      }
+    });
   }
 
   void updateFormattedTime() {
@@ -143,6 +144,8 @@ class _TodayVisitState extends State<TodayVisit> {
           style: TextStyle(color: secondaryColor),
         ),
         actions: [
+          //  Text(controller.visits[0].toString()),
+
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             margin: const EdgeInsets.all(8.0),
@@ -156,6 +159,9 @@ class _TodayVisitState extends State<TodayVisit> {
                 setState(() {
                   controller.selectedLocation = newValue!;
                   controller.getvisitId();
+
+                  controller.getAttendanceMonthly();
+                  print(controller.holidayDates);
                 });
               },
               elevation: 2,
@@ -164,7 +170,7 @@ class _TodayVisitState extends State<TodayVisit> {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(
-                    value,
+                    value.toString(),
                     style: const TextStyle(color: Colors.black),
                   ),
                 );

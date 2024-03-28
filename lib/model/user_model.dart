@@ -9,27 +9,27 @@ UserData userDataFromJson(String str) => UserData.fromJson(json.decode(str));
 String userDataToJson(UserData data) => json.encode(data.toJson());
 
 class UserData {
-    String responseMessage;
-    bool status;
-    int dataCount;
-    Data data;
-    String responseCode;
-    bool confirmationbox;
+    String? responseMessage;
+    bool? status;
+    int? dataCount;
+    Data? data;
+    String? responseCode;
+    bool? confirmationbox;
 
     UserData({
-        required this.responseMessage,
-        required this.status,
-        required this.dataCount,
-        required this.data,
-        required this.responseCode,
-        required this.confirmationbox,
+        this.responseMessage,
+        this.status,
+        this.dataCount,
+        this.data,
+        this.responseCode,
+        this.confirmationbox,
     });
 
     factory UserData.fromJson(Map<String, dynamic> json) => UserData(
         responseMessage: json["ResponseMessage"],
         status: json["Status"],
         dataCount: json["DataCount"],
-        data: Data.fromJson(json["Data"]),
+        data: json["Data"] == null ? null : Data.fromJson(json["Data"]),
         responseCode: json["ResponseCode"],
         confirmationbox: json["confirmationbox"],
     );
@@ -38,23 +38,23 @@ class UserData {
         "ResponseMessage": responseMessage,
         "Status": status,
         "DataCount": dataCount,
-        "Data": data.toJson(),
+        "Data": data?.toJson(),
         "ResponseCode": responseCode,
         "confirmationbox": confirmationbox,
     };
 }
 
 class Data {
-    String name;
-    String userName;
-    String empCode;
-    String mobileNo;
+    String? name;
+    String? userName;
+    String? empCode;
+    String? mobileNo;
 
     Data({
-        required this.name,
-        required this.userName,
-        required this.empCode,
-        required this.mobileNo,
+        this.name,
+        this.userName,
+        this.empCode,
+        this.mobileNo,
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(

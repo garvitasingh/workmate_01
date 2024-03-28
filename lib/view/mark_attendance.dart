@@ -14,7 +14,7 @@ class MarkAttendanceView extends StatefulWidget {
 }
 
 class _MarkAttendanceViewState extends State<MarkAttendanceView> {
-  AttendanceController controller = Get.put(AttendanceController());
+  //AttendanceController controller = Get.put(AttendanceController());
   DateTime currentDate = DateTime.now();
 
   @override
@@ -74,31 +74,31 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
                                 _iconCard(
                                     "Present",
                                     controller.attendanceData!.data
-                                        .claimDetails[0].present,
+                                        .myAttendance[0].present,
                                     "present",
                                     getColorByIndex(0)),
                                 _iconCard(
                                     "Absent",
                                     controller.attendanceData!.data
-                                        .claimDetails[0].absent,
+                                        .myAttendance[0].absent,
                                     "absent",
                                     getColorByIndex(1)),
                                 _iconCard(
                                     "Leaves",
                                     controller.attendanceData!.data
-                                        .claimDetails[0].leave,
+                                        .myAttendance[0].leave,
                                     "leave",
                                     getColorByIndex(2)),
                                 _iconCard(
                                     "Working Days",
                                     controller.attendanceData!.data
-                                        .claimDetails[0].workingDays,
+                                        .myAttendance[0].workingDays,
                                     "my_att",
                                     getColorByIndex(3)),
                                 _iconCard(
                                     "Holidays",
                                     controller.attendanceData!.data
-                                        .claimDetails[0].holiday,
+                                        .myAttendance[0].holidayCount,
                                     "leave",
                                     getColorByIndex(3)),
                               ],

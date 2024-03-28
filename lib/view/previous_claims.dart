@@ -3,6 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:workmate_01/Provider/Api_provider.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:workmate_01/utils/local_data.dart';
@@ -11,7 +12,7 @@ import 'package:workmate_01/view/expanse_management.dart';
 import '../model/previous_model.dart';
 
 class ShowPreviousClaimsView extends StatefulWidget {
-  int id;
+  String? id;
   ShowPreviousClaimsView({super.key, required this.id});
 
   @override
@@ -28,6 +29,7 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
 
   bool loding = true;
   ClaimsModel? claimsModel;
+  List<bool>? visibleList;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,7 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
 
                   String? date = '';
                   String? time = '';
+
                   if (data.submittedOn.toString() != "null") {
                     String dateTimeString = data.submittedOn.toString();
 
@@ -70,73 +73,115 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
                         "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}.${dateTime.millisecond}";
                   }
                   return Card(
-                    color: getColorByIndex(index),
+                    color: !visibleList![index]
+                        ? Colors.red
+                        : getColorByIndex(index),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
+                        borderRadius: BorderRadius.circular(12)),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            " Date: ${date}",
-                            style:
-                                const TextStyle(color: darkColor, fontSize: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Date: ${date}",
+                                style: TextStyle(
+                                    color: !visibleList![index]
+                                        ? Colors.white
+                                        : darkColor,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    visibleList![index] = !visibleList![index];
+                                  });
+                                },
+                                icon: Icon(visibleList![index]
+                                    ? Icons.keyboard_arrow_down_sharp
+                                    : Icons.keyboard_arrow_up),
+                                color: !visibleList![index]
+                                    ? Colors.white
+                                    : darkColor,
+                              )
+                            ],
                           ),
-                          dd("VisitPurpose", data.visitPurpose.toString()),
-                          dd("From", data.visitFrom.toString()),
-                          dd("To", data.visitTo.toString()),
-                          dd("ExpDesc", data.expModeDesc.toString()),
-                          dd("ConvModeDesc", data.convModeDesc.toString()),
-                          dd("Rate", data.rate.toString()),
-                          dd("Distance", data.locationDistance.toString()),
-                          dd("Amount", data.amount.toString()),
-                          dd("Remarks", data.remarks.toString()),
-                          dd("Description", data.description.toString()),
-                          dd("Submit", time),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          data.submittedOn.toString() == "null"
-                              ? Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          "Please fill Your Claim",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const ExpanseManagementView(),
+                          Visibility(
+                            visible: visibleList![index],
+                            child: Column(
+                              children: [
+                                dd("VisitPurpose",
+                                    data.visitPurpose.toString()),
+                                dd("From", data.visitFrom.toString()),
+                                dd("To", data.visitTo.toString()),
+                                dd("ExpDesc", data.expModeDesc.toString()),
+                                dd("ConvModeDesc",
+                                    data.convModeDesc.toString()),
+                                dd("Rate", data.rate.toString()),
+                                dd("Distance",
+                                    data.locationDistance.toString()),
+                                dd("Amount", data.amount.toString()),
+                                dd("Remarks", data.remarks.toString()),
+                                dd("Description", data.description.toString()),
+                                dd("Submit", time),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                data.submittedOn.toString() == "null"
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text(
+                                                "Please fill Your Claim",
+                                                style: TextStyle(
+                                                    color: Colors.white),
                                               ),
-                                            );
-                                          },
-                                          child: Container(
-                                            decoration: const BoxDecoration(
-                                                color: Colors.white,
-                                                shape: BoxShape.circle),
-                                            child: const Padding(
-                                              padding: EdgeInsets.all(4.0),
-                                              child: Icon(Icons.arrow_forward),
-                                            ),
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const ExpanseManagementView(),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: Colors.white,
+                                                          shape:
+                                                              BoxShape.circle),
+                                                  child: const Padding(
+                                                    padding:
+                                                        EdgeInsets.all(4.0),
+                                                    child: Icon(
+                                                        Icons.arrow_forward),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              : SizedBox(height: 0,)
+                                        ),
+                                      )
+                                    : const SizedBox(
+                                        height: 0,
+                                      )
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -150,14 +195,18 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
 
   Widget dd(text, text2) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        const SizedBox(
+          width: 20,
+          child: Text("▶️"),
+        ),
         SizedBox(
           width: 150,
           child: Text(
             "${text} : ",
             style: const TextStyle(
-                color: Colors.black, fontSize: 13, fontWeight: FontWeight.w700),
+                color: Colors.black, fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ),
         SizedBox(
@@ -183,7 +232,7 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
     return adjustedColor;
   }
 
-  Future getClaims({int? id}) async {
+  Future getClaims({String? id}) async {
     setState(() {
       loding = false;
     });
@@ -194,6 +243,7 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
       setState(() {
         loding = true;
         claimsModel = claimsModelFromJson(res);
+        visibleList = List.generate(claimsModel!.dataCount!, (index) => false);
       });
 
       if (kDebugMode) {

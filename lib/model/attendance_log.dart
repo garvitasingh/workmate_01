@@ -62,20 +62,20 @@ class Data {
 
 class Attendancelog {
     String empCode;
-    int visitId;
     String visitLoc;
+    String visitId;
     String lat;
     String long;
     String address;
-    DateTime? presentTimeIn;
-    DateTime? presentTimeOut;
+    dynamic presentTimeIn;
+    dynamic presentTimeOut;
     int checkIn;
     int checkOut;
 
     Attendancelog({
         required this.empCode,
-        required this.visitId,
         required this.visitLoc,
+        required this.visitId,
         required this.lat,
         required this.long,
         required this.address,
@@ -87,26 +87,26 @@ class Attendancelog {
 
     factory Attendancelog.fromJson(Map<String, dynamic> json) => Attendancelog(
         empCode: json["EMPCode"],
-        visitId: json["VisitId"],
         visitLoc: json["VisitLoc"],
+        visitId: json["VisitId"],
         lat: json["Lat"],
         long: json["Long"],
-        address: json["Address"]==null? "" : json["Address"],
-        presentTimeIn: json["PresentTimeIn"] == null ? null : DateTime.parse(json["PresentTimeIn"]),
-        presentTimeOut: json["PresentTimeOut"] == null ? null : DateTime.parse(json["PresentTimeOut"]),
+        address: json["Address"],
+        presentTimeIn: json["PresentTimeIn"],
+        presentTimeOut: json["PresentTimeOut"],
         checkIn: json["CheckIn"],
         checkOut: json["CheckOut"],
     );
 
     Map<String, dynamic> toJson() => {
         "EMPCode": empCode,
-        "VisitId": visitId,
         "VisitLoc": visitLoc,
+        "VisitId": visitId,
         "Lat": lat,
         "Long": long,
         "Address": address,
-        "PresentTimeIn": presentTimeIn?.toIso8601String(),
-        "PresentTimeOut": presentTimeOut?.toIso8601String(),
+        "PresentTimeIn": presentTimeIn,
+        "PresentTimeOut": presentTimeOut,
         "CheckIn": checkIn,
         "CheckOut": checkOut,
     };

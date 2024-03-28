@@ -1,9 +1,11 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:workmate_01/component/no_data_found.dart';
 import 'package:workmate_01/controller/visit_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
+import 'package:workmate_01/utils/constants.dart';
 import 'package:workmate_01/view/previous_claims.dart';
 
 class VisitScreen extends StatelessWidget {
@@ -44,6 +46,14 @@ class VisitScreen extends StatelessWidget {
                             itemBuilder: (context, index) {
                               print(controller.visitData[index]['VisitTo']);
                               var data = controller.visitData[index];
+
+                              // Parse the ISO 8601 date string
+                              DateTime dateTime =
+                                  DateTime.parse(data['VisitDate']);
+
+                              // Format the date in the desired format
+                              String formattedDate =
+                                  DateFormat("MMM dd yyyy ").format(dateTime);
                               return Container(
                                 padding: const EdgeInsets.all(16.0),
                                 margin: const EdgeInsets.all(8.0),
@@ -54,12 +64,12 @@ class VisitScreen extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     dd("VisitPurpose", data['VisitPurpose']),
-                                    dd("Date", data['VisitDate']),
+                                    dd("Date", formattedDate),
                                     dd("From", data['VisitFrom']),
                                     dd("To", data['VisitTo']),
                                     dd("Remarks",
                                         data['VisitRemarks'].toString()),
-                                    data['FillRemarks'] == 0
+                                    data['Remarks'] == "null"
                                         ? Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.end,
@@ -101,6 +111,15 @@ class VisitScreen extends StatelessWidget {
                                                   height: 35,
                                                   color: darkColor,
                                                   onPressed: () {
+                                                    print(data['VisitSummaryId']);
+                                                    if (controller
+                                                            .remarkCo[index]
+                                                            .text ==
+                                                        "") {
+                                                      constToast(
+                                                          "Please Enter Feedback...");
+                                                      return;
+                                                    }
                                                     AwesomeDialog(
                                                       context: context,
                                                       dialogType:
@@ -117,7 +136,7 @@ class VisitScreen extends StatelessWidget {
                                                         controller
                                                             .updateFeedback(
                                                                 id: data[
-                                                                    'ExpenseId'],
+                                                                    'VisitSummaryId'],
                                                                 index: index);
                                                       },
                                                     ).show();
@@ -174,7 +193,7 @@ class VisitScreen extends StatelessWidget {
 
   Widget dd(text, text2) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
           width: 130,

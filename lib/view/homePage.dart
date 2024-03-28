@@ -51,11 +51,11 @@ class _HomePageViewState extends State<HomePageView> {
                                 'https://images.unsplash.com/photo-1485290334039-a3c69043e517?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTYyOTU3NDE0MQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=300'),
                           ),
                           accountEmail: Text(
-                            controller.userData!.data.mobileNo.toString(),
+                            controller.userData!.data!.mobileNo.toString(),
                             style: const TextStyle(color: secondaryColor),
                           ),
                           accountName: Text(
-                            controller.userData!.data.name.toString(),
+                            controller.userData!.data!.name.toString(),
                             style: const TextStyle(
                                 fontSize: 24.0, color: secondaryColor),
                           ),
@@ -69,7 +69,7 @@ class _HomePageViewState extends State<HomePageView> {
                             height: 40,
                           ),
                           title: Text(
-                            controller.userData!.data.empCode.toString(),
+                            controller.userData!.data!.empCode.toString(),
                             style: const TextStyle(
                                 fontSize: 24.0, color: Colors.green),
                           ),
@@ -229,7 +229,7 @@ class _HomePageViewState extends State<HomePageView> {
                                                   controller
                                                       .aboutapp!
                                                       .data
-                                                      .claimDetails[0]
+                                                      .info[0]
                                                       .productName,
                                                   style: const TextStyle(
                                                       fontSize: 20,

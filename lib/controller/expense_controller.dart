@@ -39,7 +39,7 @@ class ExpenseController extends GetxController {
   List<String> visits = [];
   List<String> convMode = [];
   List<String> convExpMode = [];
-  int? expenseId;
+  String? expenseId;
   int? convModeId = 1;
   int? expModeId;
   File? capturedImage;
@@ -49,7 +49,7 @@ class ExpenseController extends GetxController {
     super.onInit();
 
     getVisitPlans();
-    getMstConvMode();
+   // getMstConvMode();
     getMstExpMode();
   }
 
@@ -121,26 +121,32 @@ class ExpenseController extends GetxController {
   }
 
   getVisitPlans() async {
-    isLoading.value = true; 
+    isLoading.value = true;
     visits.clear();
     print("get visits called");
     try {
       var res = await ApiProvider().getRequest(
-          apiUrl: "Claim/GetVisitPlan?EmpCode=${LocalData().getEmpCode()}");
-       print(jsonDecode(res));
+          apiUrl:
+              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
+
       visitPlanModel = visitPlanModelFromJson(res);
+      print(visitPlanModel!.dataCount);
       for (var i = 0; i < visitPlanModel!.dataCount; i++) {
-        if (visitPlanModel!.data.visitPlan[i].visitLocation == "Un-planned") {
-        } else {
-          visits.add(visitPlanModel!.data.visitPlan[i].visitLocation);
+        print(visitPlanModel!.data.visitPlan[i].visitLocation);
+        if (visitPlanModel!.data.visitPlan[i].visitLocation != "Un-planned") {
+        
+          visits
+              .add(visitPlanModel!.data.visitPlan[i].visitLocation.toString());
+          selectedLocation = visitPlanModel!.data.visitPlan[i].visitLocation;
+          update();
         }
         update();
       }
-      selectedLocation = visitPlanModel!.data.visitPlan[0].visitLocation;
+
       update();
       isLoading.value = false;
       update();
-      getVisitLocation();
+      // getVisitLocation();
     } catch (e) {
       print(e.toString());
     }
@@ -169,9 +175,10 @@ class ExpenseController extends GetxController {
   getMstExpMode() async {
     print("get leave called");
     try {
-      var res = await ApiProvider().getRequest(apiUrl: "Claim/MstExpMode");
+      var res = await ApiProvider().getRequest(apiUrl: "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/expense/exp-mst-mode");
       // print(jsonDecode(res));
       visitPlanExpModel = visitPlanExpModelFromJson(res);
+      print(visitPlanExpModel);
       for (var i = 0; i < visitPlanExpModel!.data!.visitPlan!.length; i++) {
         convExpMode
             .add(visitPlanExpModel!.data!.visitPlan![i].ddlDesc.toString());
@@ -235,7 +242,7 @@ class ExpenseController extends GetxController {
     isSubmit.value = false;
     print("apply leave called");
     try {
-      if(capturedImage == null) {
+      if (capturedImage == null) {
         isSubmit.value = true;
         update();
         constToast("Please Select file");
@@ -249,8 +256,8 @@ class ExpenseController extends GetxController {
       }
       var token = GetStorage().read("token");
 
-      var request = http.MultipartRequest(
-          'POST', Uri.parse('http://14.99.179.131/wsnapi/api/Claim/AddClaim'));
+      var request =
+          http.MultipartRequest('POST', Uri.parse('$BASEURL/Claim/AddClaim'));
       request.fields.addAll({
         'Value':
             '{"ExpenseId": ${expenseId.toString()},"ExpModeId":${expModeId.toString()},"ConvModeId": ${convModeId.toString()},"Rate": ${rateController.text},"LocationDistance":${locationDistanceController.text},"Amount": ${amountController.text},"ClaimDoc":"test","Remarks": "${remarksController.text}","VisitPurpose": "${visitPurposeController.text}"}'
@@ -270,8 +277,8 @@ class ExpenseController extends GetxController {
       if (dec['Status'] == true) {
         isSubmit.value = true;
         constToast(dec['Data']['ResponseMessage']);
-        fromdistanse.clear();
-        todistanse.clear();
+        // fromdistanse.clear();
+        // todistanse.clear();
         capturedImage = null;
         locationDistanceController.clear();
         rateController.clear();

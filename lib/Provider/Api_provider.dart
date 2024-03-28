@@ -12,8 +12,8 @@ class ApiProvider {
   Future<dynamic> getRequest({required apiUrl}) async {
     var token = box.read("token");
 
-    var res = await http.get(Uri.parse('$BASEURL$apiUrl'),
-        headers: {'Authorization': 'Bearer $token'});
+    var res = await http
+        .get(Uri.parse('$apiUrl'), headers: {'Authorization': 'Bearer $token'});
 
     if (res.statusCode == 200) {
       return res.body;
@@ -36,8 +36,8 @@ class ApiProvider {
   }
 
   Future<dynamic> markAtt({data, file}) async {
-    var request = http.MultipartRequest('POST',
-        Uri.parse('http://14.99.179.131/wsnapi/api/Attendance/MarkAttendance'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('$BASEURL/Attendance/MarkAttendance'));
     request.fields.addAll({'value': data});
     print(data);
     print(file);
@@ -79,7 +79,8 @@ class ApiProvider {
     var token = box.read("token");
     var res = await http.post(body: data, Uri.parse('$apiUrl'), headers: {
       'Authorization': 'Bearer $token'
-    }).timeout(const Duration(seconds: 10));
+    }).timeout(const Duration(seconds: 20));
+    print(res.body);
     return jsonDecode(res.body);
     // if (res.statusCode == 200) {
     //   return res;

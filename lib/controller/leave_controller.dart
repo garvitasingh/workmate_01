@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -33,8 +35,8 @@ class LeaveController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "Leave/GetLeave?Devicetype=M&EmpCode=${LocalData().getEmpCode()}");
-      // print(jsonDecode(res));
+              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/leave/get-leave");
+      print(jsonDecode(res));
       leaveData = leaveModelFromJson(res);
       isLoading.value = false;
       update();
@@ -52,19 +54,25 @@ class LeaveController extends GetxController {
     try {
       var data = {
         "EMPCode": employeeId.text,
-        "LeaveType": fomData['LeaveType'],
-        "FromDate": DateFormat('yyyy-MM-dd').format(fomData['FromDate']),
-        "ToDate": DateFormat('yyyy-MM-dd').format(fomData['ToDate']),
+        "LeaveTypeId": fomData['LeaveType'],
+        "StartDate": DateFormat('yyyy-MM-dd').format(fomData['FromDate']),
+        "EndDate": DateFormat('yyyy-MM-dd').format(fomData['ToDate']),
         "Remarks": fomData['Remarks'],
       };
       var res = await ApiProvider().postRequestToken(
-          apiUrl: "http://14.99.179.131/wsnapi/api/Leave/ApplyLeave",
+          apiUrl:
+              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/leave/apply-leave",
           data: data);
       // print(jsonDecode(res));
       if (kDebugMode) {
         print(res);
       }
-      constToast("Leave applied successfully");
+      if (res['message'] == "Leave application submitted successfully") {
+        constToast("Leave applied successfully");
+      }else{
+        constToast(res);
+      }
+
       isLoading.value = false;
       update();
     } catch (e) {

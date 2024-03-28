@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:workmate_01/controller/leave_controller.dart';
 import 'package:workmate_01/model/about_app_model.dart';
 import 'package:workmate_01/model/user_model.dart';
@@ -32,6 +32,7 @@ class HomeController extends GetxController {
     super.onInit();
 
     getAboutapp();
+
     //leaveController.getLeave();
   }
 
@@ -39,13 +40,16 @@ class HomeController extends GetxController {
     isLoading.value = true;
     print("get User called");
     try {
-      var res = await ApiProvider().getRequest(apiUrl: "data/authenticate");
+      var res = await ApiProvider().getRequest(
+          apiUrl:
+              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/user/getuser");
       userData = userDataFromJson(res);
+      print(userData!.data!.mobileNo.toString());
       update();
-      getMenu(userId: userData!.data.empCode.toString());
-      await GetStorage().write("username", userData!.data.userName.toString());
-      await GetStorage().write("code", userData!.data.empCode.toString());
-      await GetStorage().write("mobile", userData!.data.mobileNo.toString());
+      getMenu(userId: userData!.data!.empCode.toString());
+      await GetStorage().write("username", userData!.data!.userName.toString());
+      await GetStorage().write("code", userData!.data!.empCode.toString());
+      await GetStorage().write("mobile", userData!.data!.mobileNo.toString());
 
       isLoading.value = false;
       update();
@@ -54,14 +58,19 @@ class HomeController extends GetxController {
     }
   }
 
+  
+
   getAboutapp() async {
     isLoading.value = true;
     print("get AboutCall called");
     try {
-      var res = await ApiProvider().getRequest(apiUrl: "dashboard/GetAppInfo");
+      var res = await ApiProvider().getRequest(
+          apiUrl:
+              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/dashboard/app-info");
+      print(aboutapp);
       aboutapp = aboutAppModelFromJson(res);
       await GetStorage()
-          .write("productname", aboutapp!.data.claimDetails[0].productName);
+          .write("productname", aboutapp!.data.info[0].productName);
       getUser();
       isLoading.value = false;
       update();
@@ -75,9 +84,9 @@ class HomeController extends GetxController {
     menuData.clear();
     print("get menu called");
     try {
-      var res = await ApiProvider()
-          .getRequest(apiUrl: "dashboard/GetMenu?Devicetype=M&EmpCode=$userId");
-      print("object");
+      var res = await ApiProvider().getRequest(
+          apiUrl:
+              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/dashboard/get-menu?Devicetype=M&EmpCode=$userId");
       print(jsonDecode(res));
       var data = jsonDecode(res);
       // print(data["Data"]["Menu"]);

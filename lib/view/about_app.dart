@@ -45,10 +45,10 @@ class _AboutAppPageState extends State<AboutAppPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Image.memory(base64Decode(
-                        controller.aboutapp!.data.claimDetails[0].productIcon)),
+                        controller.aboutapp!.data.info[0].productIcon)),
                     const SizedBox(height: 16.0),
                     Text(
-                      controller.aboutapp!.data.claimDetails[0].appName,
+                      controller.aboutapp!.data.info[0].appName,
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),
@@ -59,12 +59,12 @@ class _AboutAppPageState extends State<AboutAppPage> {
                     ),
                     const SizedBox(height: 8.0),
                     Text(
-                        'Client: ${controller.aboutapp!.data.claimDetails[0].clientName}'),
+                        'Client: ${controller.aboutapp!.data.info[0].clientName}'),
                     Text(
-                        'Product: ${controller.aboutapp!.data.claimDetails[0].productName}'),
+                        'Product: ${controller.aboutapp!.data.info[0].productName}'),
                     const SizedBox(height: 16.0),
                     Text(
-                      'Copyright © ${DateTime.now().year} ${controller.aboutapp!.data.claimDetails[0].copyrightName}',
+                      'Copyright © ${DateTime.now().year} ${controller.aboutapp!.data.info[0].copyrightName}',
                       style: const TextStyle(color: Colors.grey),
                     ),
                   ],
