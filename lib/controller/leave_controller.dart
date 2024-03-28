@@ -52,12 +52,15 @@ class LeaveController extends GetxController {
       print("apply leave called");
     }
     try {
+      
       var data = {
-        "EMPCode": employeeId.text,
+        "EmployeeID": employeeId.text,
+        "EMPCode": "IT002",
         "LeaveTypeId": fomData['LeaveType'],
         "StartDate": DateFormat('yyyy-MM-dd').format(fomData['FromDate']),
         "EndDate": DateFormat('yyyy-MM-dd').format(fomData['ToDate']),
         "Remarks": fomData['Remarks'],
+        "Reason": ""
       };
       var res = await ApiProvider().postRequestToken(
           apiUrl:
@@ -69,7 +72,7 @@ class LeaveController extends GetxController {
       }
       if (res['message'] == "Leave application submitted successfully") {
         constToast("Leave applied successfully");
-      }else{
+      } else {
         constToast(res);
       }
 

@@ -61,73 +61,65 @@ class Data {
 }
 
 class ClaimDetail {
-    int? expenseId;
+    String? expenseReqId;
+    String? amount;
+    String? expModeDesc;
+    dynamic rate;
+    DateTime? updatedAt;
     String? visitFrom;
     String? visitTo;
-    String? visitPurpose;
-    String? expModeDesc;
-    String? convModeDesc;
-    double? rate;
-    double? locationDistance;
-    double? amount;
-    String? remarks;
+    dynamic visitPurpose;
+    dynamic convModeDesc;
     String? description;
-    dynamic checkedBy;
     dynamic approvedBy;
-    dynamic modifiedOn;
-    DateTime? submittedOn;
+    dynamic checkedBy;
+    DateTime? createdAt;
 
     ClaimDetail({
-        this.expenseId,
+        this.expenseReqId,
+        this.amount,
+        this.expModeDesc,
+        this.rate,
+        this.updatedAt,
         this.visitFrom,
         this.visitTo,
         this.visitPurpose,
-        this.expModeDesc,
         this.convModeDesc,
-        this.rate,
-        this.locationDistance,
-        this.amount,
-        this.remarks,
         this.description,
-        this.checkedBy,
         this.approvedBy,
-        this.modifiedOn,
-        this.submittedOn,
+        this.checkedBy,
+        this.createdAt,
     });
 
     factory ClaimDetail.fromJson(Map<String, dynamic> json) => ClaimDetail(
-        expenseId: json["ExpenseId"],
+        expenseReqId: json["ExpenseReqId"],
+        amount: json["Amount"],
+        expModeDesc: json["ExpModeDesc"],
+        rate: json["Rate"],
+        updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
         visitFrom: json["VisitFrom"],
         visitTo: json["VisitTo"],
         visitPurpose: json["VisitPurpose"],
-        expModeDesc: json["ExpModeDesc"],
         convModeDesc: json["ConvModeDesc"],
-        rate: json["Rate"],
-        locationDistance: json["LocationDistance"],
-        amount: json["Amount"],
-        remarks: json["Remarks"],
         description: json["Description"],
-        checkedBy: json["CheckedBy"],
         approvedBy: json["ApprovedBy"],
-        modifiedOn: json["ModifiedOn"],
-        submittedOn: json["SubmittedOn"] == null ? null : DateTime.parse(json["SubmittedOn"]),
+        checkedBy: json["CheckedBy"],
+        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "ExpenseId": expenseId,
+        "ExpenseReqId": expenseReqId,
+        "Amount": amount,
+        "ExpModeDesc": expModeDesc,
+        "Rate": rate,
+        "updatedAt": updatedAt?.toIso8601String(),
         "VisitFrom": visitFrom,
         "VisitTo": visitTo,
         "VisitPurpose": visitPurpose,
-        "ExpModeDesc": expModeDesc,
         "ConvModeDesc": convModeDesc,
-        "Rate": rate,
-        "LocationDistance": locationDistance,
-        "Amount": amount,
-        "Remarks": remarks,
         "Description": description,
-        "CheckedBy": checkedBy,
         "ApprovedBy": approvedBy,
-        "ModifiedOn": modifiedOn,
-        "SubmittedOn": submittedOn?.toIso8601String(),
+        "CheckedBy": checkedBy,
+        "createdAt": createdAt?.toIso8601String(),
     };
 }

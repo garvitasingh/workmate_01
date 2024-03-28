@@ -1,5 +1,7 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,6 +26,7 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
   void initState() {
     // TODO: implement initState
     getClaims(id: widget.id);
+    print(widget.id);
     super.initState();
   }
 
@@ -60,8 +63,8 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
                   String? date = '';
                   String? time = '';
 
-                  if (data.submittedOn.toString() != "null") {
-                    String dateTimeString = data.submittedOn.toString();
+                  if (data.createdAt.toString() != "null") {
+                    String dateTimeString = data.createdAt.toString();
 
                     // Parse the string into a DateTime object
                     DateTime dateTime = DateTime.parse(dateTimeString);
@@ -122,16 +125,16 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
                                 dd("ConvModeDesc",
                                     data.convModeDesc.toString()),
                                 dd("Rate", data.rate.toString()),
-                                dd("Distance",
-                                    data.locationDistance.toString()),
+                                // dd("Distance",
+                                //     data..toString()),
                                 dd("Amount", data.amount.toString()),
-                                dd("Remarks", data.remarks.toString()),
+                                //dd("Remarks", data.remarks.toString()),
                                 dd("Description", data.description.toString()),
                                 dd("Submit", time),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                data.submittedOn.toString() == "null"
+                                data.createdAt.toString() == "null"
                                     ? Container(
                                         decoration: BoxDecoration(
                                             color: Colors.red,
@@ -237,9 +240,9 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
       loding = false;
     });
     try {
-      var res = await ApiProvider()
-          .getRequest(apiUrl: "Claim/GetClaim?ExpenseId=$id");
-      // print(jsonDecode(res));
+      var res = await ApiProvider().getRequest(
+          apiUrl: "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/expense/get-expense?VisitSummaryId=$id");
+      print(jsonDecode(res));
       setState(() {
         loding = true;
         claimsModel = claimsModelFromJson(res);

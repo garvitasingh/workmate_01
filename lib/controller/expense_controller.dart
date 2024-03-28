@@ -49,7 +49,7 @@ class ExpenseController extends GetxController {
     super.onInit();
 
     getVisitPlans();
-   // getMstConvMode();
+    // getMstConvMode();
     getMstExpMode();
   }
 
@@ -130,11 +130,10 @@ class ExpenseController extends GetxController {
               "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
 
       visitPlanModel = visitPlanModelFromJson(res);
-      print(visitPlanModel!.dataCount);
+      print(visitPlanModel);
       for (var i = 0; i < visitPlanModel!.dataCount; i++) {
         print(visitPlanModel!.data.visitPlan[i].visitLocation);
         if (visitPlanModel!.data.visitPlan[i].visitLocation != "Un-planned") {
-        
           visits
               .add(visitPlanModel!.data.visitPlan[i].visitLocation.toString());
           selectedLocation = visitPlanModel!.data.visitPlan[i].visitLocation;
@@ -146,7 +145,7 @@ class ExpenseController extends GetxController {
       update();
       isLoading.value = false;
       update();
-      // getVisitLocation();
+      getVisitLocation();
     } catch (e) {
       print(e.toString());
     }
@@ -175,7 +174,9 @@ class ExpenseController extends GetxController {
   getMstExpMode() async {
     print("get leave called");
     try {
-      var res = await ApiProvider().getRequest(apiUrl: "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/expense/exp-mst-mode");
+      var res = await ApiProvider().getRequest(
+          apiUrl:
+              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/expense/exp-mst-mode");
       // print(jsonDecode(res));
       visitPlanExpModel = visitPlanExpModelFromJson(res);
       print(visitPlanExpModel);
@@ -242,12 +243,12 @@ class ExpenseController extends GetxController {
     isSubmit.value = false;
     print("apply leave called");
     try {
-      if (capturedImage == null) {
-        isSubmit.value = true;
-        update();
-        constToast("Please Select file");
-        return;
-      }
+      // if (capturedImage == null) {
+      //   isSubmit.value = true;
+      //   update();
+      //   constToast("Please Select file");
+      //   return;
+      // }
       if (rateController.text.isEmpty) {
         rateController.text = "00";
         locationDistanceController.text = "00";
@@ -256,14 +257,27 @@ class ExpenseController extends GetxController {
       }
       var token = GetStorage().read("token");
 
-      var request =
-          http.MultipartRequest('POST', Uri.parse('$BASEURL/Claim/AddClaim'));
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/expense/create-expense'));
       request.fields.addAll({
-        'Value':
-            '{"ExpenseId": ${expenseId.toString()},"ExpModeId":${expModeId.toString()},"ConvModeId": ${convModeId.toString()},"Rate": ${rateController.text},"LocationDistance":${locationDistanceController.text},"Amount": ${amountController.text},"ClaimDoc":"test","Remarks": "${remarksController.text}","VisitPurpose": "${visitPurposeController.text}"}'
+        "EMPCode": "IT002",
+        "expensemodeid": expModeId.toString(),
+        "ConvModeId": convModeId.toString(),
+        "VisitSummaryId": expenseId.toString(),
+        "Rate": rateController.text,
+        "LocationDistance": locationDistanceController.text,
+        "amount": amountController.text,
+        "ClaimDoc": "test",
+        "Remarks": rateController.text,
+        "Reason": "stay"
+        // 'Value':
+        //     '{"ExpenseId": ${expenseId.toString()},"ExpModeId":${expModeId.toString()},"ConvModeId": ${convModeId.toString()},"Rate": ${rateController.text},"LocationDistance":${locationDistanceController.text},"Amount": ${amountController.text},"ClaimDoc":"test","Remarks": "${remarksController.text}","VisitPurpose": "${visitPurposeController.text}"}'
       });
-      request.files
-          .add(await http.MultipartFile.fromPath('Image', capturedImage!.path));
+      print(request.fields);
+      // request.files
+      //     .add(await http.MultipartFile.fromPath('Image', capturedImage!.path));
       request.headers.addAll({'Authorization': 'Bearer $token'});
       print(request.fields);
       http.StreamedResponse response = await request.send();
@@ -274,9 +288,9 @@ class ExpenseController extends GetxController {
       //     apiUrl: "http://14.99.179.131/wsnapi/api/Claim/AddClaim", data: data);
       // print(jsonDecode(res));
 
-      if (dec['Status'] == true) {
+      if (dec['message'] == "Claim create successfully") {
         isSubmit.value = true;
-        constToast(dec['Data']['ResponseMessage']);
+        constToast(dec['message']);
         // fromdistanse.clear();
         // todistanse.clear();
         capturedImage = null;
@@ -284,8 +298,8 @@ class ExpenseController extends GetxController {
         rateController.clear();
         remarksController.clear();
         visitPurposeController.clear();
-      } else if (dec['Status'] == false) {
-        constToast(dec['Data']['ResponseMessage']);
+      } else {
+        constToast(dec['message']);
       }
 
       isSubmit.value = true;

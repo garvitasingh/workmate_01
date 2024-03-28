@@ -160,7 +160,7 @@ class VisitScreen extends StatelessWidget {
                                         InkWell(
                                           onTap: () {
                                             Get.to(ShowPreviousClaimsView(
-                                              id: data['ExpenseId'],
+                                              id: data['VisitSummaryId'],
                                             ));
                                           },
                                           child: const Text(

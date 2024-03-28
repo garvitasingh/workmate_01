@@ -22,9 +22,8 @@ class ApiProvider {
     } else if (res.statusCode == 401) {
       var re = jsonDecode(res.body);
       GetStorage().erase();
-      if (re['Message'] == 'Authorization has been denied for this request.') {
-        Get.offAll(LoginViewPage());
-      }
+      Get.offAll(LoginViewPage());
+
       return Future.error(res.body);
     } else if (res.statusCode == 404) {
       return Future.error(res.body);
