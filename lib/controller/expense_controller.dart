@@ -127,7 +127,7 @@ class ExpenseController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
+              "$BASEURL/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
 
       visitPlanModel = visitPlanModelFromJson(res);
       print(visitPlanModel);
@@ -141,6 +141,8 @@ class ExpenseController extends GetxController {
         }
         update();
       }
+     // getMstConvMode();
+     // getMstExpMode();
 
       update();
       isLoading.value = false;
@@ -172,12 +174,12 @@ class ExpenseController extends GetxController {
   }
 
   getMstExpMode() async {
-    print("get leave called");
+    print("get eeee called");
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/expense/exp-mst-mode");
-      // print(jsonDecode(res));
+              "$BASEURL/v1/application/expense/exp-mst-mode");
+      print(jsonDecode(res));
       visitPlanExpModel = visitPlanExpModelFromJson(res);
       print(visitPlanExpModel);
       for (var i = 0; i < visitPlanExpModel!.data!.visitPlan!.length; i++) {
@@ -256,30 +258,54 @@ class ExpenseController extends GetxController {
         update();
       }
       var token = GetStorage().read("token");
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      };
 
-      var request = http.MultipartRequest(
+      // var request = http.MultipartRequest(
+      //     'POST',
+      //     Uri.parse(
+      //         '$BASEURL/v1/application/expense/create-expense'));
+      // // request.fields.addAll({
+
+      // //   'Value':
+      // //       '{"ExpenseId": ${expenseId.toString()},"ExpModeId":${expModeId.toString()},"ConvModeId": ${convModeId.toString()},"Rate": ${rateController.text},"LocationDistance":${locationDistanceController.text},"Amount": ${amountController.text},"ClaimDoc":"test","Remarks": "${remarksController.text}","VisitPurpose": "${visitPurposeController.text}"}'
+      // // });
+      // request.body = json.encode({
+      //   "ExpModeId": 1,
+      //   "ConvModeId": 1,
+      //   "VisitSummaryId": "285ed62a-b292-4507-9acf-77cda529b5f1",
+      //   "Rate": "20",
+      //   "LocationDistance": 10,
+      //   "Amount": 20000000,
+      //   "ClaimDoc": "test",
+      //   "Remarks": "cab",
+      //   "Reason": "stay"
+      // });
+      // print(request.fields);
+      var request = http.Request(
           'POST',
           Uri.parse(
-              'https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/expense/create-expense'));
-      request.fields.addAll({
-        "EMPCode": "IT002",
-        "expensemodeid": expModeId.toString(),
-        "ConvModeId": convModeId.toString(),
-        "VisitSummaryId": expenseId.toString(),
+              '$BASEURL/v1/application/expense/create-expense'));
+      request.body = json.encode({
+        "ExpModeId": expModeId,
+        "ConvModeId": convModeId,
+        "VisitSummaryId": expenseId,
         "Rate": rateController.text,
-        "LocationDistance": locationDistanceController.text,
-        "amount": amountController.text,
+        "LocationDistance": 10,
+        "Amount": amountController.text,
         "ClaimDoc": "test",
-        "Remarks": rateController.text,
+        "Remarks": remarksController.text,
         "Reason": "stay"
-        // 'Value':
-        //     '{"ExpenseId": ${expenseId.toString()},"ExpModeId":${expModeId.toString()},"ConvModeId": ${convModeId.toString()},"Rate": ${rateController.text},"LocationDistance":${locationDistanceController.text},"Amount": ${amountController.text},"ClaimDoc":"test","Remarks": "${remarksController.text}","VisitPurpose": "${visitPurposeController.text}"}'
       });
-      print(request.fields);
       // request.files
       //     .add(await http.MultipartFile.fromPath('Image', capturedImage!.path));
-      request.headers.addAll({'Authorization': 'Bearer $token'});
-      print(request.fields);
+      // request.headers.addAll({'Authorization': 'Bearer $token'});
+      // print(request.body);
+      // http.StreamedResponse response = await request.send();
+      request.headers.addAll(headers);
+
       http.StreamedResponse response = await request.send();
       var dec = jsonDecode(await response.stream.bytesToString());
       print(dec);
@@ -298,6 +324,7 @@ class ExpenseController extends GetxController {
         rateController.clear();
         remarksController.clear();
         visitPurposeController.clear();
+        amountController.clear();
       } else {
         constToast(dec['message']);
       }

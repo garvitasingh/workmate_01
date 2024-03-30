@@ -62,7 +62,7 @@ class Data {
 
 class VisitAttendance {
     final String? empCode;
-    final int? visitId;
+    final String? visitId;
     final DateTime? attendanceDate;
     final int? checkIn;
     final int? checkOut;

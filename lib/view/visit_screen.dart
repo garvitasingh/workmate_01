@@ -63,13 +63,13 @@ class VisitScreen extends StatelessWidget {
                                 ),
                                 child: Column(
                                   children: [
-                                    dd("VisitPurpose", data['VisitPurpose']),
+                                    dd("VisitLocation", data['VisitLocation']),
                                     dd("Date", formattedDate),
                                     dd("From", data['VisitFrom']),
                                     dd("To", data['VisitTo']),
                                     dd("Remarks",
                                         data['VisitRemarks'].toString()),
-                                    data['Remarks'] == "null"
+                                    data['VisitRemarks'].toString() == "null"
                                         ? Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.end,
@@ -213,7 +213,7 @@ class VisitScreen extends StatelessWidget {
     Color baseColor = Colors.red; // Change this to your base color
 
     // Calculate the percentage based on the index (adjust the factor as needed)
-    double percentage = (index + 1) * 30.0; // For example, 10% increments
+    double percentage = (index + 1) * 10.0; // For example, 10% increments
 
     // Create a color with the adjusted opacity
     Color adjustedColor = baseColor.withOpacity(percentage / 100.0);

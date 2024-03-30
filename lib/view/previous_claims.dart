@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:workmate_01/Provider/Api_provider.dart';
 import 'package:workmate_01/utils/colors.dart';
+import 'package:workmate_01/utils/constants.dart';
 import 'package:workmate_01/utils/local_data.dart';
 import 'package:workmate_01/view/expanse_management.dart';
 
@@ -241,7 +242,7 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
     });
     try {
       var res = await ApiProvider().getRequest(
-          apiUrl: "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/expense/get-expense?VisitSummaryId=$id");
+          apiUrl: "$BASEURL/v1/application/expense/get-expense?VisitSummaryId=$id");
       print(jsonDecode(res));
       setState(() {
         loding = true;

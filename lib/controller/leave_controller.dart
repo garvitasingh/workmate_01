@@ -35,7 +35,7 @@ class LeaveController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/leave/get-leave");
+              "$BASEURL/v1/application/leave/get-leave");
       print(jsonDecode(res));
       leaveData = leaveModelFromJson(res);
       isLoading.value = false;
@@ -64,7 +64,7 @@ class LeaveController extends GetxController {
       };
       var res = await ApiProvider().postRequestToken(
           apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/leave/apply-leave",
+              "$BASEURL/v1/application/leave/apply-leave",
           data: data);
       // print(jsonDecode(res));
       if (kDebugMode) {

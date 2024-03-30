@@ -38,7 +38,7 @@ class _TodayVisitState extends State<TodayVisit> {
     super.initState();
     _initializeLocation();
     updateFormattedTime();
-    //controller.getVisitPlans();
+    controller.getVisitPlans();
 
     // Set up a timer to refresh the time every second
     Timer.periodic(const Duration(seconds: 1), (Timer timer) {
@@ -121,6 +121,8 @@ class _TodayVisitState extends State<TodayVisit> {
     }
   }
 
+  List<String> _locations = ['A', 'A', 'C', 'D']; // Option 2
+  String? _selectedLocation; // Option 2
   @override
   Widget build(BuildContext context) {
     DateTime currentDate = DateTime.now();
@@ -145,7 +147,7 @@ class _TodayVisitState extends State<TodayVisit> {
         ),
         actions: [
           //  Text(controller.visits[0].toString()),
-
+          
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             margin: const EdgeInsets.all(8.0),
@@ -159,13 +161,11 @@ class _TodayVisitState extends State<TodayVisit> {
                 setState(() {
                   controller.selectedLocation = newValue!;
                   controller.getvisitId();
-
-                  controller.getAttendanceMonthly();
-                  print(controller.holidayDates);
                 });
               },
               elevation: 2,
               items: controller.visits
+                  .toList()
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -280,18 +280,18 @@ class _TodayVisitState extends State<TodayVisit> {
                             height: 200,
                             child: CheckInButton(
                                 checkOut: controller.visitAttendanceModel!.data!
-                                            .visitAttendance![0].checkOut ==
+                                            .attendancelog![0].checkOut ==
                                         0
                                     ? false
                                     : true,
                                 checkIn: controller.visitAttendanceModel!.data!
-                                            .visitAttendance![0].checkIn ==
+                                            .attendancelog![0].checkIn ==
                                         1
                                     ? false
                                     : true,
                                 onPressed: () {
                                   controller.visitAttendanceModel!.data!
-                                              .visitAttendance![0].checkOut ==
+                                              .attendancelog![0].checkOut ==
                                           1
                                       ? constToast("Attendance Completed!")
                                       : controller.markAttendance(
@@ -303,8 +303,8 @@ class _TodayVisitState extends State<TodayVisit> {
                                           attType: controller
                                                       .visitAttendanceModel!
                                                       .data!
-                                                      .visitAttendance![0]
-                                                      .checkOutTime !=
+                                                      .attendancelog![0]
+                                                      .presentTimeOut !=
                                                   'null'
                                               ? 'out'
                                               : 'in',
@@ -396,32 +396,32 @@ class _TodayVisitState extends State<TodayVisit> {
                                         controller
                                                     .visitAttendanceModel!
                                                     .data!
-                                                    .visitAttendance![0]
-                                                    .checkInTime
+                                                    .attendancelog![0]
+                                                    .presentTimeIn
                                                     .toString() ==
                                                 "null"
                                             ? '-:-'
                                             : (convertTimestampToTime(controller
                                                 .visitAttendanceModel!
                                                 .data!
-                                                .visitAttendance![0]
-                                                .checkInTime
+                                                .attendancelog![0]
+                                                .presentTimeIn
                                                 .toString())),
                                         "Check-in"),
                                     _buildRow(
                                         controller
                                                     .visitAttendanceModel!
                                                     .data!
-                                                    .visitAttendance![0]
-                                                    .checkOutTime
+                                                    .attendancelog![0]
+                                                    .presentTimeOut
                                                     .toString() ==
                                                 "null"
                                             ? '-:-'
                                             : (convertTimestampToTime(controller
                                                 .visitAttendanceModel!
                                                 .data!
-                                                .visitAttendance![0]
-                                                .checkOutTime
+                                                .attendancelog![0]
+                                                .presentTimeOut
                                                 .toString())),
                                         "Check-out"),
                                     _buildRow(
@@ -429,21 +429,21 @@ class _TodayVisitState extends State<TodayVisit> {
                                                         .visitAttendanceModel!
                                                         .data!
                                                         .visitAttendance![0]
-                                                        .checkOutTime
+                                                        .presentTimeOut
                                                         .toString() ==
                                                     "null" ||
                                                 controller
                                                         .visitAttendanceModel!
                                                         .data!
                                                         .visitAttendance![0]
-                                                        .checkOutTime
+                                                        .presentTimeOut
                                                         .toString() ==
                                                     'null'
                                             ? controller
                                                         .visitAttendanceModel!
                                                         .data!
                                                         .visitAttendance![0]
-                                                        .checkInTime
+                                                        .presentTimeIn
                                                         .toString() !=
                                                     "null"
                                                 ? "process"
@@ -509,7 +509,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                                 .visitAttendanceModel!
                                                 .data!
                                                 .visitAttendance![0]
-                                                .checkoutImage
+                                                .checkOutAddressImage
                                                 .toString() !=
                                             "null"
                                         ? Image.network(
@@ -518,7 +518,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                                     .visitAttendanceModel!
                                                     .data!
                                                     .visitAttendance![0]
-                                                    .checkInImage
+                                                    .checkInAddressImage
                                                     .toString(),
                                             height: 100,
                                           )
@@ -576,7 +576,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                                       .visitAttendanceModel!
                                                       .data!
                                                       .visitAttendance![0]
-                                                      .checkInTime
+                                                      .presentTimeIn
                                                       .toString() ==
                                                   "null"
                                               ? '-:-'
@@ -584,7 +584,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                                           .visitAttendanceModel!
                                                           .data!
                                                           .visitAttendance![0]
-                                                          .checkOutTime
+                                                          .presentTimeOut
                                                           .toString() ==
                                                       "null"
                                                   ? convertTimestampToTime(
@@ -592,14 +592,14 @@ class _TodayVisitState extends State<TodayVisit> {
                                                           .visitAttendanceModel!
                                                           .data!
                                                           .visitAttendance![0]
-                                                          .checkInTime
+                                                          .presentTimeIn
                                                           .toString())
                                                   : convertTimestampToTime(
                                                       controller
                                                           .visitAttendanceModel!
                                                           .data!
                                                           .visitAttendance![0]
-                                                          .checkOutTime
+                                                          .presentTimeOut
                                                           .toString()),
                                           style: const TextStyle(
                                               fontSize: 16,
@@ -650,7 +650,7 @@ class _TodayVisitState extends State<TodayVisit> {
                                                     .visitAttendanceModel!
                                                     .data!
                                                     .visitAttendance![0]
-                                                    .checkoutImage
+                                                    .checkOutAddressImage
                                                     .toString() !=
                                                 "null"
                                             ? controller

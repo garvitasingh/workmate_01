@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:workmate_01/controller/expense_controller.dart';
 import 'package:workmate_01/model/attendance_log.dart';
 import 'package:workmate_01/model/attendance_model.dart';
 import 'package:workmate_01/model/monthl_attendance_model.dart';
@@ -30,7 +29,7 @@ class AttendanceController extends GetxController {
   VisitAttendanceModel? visitAttendanceModel;
   List<String> visits = [];
   VisitPlanModel? visitPlanModel;
-  String? selectedLocation = ' ';
+  String? selectedLocation = '';
   String? visitid;
   final unplaned = false.obs;
   TextEditingController from = TextEditingController();
@@ -175,6 +174,7 @@ class AttendanceController extends GetxController {
       }
       if (selectedLocation == "Un-planned") {
         unplaned.value = true;
+        visitid = "1";
         update();
       } else {
         if (kDebugMode) {
@@ -200,7 +200,7 @@ class AttendanceController extends GetxController {
       var res = await ApiProvider().getRequest(
           apiUrl:
               "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/attendance-logs?EMPCode=${LocalData().getEmpCode()}&VisitId=0");
-     // print(res);
+      // print(res);
       attendanceLogModel = attendanceLogModelFromJson(res);
       print(attendanceLogModel!.data.attendancelog.length);
       checkLog.value = true;
@@ -229,14 +229,13 @@ class AttendanceController extends GetxController {
           apiUrl:
               "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
       visitPlanModel = visitPlanModelFromJson(res);
-      for (var i = 0; i < visitPlanModel!.data.visitPlan.length; i++) {
+      for (var i = 0; i < visitPlanModel!.dataCount; i++) {
         visits.add(visitPlanModel!.data.visitPlan[i].visitLocation);
-      //  visits.add(visitPlanModel!.data.visitPlan[1].visitLocation);
-       
+        //  visits.add(visitPlanModel!.data.visitPlan[1].visitLocation);
+
         update();
       }
       selectedLocation = visitPlanModel!.data.visitPlan[0].visitLocation;
-      print(selectedLocation);
       update();
       getvisitId();
       isLoading.value = false;
@@ -259,10 +258,15 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "Attendance/GetVisitAttendance?EmpCode=${LocalData().getEmpCode()}&VisitId=$id");
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/get-attendance?VisitId=$visitid");
       visitAttendanceModel = visitAttendanceModelFromJson(res);
       dataPresent.value = true;
       isLoading.value = false;
+      if (visitAttendanceModel!.dataCount == 0) {
+        dataPresent.value = false;
+        isLoading.value = false;
+        update();
+      }
       update();
     } catch (e) {
       // visitAttendanceModel!.data.visitAttendance.add(VisitAttendance(
@@ -281,8 +285,7 @@ class AttendanceController extends GetxController {
       // visitAttendanceModel!.data.visitAttendance[0].checkOutTime = "null";
       // visitAttendanceModel!.data.visitAttendance[0].checkIn = 0;
       // visitAttendanceModel!.data.visitAttendance[0].checkOut = 0;
-      dataPresent.value = false;
-      isLoading.value = false;
+
       update();
       if (kDebugMode) {
         print(e.toString());
@@ -298,49 +301,112 @@ class AttendanceController extends GetxController {
     File? img,
   }) async {
     isMark.value = false;
-    if (kDebugMode) {
-      print("apply mark called");
-    }
-    if (img == null) {
-      constToast("Please Punch Image");
-    }
-    DateTime currentDateTime = DateTime.now();
-    String formattedDateTime = formatDateTime(currentDateTime);
-    if (kDebugMode) {
-      print(formattedDateTime);
-    }
-    try {
-      if (unplaned.isTrue) {
-        if (from.text.isEmpty || to.text.isEmpty) {
-          constToast("Fields Are Required!");
-          isMark.value = true;
-          update();
-          return;
-        }
-      }
 
-      var token = GetStorage().read("token");
-      if (selectedLocation == "Un-planned") {
-        //visitid = 0;
-        update();
-      }
-      var request = http.MultipartRequest(
-          'POST', Uri.parse('$BASEURL/Attendance/MarkAttendance'));
-      request.fields.addAll({
-        'value':
-            '{"EMPCode": "${LocalData().getEmpCode()}","CellEMIENo":"${LocalData().getdeviceid()}","Latitude": "${lat.toString()}","Longitude": "${log.toString()}","Address": "${add.toString()}","AttendanceType": "${attType.toString()}","AttendanceDate": "$formattedDateTime","VisitId":"${visitid.toString()}","FromVisit":"${unplaned.isTrue ? from.text : ""}","ToVisit":"${unplaned.isTrue ? to.text : ""}"\n}'
-      });
-      request.files.add(await http.MultipartFile.fromPath('Image', img!.path));
-      request.headers.addAll({'Authorization': 'Bearer $token'});
+    if (unplaned.isTrue) {
+      visitid = "1";
+      update();
+    }
 
-      http.StreamedResponse response = await request.send();
+    // print(unplaned.value);
+    // if (kDebugMode) {
+    //   print("apply mark called");
+    // }
+    // if (img == null) {
+    //   constToast("Please Punch Image");
+    // }
+    // DateTime currentDateTime = DateTime.now();
+    // String formattedDateTime = formatDateTime(currentDateTime);
+    // if (kDebugMode) {
+    //   print(formattedDateTime);
+    // }
+    // try {
+    //   if (unplaned.isTrue) {
+    //     if (from.text.isEmpty || to.text.isEmpty) {
+    //       constToast("Fields Are Required!");
+    //       isMark.value = true;
+    //       update();
+    //       return;
+    //     }
+    //   }
+
+    //   var token = GetStorage().read("token");
+    //   if (selectedLocation == "Un-planned") {
+    //     //visitid = 0;
+    //     update();
+    //   }
+    //   var request = http.Request(
+    //       'POST',
+    //       Uri.parse(
+    //           'https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/mark-attendence'));
+    //   request.body = json.encode({
+    //     "Latitude": "23.45",
+    //     "Longitude": "45.6",
+    //     "isPlanned": false,
+    //     "VisitFrom": "mumbai",
+    //     "VisitTo": "delhi",
+    //     "place_image": "place_image",
+    //     "visit_address": "visit_address",
+    //     "VisitSummaryId": ""
+    //   });
+    //   // request.files.add(await http.MultipartFile.fromPath('Image', img!.path));
+    //   request.headers.addAll({'Authorization': 'Bearer $token'});
+
+    //   http.StreamedResponse response = await request.send();
+    // var dec = jsonDecode(await response.stream.bytesToString());
+    // print(dec);
+    // AudioPlayer().play(AssetSource('audios/wrong_ans.mp3'));
+    // constToast("Attendance Marked!");
+    // // getAttendanceLogs();
+    // if (unplaned.isTrue) {
+    //   updatevisits();
+    // } else {
+    //   getVisitAttendance(visitid);
+    // }
+
+    // isMark.value = true;
+    // unplaned.value = false;
+    // update();
+    // } catch (e) {
+    //   unplaned.value = false;
+    //   isMark.value = true;
+    //   update();
+    //   if (kDebugMode) {
+    //     print(e.toString());
+    //   }
+    // }
+    var token = GetStorage().read("token");
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var request = http.Request(
+        'POST',
+        Uri.parse(
+            'https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/mark-attendence'));
+    request.body = json.encode({
+      "Latitude": lat.toString(),
+      "Longitude": log.toString(),
+      "isPlanned": unplaned.isTrue ? false : true,
+      "VisitFrom": unplaned.isTrue ? from.text : "",
+      "VisitTo": unplaned.isTrue ? to.text : "",
+      "place_image": "place_image",
+      "visit_address": add.toString(),
+      "VisitSummaryId": unplaned.isTrue ? "" : visitid
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
       var dec = jsonDecode(await response.stream.bytesToString());
       print(dec);
       AudioPlayer().play(AssetSource('audios/wrong_ans.mp3'));
       constToast("Attendance Marked!");
+
+      update();
       getAttendanceLogs();
       if (unplaned.isTrue) {
-        updatevisits();
+         updatevisits();
       } else {
         getVisitAttendance(visitid);
       }
@@ -348,13 +414,11 @@ class AttendanceController extends GetxController {
       isMark.value = true;
       unplaned.value = false;
       update();
-    } catch (e) {
+    } else {
       unplaned.value = false;
       isMark.value = true;
       update();
-      if (kDebugMode) {
-        print(e.toString());
-      }
+      print(response.reasonPhrase);
     }
   }
 

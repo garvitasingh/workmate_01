@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:workmate_01/controller/leave_controller.dart';
 import 'package:workmate_01/model/about_app_model.dart';
 import 'package:workmate_01/model/user_model.dart';
+import 'package:workmate_01/utils/constants.dart';
 
 import '../Provider/Api_provider.dart';
 import '../model/menu_model.dart';
@@ -42,7 +43,7 @@ class HomeController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/user/getuser");
+              "$BASEURL/v1/application/user/getuser");
       userData = userDataFromJson(res);
       print(userData!.data!.mobileNo.toString());
       update();
@@ -66,7 +67,7 @@ class HomeController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/dashboard/app-info");
+              "$BASEURL/v1/application/dashboard/app-info");
       print(aboutapp);
       aboutapp = aboutAppModelFromJson(res);
       await GetStorage()
@@ -86,7 +87,7 @@ class HomeController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/dashboard/get-menu?Devicetype=M&EmpCode=$userId");
+              "$BASEURL/v1/application/dashboard/get-menu?Devicetype=M&EmpCode=$userId");
       print(jsonDecode(res));
       var data = jsonDecode(res);
       // print(data["Data"]["Menu"]);

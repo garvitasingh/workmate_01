@@ -1,35 +1,35 @@
 // To parse this JSON data, do
 //
-//     final attendanceLogModel = attendanceLogModelFromJson(jsonString);
+//     final visitAttendanceModel = visitAttendanceModelFromJson(jsonString);
 
 import 'dart:convert';
 
-AttendanceLogModel attendanceLogModelFromJson(String str) => AttendanceLogModel.fromJson(json.decode(str));
+VisitAttendanceModel visitAttendanceModelFromJson(String str) => VisitAttendanceModel.fromJson(json.decode(str));
 
-String attendanceLogModelToJson(AttendanceLogModel data) => json.encode(data.toJson());
+String visitAttendanceModelToJson(VisitAttendanceModel data) => json.encode(data.toJson());
 
-class AttendanceLogModel {
-    String responseMessage;
-    bool status;
-    int dataCount;
-    Data data;
-    String responseCode;
-    bool confirmationbox;
+class VisitAttendanceModel {
+    String? responseMessage;
+    bool? status;
+    int? dataCount;
+    Data? data;
+    String? responseCode;
+    bool? confirmationbox;
 
-    AttendanceLogModel({
-        required this.responseMessage,
-        required this.status,
-        required this.dataCount,
-        required this.data,
-        required this.responseCode,
-        required this.confirmationbox,
+    VisitAttendanceModel({
+        this.responseMessage,
+        this.status,
+        this.dataCount,
+        this.data,
+        this.responseCode,
+        this.confirmationbox,
     });
 
-    factory AttendanceLogModel.fromJson(Map<String, dynamic> json) => AttendanceLogModel(
+    factory VisitAttendanceModel.fromJson(Map<String, dynamic> json) => VisitAttendanceModel(
         responseMessage: json["ResponseMessage"],
         status: json["Status"],
         dataCount: json["DataCount"],
-        data: Data.fromJson(json["Data"]),
+        data: json["Data"] == null ? null : Data.fromJson(json["Data"]),
         responseCode: json["ResponseCode"],
         confirmationbox: json["confirmationbox"],
     );
@@ -38,51 +38,51 @@ class AttendanceLogModel {
         "ResponseMessage": responseMessage,
         "Status": status,
         "DataCount": dataCount,
-        "Data": data.toJson(),
+        "Data": data?.toJson(),
         "ResponseCode": responseCode,
         "confirmationbox": confirmationbox,
     };
 }
 
 class Data {
-    List<Attendancelog> attendancelog;
+    List<Attendancelog>? attendancelog;
 
     Data({
-        required this.attendancelog,
+        this.attendancelog,
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
-        attendancelog: List<Attendancelog>.from(json["Attendancelog"].map((x) => Attendancelog.fromJson(x))),
+        attendancelog: json["Attendancelog"] == null ? [] : List<Attendancelog>.from(json["Attendancelog"]!.map((x) => Attendancelog.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "Attendancelog": List<dynamic>.from(attendancelog.map((x) => x.toJson())),
+        "Attendancelog": attendancelog == null ? [] : List<dynamic>.from(attendancelog!.map((x) => x.toJson())),
     };
 }
 
 class Attendancelog {
-    String empCode;
-    String visitLoc;
-    String visitId;
-    String lat;
-    String long;
-    String address;
+    String? empCode;
+    String? visitLoc;
+    String? visitId;
+    String? lat;
+    String? long;
+    String? checkInAddress;
     DateTime? presentTimeIn;
     DateTime? presentTimeOut;
-    int checkIn;
-    int checkOut;
+    int? checkIn;
+    int? checkOut;
 
     Attendancelog({
-        required this.empCode,
-        required this.visitLoc,
-        required this.visitId,
-        required this.lat,
-        required this.long,
-        required this.address,
-        required this.presentTimeIn,
-        required this.presentTimeOut,
-        required this.checkIn,
-        required this.checkOut,
+        this.empCode,
+        this.visitLoc,
+        this.visitId,
+        this.lat,
+        this.long,
+        this.checkInAddress,
+        this.presentTimeIn,
+        this.presentTimeOut,
+        this.checkIn,
+        this.checkOut,
     });
 
     factory Attendancelog.fromJson(Map<String, dynamic> json) => Attendancelog(
@@ -91,7 +91,7 @@ class Attendancelog {
         visitId: json["VisitId"],
         lat: json["Lat"],
         long: json["Long"],
-        address: json["Address"],
+        checkInAddress: json["CheckInAddress"],
         presentTimeIn: json["PresentTimeIn"] == null ? null : DateTime.parse(json["PresentTimeIn"]),
         presentTimeOut: json["PresentTimeOut"] == null ? null : DateTime.parse(json["PresentTimeOut"]),
         checkIn: json["CheckIn"],
@@ -104,7 +104,7 @@ class Attendancelog {
         "VisitId": visitId,
         "Lat": lat,
         "Long": long,
-        "Address": address,
+        "CheckInAddress": checkInAddress,
         "PresentTimeIn": presentTimeIn?.toIso8601String(),
         "PresentTimeOut": presentTimeOut?.toIso8601String(),
         "CheckIn": checkIn,

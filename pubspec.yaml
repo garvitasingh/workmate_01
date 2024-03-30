@@ -36,6 +36,7 @@ dependencies:
   connectivity_plus: ^4.0.1
   cupertino_icons: ^1.0.2
   device_info_plus: ^9.1.1
+  dropdown_button2: ^2.3.9
   flutter:
     sdk: flutter
   flutter_background_service: null
