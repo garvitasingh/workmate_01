@@ -241,7 +241,7 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
     });
     try {
       var res = await ApiProvider().getRequest(
-          apiUrl: "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/expense/get-expense?VisitSummaryId=$id");
+          apiUrl: "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/expense/get-expense?VisitSummaryId=$id");
       print(jsonDecode(res));
       setState(() {
         loding = true;

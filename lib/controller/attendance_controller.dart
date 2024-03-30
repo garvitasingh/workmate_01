@@ -96,7 +96,7 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/attendence/my-attendance");
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/my-attendance");
       // print(jsonDecode(res));
 
       attendanceData = attendanceModelFromJson(res);
@@ -183,9 +183,9 @@ class AttendanceController extends GetxController {
         unplaned.value = false;
         update();
       }
-      //getVisitAttendance(visitid);
+      getVisitAttendance(visitid);
     }
-    // getVisitAttendance(visitid);
+    getVisitAttendance(visitid);
 
     update();
   }
@@ -199,10 +199,10 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/attendence/attendance-logs?EMPCode=${LocalData().getEmpCode()}&VisitId=0");
-      print(res);
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/attendance-logs?EMPCode=${LocalData().getEmpCode()}&VisitId=0");
+     // print(res);
       attendanceLogModel = attendanceLogModelFromJson(res);
-
+      print(attendanceLogModel!.data.attendancelog.length);
       checkLog.value = true;
       update();
 
@@ -227,18 +227,18 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
       visitPlanModel = visitPlanModelFromJson(res);
-      print(visitPlanModel);
       for (var i = 0; i < visitPlanModel!.data.visitPlan.length; i++) {
         visits.add(visitPlanModel!.data.visitPlan[i].visitLocation);
-        selectedLocation = visitPlanModel!.data.visitPlan[i].visitLocation;
+      //  visits.add(visitPlanModel!.data.visitPlan[1].visitLocation);
+       
         update();
       }
-
+      selectedLocation = visitPlanModel!.data.visitPlan[0].visitLocation;
       print(selectedLocation);
       update();
-      //getvisitId();
+      getvisitId();
       isLoading.value = false;
       update();
     } catch (e) {

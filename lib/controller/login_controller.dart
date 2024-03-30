@@ -47,7 +47,7 @@ class AuthController extends GetxController {
       box.write("deviceid", password);
       var res = await ApiProvider().postRequestToken(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/auth/token",
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/auth/token",
           data: data);
 
       if (res['error_uri'].toString() == "001") {
@@ -79,7 +79,7 @@ class AuthController extends GetxController {
 
       var res = await ApiProvider().postRequestToken(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/auth/activate-user",
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/auth/activate-user",
           data: data);
       if (res['responseData']['Status'] == true) {
         loginUser();

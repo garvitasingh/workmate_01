@@ -127,7 +127,7 @@ class ExpenseController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
 
       visitPlanModel = visitPlanModelFromJson(res);
       print(visitPlanModel);
@@ -176,7 +176,7 @@ class ExpenseController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/expense/exp-mst-mode");
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/expense/exp-mst-mode");
       // print(jsonDecode(res));
       visitPlanExpModel = visitPlanExpModelFromJson(res);
       print(visitPlanExpModel);
@@ -260,7 +260,7 @@ class ExpenseController extends GetxController {
       var request = http.MultipartRequest(
           'POST',
           Uri.parse(
-              'https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/expense/create-expense'));
+              'https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/expense/create-expense'));
       request.fields.addAll({
         "EMPCode": "IT002",
         "expensemodeid": expModeId.toString(),

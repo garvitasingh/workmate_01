@@ -34,7 +34,7 @@ class VisitController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/visit/get-visit-detail?EMPCode=IT002");
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/visit/get-visit-detail?EMPCode=IT002");
       print(jsonDecode(res));
       var data = jsonDecode(res);
       // print(data["Data"]["VisitPlan"].length);
@@ -61,7 +61,7 @@ class VisitController extends GetxController {
       print(id);
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/visit/update-visit-feedback?id=$id&visitRemarks=${remarkCo[index].text} ");
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/visit/update-visit-feedback?id=$id&visitRemarks=${remarkCo[index].text} ");
       // print(jsonDecode(res));
       var data = jsonDecode(res);
       // print(data["Data"]["VisitPlan"].length);

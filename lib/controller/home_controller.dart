@@ -42,7 +42,7 @@ class HomeController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/user/getuser");
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/user/getuser");
       userData = userDataFromJson(res);
       print(userData!.data!.mobileNo.toString());
       update();
@@ -66,7 +66,7 @@ class HomeController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/dashboard/app-info");
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/dashboard/app-info");
       print(aboutapp);
       aboutapp = aboutAppModelFromJson(res);
       await GetStorage()
@@ -86,7 +86,7 @@ class HomeController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://7dd1-2409-4089-8507-d651-c5fe-347a-9173-f439.ngrok-free.app/v1/application/dashboard/get-menu?Devicetype=M&EmpCode=$userId");
+              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/dashboard/get-menu?Devicetype=M&EmpCode=$userId");
       print(jsonDecode(res));
       var data = jsonDecode(res);
       // print(data["Data"]["Menu"]);

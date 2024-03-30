@@ -67,8 +67,8 @@ class Attendancelog {
     String lat;
     String long;
     String address;
-    dynamic presentTimeIn;
-    dynamic presentTimeOut;
+    DateTime? presentTimeIn;
+    DateTime? presentTimeOut;
     int checkIn;
     int checkOut;
 
@@ -92,8 +92,8 @@ class Attendancelog {
         lat: json["Lat"],
         long: json["Long"],
         address: json["Address"],
-        presentTimeIn: json["PresentTimeIn"],
-        presentTimeOut: json["PresentTimeOut"],
+        presentTimeIn: json["PresentTimeIn"] == null ? null : DateTime.parse(json["PresentTimeIn"]),
+        presentTimeOut: json["PresentTimeOut"] == null ? null : DateTime.parse(json["PresentTimeOut"]),
         checkIn: json["CheckIn"],
         checkOut: json["CheckOut"],
     );
@@ -105,8 +105,8 @@ class Attendancelog {
         "Lat": lat,
         "Long": long,
         "Address": address,
-        "PresentTimeIn": presentTimeIn,
-        "PresentTimeOut": presentTimeOut,
+        "PresentTimeIn": presentTimeIn?.toIso8601String(),
+        "PresentTimeOut": presentTimeOut?.toIso8601String(),
         "CheckIn": checkIn,
         "CheckOut": checkOut,
     };
