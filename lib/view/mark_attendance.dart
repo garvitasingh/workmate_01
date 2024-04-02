@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:workmate_01/controller/my_attendance_controller.dart';
 import 'package:workmate_01/swimmer_widget/my_attendance_swimmer.dart';
 import 'package:workmate_01/utils/colors.dart';
 
@@ -42,7 +43,8 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
                 color: secondaryColor),
           ),
         ),
-        body: GetBuilder<AttendanceController>(
+        body: GetBuilder<MyAttendanceController>(
+          init: MyAttendanceController(),
           builder: (controller) {
             return controller.isLoading.isTrue
                 ? Center(child: MyAttendanceSwimmer())

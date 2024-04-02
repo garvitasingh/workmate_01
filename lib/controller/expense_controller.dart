@@ -40,7 +40,7 @@ class ExpenseController extends GetxController {
   List<String> convMode = [];
   List<String> convExpMode = [];
   String? expenseId;
-  int? convModeId = 1;
+  String? convModeId = '';
   int? expModeId;
   File? capturedImage;
 
@@ -49,7 +49,7 @@ class ExpenseController extends GetxController {
     super.onInit();
 
     getVisitPlans();
-    // getMstConvMode();
+    getMstConvMode();
     getMstExpMode();
   }
 
@@ -158,11 +158,11 @@ class ExpenseController extends GetxController {
 
     print("get leave called");
     try {
-      var res = await ApiProvider().getRequest(apiUrl: "Claim/MstConvMode");
+      var res = await ApiProvider().getRequest(apiUrl: "$BASEURL/v1/application/expense/mst-con-mode");
       // print(jsonDecode(res));
       convModeModel = convModeModelFromJson(res);
-      for (var i = 0; i < convModeModel!.dataCount; i++) {
-        convMode.add(convModeModel!.data.visitPlan[i].convModeDesc);
+      for (var i = 0; i < convModeModel!.dataCount!; i++) {
+        convMode.add(convModeModel!.data![i].convModeDesc!);
         update();
       }
 
@@ -181,6 +181,7 @@ class ExpenseController extends GetxController {
               "$BASEURL/v1/application/expense/exp-mst-mode");
       print(jsonDecode(res));
       visitPlanExpModel = visitPlanExpModelFromJson(res);
+      update();
       print(visitPlanExpModel);
       for (var i = 0; i < visitPlanExpModel!.data!.visitPlan!.length; i++) {
         convExpMode
@@ -202,15 +203,15 @@ class ExpenseController extends GetxController {
         update();
       }
     }
-    print(expModeId);
+    print(convModeId);
   }
 
   calculateAmount() {
     print("object");
-    for (var i = 0; i < convModeModel!.dataCount; i++) {
-      if (convModeString == convModeModel!.data.visitPlan[i].convModeDesc) {
-        rateController.text = convModeModel!.data.visitPlan[i].rate.toString();
-        convModeId = convModeModel!.data.visitPlan[i].convModeId;
+    for (var i = 0; i < convModeModel!.dataCount!; i++) {
+      if (convModeString == convModeModel!.data![i].convModeDesc) {
+        rateController.text = convModeModel!.data![i].rate.toString();
+        convModeId = convModeModel!.data![i].convModeId.toString();
         update();
       }
     }
@@ -218,6 +219,8 @@ class ExpenseController extends GetxController {
 
   getVisitLocation() {
     print("object");
+    print(expModeId);
+    print(convModeId);
     for (var i = 0; i < visitPlanModel!.dataCount; i++) {
       if (selectedLocation ==
           visitPlanModel!.data.visitPlan[i].visitLocation.toString()) {
@@ -254,7 +257,7 @@ class ExpenseController extends GetxController {
       if (rateController.text.isEmpty) {
         rateController.text = "00";
         locationDistanceController.text = "00";
-        convModeId = 0;
+        convModeId = '';
         update();
       }
       var token = GetStorage().read("token");
@@ -293,12 +296,13 @@ class ExpenseController extends GetxController {
         "ConvModeId": convModeId,
         "VisitSummaryId": expenseId,
         "Rate": rateController.text,
-        "LocationDistance": 10,
+        "LocationDistance": locationDistanceController.text,
         "Amount": amountController.text,
         "ClaimDoc": "test",
         "Remarks": remarksController.text,
-        "Reason": "stay"
+        "Reason": " "
       });
+      print(request.body);
       // request.files
       //     .add(await http.MultipartFile.fromPath('Image', capturedImage!.path));
       // request.headers.addAll({'Authorization': 'Bearer $token'});

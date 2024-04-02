@@ -49,6 +49,7 @@ class AuthController extends GetxController {
           apiUrl:
               "$BASEURL/v1/application/auth/token",
           data: data);
+         
 
       if (res['error_uri'].toString() == "001") {
         Get.to(const VerificationUser());
@@ -102,7 +103,7 @@ class AuthController extends GetxController {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      //  password = 'UP1A.230620.001';
+     // password = androidInfo.id;
       password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
       update();
       print('Device ID: ${androidInfo.id}');

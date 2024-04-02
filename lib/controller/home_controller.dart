@@ -1,26 +1,27 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
-import 'package:workmate_01/controller/leave_controller.dart';
 import 'package:workmate_01/model/about_app_model.dart';
+import 'package:workmate_01/model/last_check_in_model.dart';
 import 'package:workmate_01/model/user_model.dart';
 import 'package:workmate_01/utils/constants.dart';
 
 import '../Provider/Api_provider.dart';
-import '../model/menu_model.dart';
 
 class HomeController extends GetxController {
-  final menuData = <MenuModel>[].obs;
+  final menuData = [].obs;
   //final leaveController = Get.put(LeaveController());
 
   AboutAppModel? aboutapp;
   UserData? userData;
+  LastCheckInModel? lastCheckInModel;
   final isLoading = true.obs;
+  final ischeck = true.obs;
   final List<String> imgList = [
     'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
     'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=94a1e718d89ca60a6337a6008341ca50&auto=format&fit=crop&w=1950&q=80',
@@ -28,6 +29,7 @@ class HomeController extends GetxController {
     'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
+
   @override
   void onInit() {
     super.onInit();
@@ -41,9 +43,8 @@ class HomeController extends GetxController {
     isLoading.value = true;
     print("get User called");
     try {
-      var res = await ApiProvider().getRequest(
-          apiUrl:
-              "$BASEURL/v1/application/user/getuser");
+      var res = await ApiProvider()
+          .getRequest(apiUrl: "$BASEURL/v1/application/user/getuser");
       userData = userDataFromJson(res);
       print(userData!.data!.mobileNo.toString());
       update();
@@ -59,19 +60,17 @@ class HomeController extends GetxController {
     }
   }
 
-  
-
   getAboutapp() async {
     isLoading.value = true;
     print("get AboutCall called");
     try {
-      var res = await ApiProvider().getRequest(
-          apiUrl:
-              "$BASEURL/v1/application/dashboard/app-info");
+      var res = await ApiProvider()
+          .getRequest(apiUrl: "$BASEURL/v1/application/dashboard/app-info");
       print(aboutapp);
       aboutapp = aboutAppModelFromJson(res);
       await GetStorage()
           .write("productname", aboutapp!.data.info[0].productName);
+      getlastCheckina();
       getUser();
       isLoading.value = false;
       update();
@@ -79,6 +78,31 @@ class HomeController extends GetxController {
       print(e.toString());
     }
   }
+
+  getlastCheckina() async {
+    ischeck.value = true;
+    print("get last called");
+    try {
+      var res = await ApiProvider().getRequest(
+          apiUrl: "$BASEURL/v1/application/attendence/get-last-check-in");
+      lastCheckInModel = lastCheckInModelFromJson(res);
+      ischeck.value = false;
+      update();
+    } catch (e) {
+      ischeck.value = false;
+      update();
+      print(e.toString());
+    }
+  }
+
+  List menuStatic = [
+    "My Attendance",
+    "Mark Attendance",
+    "Visits",
+    "Expense Management",
+    "Leave",
+    "Others"
+  ];
 
   getMenu({userId}) async {
     isLoading.value = true;
@@ -92,8 +116,7 @@ class HomeController extends GetxController {
       var data = jsonDecode(res);
       // print(data["Data"]["Menu"]);
       for (var i = 0; i < data["Data"]["Menu"].length; i++) {
-        menuData.add(MenuModel.fromJson(data["Data"]["Menu"][i]));
-
+        menuData.add(menuStatic[i]);
         isLoading.value = false;
         update();
       }

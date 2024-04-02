@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -16,7 +17,7 @@ class ExpanseManagementView extends StatefulWidget {
 }
 
 class _ExpanseManagementViewState extends State<ExpanseManagementView> {
-  ExpenseController controller = Get.put(ExpenseController());
+  //ExpenseController controller = Get.put(ExpenseController());
   final _formKey = GlobalKey<FormBuilderState>();
   DateTime fromDate = DateTime.now();
   DateTime toDate = DateTime.now();
@@ -24,7 +25,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
   @override
   void initState() {
     // TODO: implement initState
-   controller.getVisitPlans();
+    // controller.getVisitPlans();
     super.initState();
   }
 
@@ -32,65 +33,158 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
   Widget build(BuildContext context) {
     var w = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Future.delayed(Duration.zero, () {
-              Get.back();
-            });
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: secondaryColor,
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Future.delayed(Duration.zero, () {
+                Get.back();
+              });
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: secondaryColor,
+            ),
           ),
-        ),
-        centerTitle: false,
-        backgroundColor: darkColor,
-        title: const Text(
-          "Expense Management",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: secondaryColor,
+          centerTitle: false,
+          backgroundColor: darkColor,
+          title: const Text(
+            "Expense Management",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: secondaryColor,
+            ),
           ),
-        ),
-        actions: [
-          Obx(() => controller.isLoading.isFalse
-              ? Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  margin: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: DropdownButton<String>(
+          actions: [
+            GetBuilder<ExpenseController>(
+              init: ExpenseController(),
+              builder: (controller) {
+                // return Container(
+                //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                //   margin: const EdgeInsets.all(8.0),
+                //   decoration: BoxDecoration(
+                //     color: Colors.green,
+                //     borderRadius: BorderRadius.circular(5),
+                //   ),
+                //   child: DropdownButton<String>(
+                //     value: controller.selectedLocation,
+                //     onChanged: (String? newValue) {
+                //       setState(() {
+                //         controller.selectedLocation = newValue!;
+                //         controller.getvisitId();
+                //       });
+                //     },
+                //     elevation: 2,
+                //     items: controller.visits
+                //         .toList()
+                //         .map<DropdownMenuItem<String>>((String value) {
+                //       return DropdownMenuItem<String>(
+                //         value: value,
+                //         child: Text(
+                //           value.toString(),
+                //           style: const TextStyle(color: Colors.black),
+                //         ),
+                //       );
+                //     }).toList(),
+                //   ),
+                // );
+                return DropdownButtonHideUnderline(
+                  child: DropdownButton2<String>(
+                    isExpanded: true,
+                    hint: const Row(
+                      children: [
+                        Icon(
+                          Icons.list,
+                          size: 16,
+                          color: Colors.yellow,
+                        ),
+                        SizedBox(
+                          width: 4,
+                        ),
+                        Expanded(
+                          child: Text(
+                            'Select Item',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.yellow,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    items: controller.visits
+                        .map((String item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ))
+                        .toList(),
                     value: controller.selectedLocation,
-                    onChanged: (String? newValue) {
+                    onChanged: (String? value) {
                       setState(() {
-                        controller.selectedLocation = newValue!;
-                       controller.getVisitLocation();
+                        controller.selectedLocation = value;
+                        controller.getVisitLocation();
                       });
                     },
-                    elevation: 2,
-                    items: controller.visits.map<DropdownMenuItem<String>>(
-                      (String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                        );
-                      },
-                    ).toList(),
+                    buttonStyleData: ButtonStyleData(
+                      height: 40,
+                      width: 160,
+                      padding: const EdgeInsets.only(left: 14, right: 14),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: Colors.black26,
+                        ),
+                        color: Colors.redAccent,
+                      ),
+                      elevation: 2,
+                    ),
+                    iconStyleData: const IconStyleData(
+                      icon: Icon(
+                        Icons.arrow_forward_ios_outlined,
+                      ),
+                      iconSize: 14,
+                      iconEnabledColor: Colors.yellow,
+                      iconDisabledColor: Colors.grey,
+                    ),
+                    dropdownStyleData: DropdownStyleData(
+                      maxHeight: 200,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(14),
+                        color: appbarColor,
+                      ),
+                      offset: const Offset(-20, 0),
+                      scrollbarTheme: ScrollbarThemeData(
+                        radius: const Radius.circular(40),
+                        thickness: MaterialStateProperty.all<double>(6),
+                        thumbVisibility: MaterialStateProperty.all<bool>(true),
+                      ),
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 40,
+                      padding: EdgeInsets.only(left: 14, right: 14),
+                    ),
                   ),
-                )
-              : const Text(""))
-        ],
-      ),
-      body: Obx(() => controller.isLoading.isFalse
-          ? SingleChildScrollView(
+                );
+              },
+            )
+          ],
+        ),
+        body: GetBuilder<ExpenseController>(
+          init: ExpenseController(),
+          builder: (controller) {
+            return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -209,29 +303,29 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                     return null;
                                   },
                                 ),
-                                const SizedBox(height: 10),
-                                FormBuilderTextField(
-                                    controller:
-                                        controller.visitPurposeController,
-                                    name: 'Purpose',
-                                    decoration: InputDecoration(
-                                      labelText: 'Purpose',
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                          color: Colors.blue,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                    ),
-                                    // validator: (value) {
-                                    //   if (value == '') {
-                                    //     return 'required';
-                                    //   }
-                                    //   return null;
-                                    // },
-                                    autofocus: false),
+                                // const SizedBox(height: 10),
+                                // FormBuilderTextField(
+                                //     controller:
+                                //         controller.visitPurposeController,
+                                //     name: 'Purpose',
+                                //     decoration: InputDecoration(
+                                //       labelText: 'Purpose',
+                                //       border: OutlineInputBorder(
+                                //         borderRadius:
+                                //             BorderRadius.circular(10.0),
+                                //         borderSide: const BorderSide(
+                                //           color: Colors.blue,
+                                //           width: 1.0,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     // validator: (value) {
+                                //     //   if (value == '') {
+                                //     //     return 'required';
+                                //     //   }
+                                //     //   return null;
+                                //     // },
+                                //     autofocus: false),
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -444,7 +538,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                     // },
                                     autofocus: false),
                                 const SizedBox(height: 10),
-                                 Row(
+                                Row(
                                   children: [
                                     Text(
                                       "Attachment",
@@ -469,7 +563,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                         width: w,
                                         child: contrr.capturedImage != null
                                             ? InkWell(
-                                                onTap: (){
+                                                onTap: () {
                                                   controller.openSheet(context);
                                                 },
                                                 child: Image.file(
@@ -484,7 +578,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                                   color: Colors.red,
                                                   size: 40,
                                                 ),
-                                                onPressed: (){
+                                                onPressed: () {
                                                   controller.openSheet(context);
                                                 },
                                                 iconSize: 20,
@@ -542,7 +636,9 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                               child:
                                                   CircularProgressIndicator()),
                                     )),
-                                    const SizedBox(height: 10,),
+                                const SizedBox(
+                                  height: 10,
+                                ),
                                 Row(
                                   children: [
                                     InkWell(
@@ -564,7 +660,9 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                     ),
                                   ],
                                 ),
-                                 const SizedBox(height: 10,),
+                                const SizedBox(
+                                  height: 10,
+                                ),
                               ],
                             ),
                           ),
@@ -574,9 +672,8 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                   )
                 ],
               ),
-            )
-          : const Center(child: CircularProgressIndicator())),
-    );
+            );
+          },
+        ));
   }
-  
 }

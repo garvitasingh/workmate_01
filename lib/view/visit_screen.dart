@@ -13,182 +13,205 @@ class VisitScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    VisitController controller = Get.put(VisitController());
-
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        leading: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: secondaryColor,
-            )),
-        backgroundColor: darkColor,
-        title: const Text(
-          "Visits",
-          style: TextStyle(color: secondaryColor),
+        appBar: AppBar(
+          centerTitle: false,
+          leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: secondaryColor,
+              )),
+          backgroundColor: darkColor,
+          title: const Text(
+            "Visits",
+            style: TextStyle(color: secondaryColor),
+          ),
         ),
-      ),
-      backgroundColor: backgroundColor,
-      body: Obx(() => controller.isLoading.isFalse
-          ? Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                children: [
-                  controller.visitData.isEmpty
-                      ? const Expanded(child: NoDataFoundWidget())
-                      : Expanded(
-                          child: ListView.builder(
-                            itemCount: controller.visitData.length,
-                            itemBuilder: (context, index) {
-                              print(controller.visitData[index]['VisitTo']);
-                              var data = controller.visitData[index];
+        backgroundColor: backgroundColor,
+        body: GetBuilder<VisitController>(
+          init: VisitController(),
+          builder: (controller) {
+            return controller.isLoading.isTrue
+                ? Center(child: CircularProgressIndicator.adaptive())
+                : Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      children: [
+                        controller.visitData.isEmpty
+                            ? const Expanded(child: NoDataFoundWidget())
+                            : Expanded(
+                                child: ListView.builder(
+                                  itemCount: controller.visitData.length,
+                                  itemBuilder: (context, index) {
+                                    print(
+                                        controller.visitData[index]['VisitTo']);
+                                    var data = controller.visitData[index];
 
-                              // Parse the ISO 8601 date string
-                              DateTime dateTime =
-                                  DateTime.parse(data['VisitDate']);
+                                    // Parse the ISO 8601 date string
+                                    DateTime dateTime =
+                                        DateTime.parse(data['VisitDate']);
 
-                              // Format the date in the desired format
-                              String formattedDate =
-                                  DateFormat("MMM dd yyyy ").format(dateTime);
-                              return Container(
-                                padding: const EdgeInsets.all(16.0),
-                                margin: const EdgeInsets.all(8.0),
-                                decoration: BoxDecoration(
-                                  color: getColorByIndex(index),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: Column(
-                                  children: [
-                                    dd("VisitLocation", data['VisitLocation']),
-                                    dd("Date", formattedDate),
-                                    dd("From", data['VisitFrom']),
-                                    dd("To", data['VisitTo']),
-                                    dd("Remarks",
-                                        data['VisitRemarks'].toString()),
-                                    data['VisitRemarks'].toString() == "null"
-                                        ? Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Expanded(
-                                                  child: Container(
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                                width: 100,
-                                                child: TextFormField(
-                                                  controller: controller
-                                                      .remarkCo[index],
-                                                  maxLines: 12,
-                                                  minLines: 1,
-                                                  //cursorHeight: 12,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                          contentPadding:
-                                                              EdgeInsets.only(
-                                                                  bottom: 6,
-                                                                  left: 5),
-                                                          hintText: "Feedback",
-                                                          border:
-                                                              InputBorder.none),
-                                                ),
-                                              )),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              MaterialButton(
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5)),
-                                                  height: 35,
-                                                  color: darkColor,
-                                                  onPressed: () {
-                                                    print(data['VisitSummaryId']);
-                                                    if (controller
-                                                            .remarkCo[index]
-                                                            .text ==
-                                                        "") {
-                                                      constToast(
-                                                          "Please Enter Feedback...");
-                                                      return;
-                                                    }
-                                                    AwesomeDialog(
-                                                      context: context,
-                                                      dialogType:
-                                                          DialogType.question,
-                                                      animType:
-                                                          AnimType.rightSlide,
-                                                      title:
-                                                          'Feedback Confirmation',
-                                                      desc: 'Are you sure?',
-                                                      btnCancelOnPress: () {
-                                                        Get.back();
-                                                      },
-                                                      btnOkOnPress: () async {
-                                                        controller
-                                                            .updateFeedback(
-                                                                id: data[
-                                                                    'VisitSummaryId'],
-                                                                index: index);
-                                                      },
-                                                    ).show();
-                                                  },
-                                                  child: const Text(
-                                                    "Submit",
-                                                    style: TextStyle(
+                                    // Format the date in the desired format
+                                    String formattedDate =
+                                        DateFormat("MMM dd yyyy ")
+                                            .format(dateTime);
+                                    return Container(
+                                      padding: const EdgeInsets.all(16.0),
+                                      margin: const EdgeInsets.all(8.0),
+                                      decoration: BoxDecoration(
+                                        color: getColorByIndex(index),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          dd("VisitLocation",
+                                              data['VisitLocation']),
+                                          dd("Date", formattedDate),
+                                          dd("From", data['VisitFrom']),
+                                          dd("To", data['VisitTo']),
+                                          dd("Remarks",
+                                              data['VisitRemarks'].toString()),
+                                          data['VisitRemarks'].toString() ==
+                                                  "null"
+                                              ? Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Expanded(
+                                                        child: Container(
+                                                      height: 40,
+                                                      decoration: BoxDecoration(
                                                         color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        fontSize: 15),
-                                                  )),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                      ),
+                                                      width: 100,
+                                                      child: TextFormField(
+                                                        controller: controller
+                                                            .remarkCo[index],
+                                                        maxLines: 12,
+                                                        minLines: 1,
+                                                        //cursorHeight: 12,
+                                                        decoration:
+                                                            const InputDecoration(
+                                                                contentPadding:
+                                                                    EdgeInsets.only(
+                                                                        bottom:
+                                                                            6,
+                                                                        left:
+                                                                            5),
+                                                                hintText:
+                                                                    "Feedback",
+                                                                border:
+                                                                    InputBorder
+                                                                        .none),
+                                                      ),
+                                                    )),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    MaterialButton(
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5)),
+                                                        height: 35,
+                                                        color: darkColor,
+                                                        onPressed: () {
+                                                          print(data[
+                                                              'VisitSummaryId']);
+                                                          if (controller
+                                                                  .remarkCo[
+                                                                      index]
+                                                                  .text ==
+                                                              "") {
+                                                            constToast(
+                                                                "Please Enter Feedback...");
+                                                            return;
+                                                          }
+                                                          AwesomeDialog(
+                                                            context: context,
+                                                            dialogType:
+                                                                DialogType
+                                                                    .question,
+                                                            animType: AnimType
+                                                                .rightSlide,
+                                                            title:
+                                                                'Feedback Confirmation',
+                                                            desc:
+                                                                'Are you sure?',
+                                                            btnCancelOnPress:
+                                                                () {
+                                                              Get.back();
+                                                            },
+                                                            btnOkOnPress:
+                                                                () async {
+                                                              controller
+                                                                  .updateFeedback(
+                                                                      id: data[
+                                                                          'VisitSummaryId'],
+                                                                      index:
+                                                                          index);
+                                                            },
+                                                          ).show();
+                                                        },
+                                                        child: const Text(
+                                                          "Submit",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              fontSize: 15),
+                                                        )),
+                                                  ],
+                                                )
+                                              : const SizedBox(),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Row(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  Get.to(ShowPreviousClaimsView(
+                                                    id: data['VisitSummaryId'],
+                                                  ));
+                                                },
+                                                child: const Text(
+                                                  "Previous Claims",
+                                                  style: TextStyle(
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                      decorationColor:
+                                                          Colors.blue,
+                                                      color: Colors.blue,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                              ),
                                             ],
                                           )
-                                        : const SizedBox(),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Row(
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            Get.to(ShowPreviousClaimsView(
-                                              id: data['VisitSummaryId'],
-                                            ));
-                                          },
-                                          child: const Text(
-                                            "Previous Claims",
-                                            style: TextStyle(
-                                                decoration:
-                                                    TextDecoration.underline,
-                                                decorationColor: Colors.blue,
-                                                color: Colors.blue,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                ],
-              ),
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            )),
-    );
+                              ),
+                      ],
+                    ),
+                  );
+          },
+        ));
   }
 
   Widget dd(text, text2) {

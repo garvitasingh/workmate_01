@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:workmate_01/controller/home_controller.dart';
 import 'package:workmate_01/model/attendance_log.dart';
 import 'package:workmate_01/model/attendance_model.dart';
 import 'package:workmate_01/model/monthl_attendance_model.dart';
@@ -32,8 +34,11 @@ class AttendanceController extends GetxController {
   String? selectedLocation = '';
   String? visitid;
   final unplaned = false.obs;
+  bool attendancLoad = false;
   TextEditingController from = TextEditingController();
   TextEditingController to = TextEditingController();
+  TextEditingController visitPurpose = TextEditingController();
+  final homeCo = Get.put(HomeController());
   String formatDateTime(DateTime dateTime) {
     return DateFormat('MM-dd-yyyy HH:mm').format(dateTime);
   }
@@ -75,10 +80,14 @@ class AttendanceController extends GetxController {
 
     // getVisitPlans();
     // getAttendanceMonthly();
+
     getVisitPlans();
     getAttendance();
-
     getAttendanceLogs();
+    // Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+    //   // Check if the widget is still mounted before updating the state
+    //   getAttendanceLogs();
+    // });
   }
 
   // getall() {
@@ -94,8 +103,7 @@ class AttendanceController extends GetxController {
     }
     try {
       var res = await ApiProvider().getRequest(
-          apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/my-attendance");
+          apiUrl: "$BASEURL/v1/application/attendence/my-attendance");
       // print(jsonDecode(res));
 
       attendanceData = attendanceModelFromJson(res);
@@ -168,23 +176,24 @@ class AttendanceController extends GetxController {
   }
 
   getvisitId() {
+    attendancLoad = true;
+    update();
+    visitAttendanceModel = null;
     for (var i = 0; i < visitPlanModel!.dataCount; i++) {
       if (selectedLocation == visitPlanModel!.data.visitPlan[i].visitLocation) {
         visitid = visitPlanModel!.data.visitPlan[i].expenseId;
       }
-      if (selectedLocation == "Un-planned") {
-        unplaned.value = true;
-        visitid = "1";
-        update();
-      } else {
-        if (kDebugMode) {
-          print(unplaned.value);
-        }
-        unplaned.value = false;
-        update();
-      }
-      getVisitAttendance(visitid);
     }
+    if (selectedLocation == "Un-planned") {
+      unplaned.value = true;
+      visitid = "1";
+      update();
+    } else {
+      getVisitAttendance(visitid);
+      unplaned.value = false;
+      update();
+    }
+
     getVisitAttendance(visitid);
 
     update();
@@ -199,10 +208,10 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/attendance-logs?EMPCode=${LocalData().getEmpCode()}&VisitId=0");
+              "$BASEURL/v1/application/attendence/attendance-logs?EMPCode=${LocalData().getEmpCode()}&VisitId=0");
       // print(res);
       attendanceLogModel = attendanceLogModelFromJson(res);
-      print(attendanceLogModel!.data.attendancelog.length);
+
       checkLog.value = true;
       update();
 
@@ -227,7 +236,7 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
+              "$BASEURL/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
       visitPlanModel = visitPlanModelFromJson(res);
       for (var i = 0; i < visitPlanModel!.dataCount; i++) {
         visits.add(visitPlanModel!.data.visitPlan[i].visitLocation);
@@ -251,6 +260,7 @@ class AttendanceController extends GetxController {
 
   getVisitAttendance(id) async {
     isLoading.value = true;
+    print(id);
     update();
     if (kDebugMode) {
       print("get visit attendance called");
@@ -258,8 +268,10 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/get-attendance?VisitId=$visitid");
+              "$BASEURL/v1/application/attendence/get-attendance?VisitId=$visitid");
       visitAttendanceModel = visitAttendanceModelFromJson(res);
+      attendancLoad = false;
+      update();
       dataPresent.value = true;
       isLoading.value = false;
       if (visitAttendanceModel!.dataCount == 0) {
@@ -337,7 +349,7 @@ class AttendanceController extends GetxController {
     //   var request = http.Request(
     //       'POST',
     //       Uri.parse(
-    //           'https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/mark-attendence'));
+    //           '$BASEURL/v1/application/attendence/mark-attendence'));
     //   request.body = json.encode({
     //     "Latitude": "23.45",
     //     "Longitude": "45.6",
@@ -374,15 +386,25 @@ class AttendanceController extends GetxController {
     //     print(e.toString());
     //   }
     // }
+    if (img == null) {
+      constToast("Please Punch Image");
+    }
+    if (unplaned.isTrue) {
+      if (from.text.isEmpty || to.text.isEmpty || visitPurpose.text.isEmpty) {
+        constToast("Fields Are Required!");
+        isMark.value = true;
+        update();
+        return;
+      }
+    }
+
     var token = GetStorage().read("token");
     var headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    var request = http.Request(
-        'POST',
-        Uri.parse(
-            'https://1628-2401-4900-b0c-6fdb-dcca-37cc-7d24-c033.ngrok-free.app/v1/application/attendence/mark-attendence'));
+    var request = http.Request('POST',
+        Uri.parse('$BASEURL/v1/application/attendence/mark-attendence'));
     request.body = json.encode({
       "Latitude": lat.toString(),
       "Longitude": log.toString(),
@@ -390,6 +412,7 @@ class AttendanceController extends GetxController {
       "VisitFrom": unplaned.isTrue ? from.text : "",
       "VisitTo": unplaned.isTrue ? to.text : "",
       "place_image": "place_image",
+      "visit_purpose": unplaned.isTrue ? visitPurpose.text : "",
       "visit_address": add.toString(),
       "VisitSummaryId": unplaned.isTrue ? "" : visitid
     });
@@ -402,15 +425,15 @@ class AttendanceController extends GetxController {
       print(dec);
       AudioPlayer().play(AssetSource('audios/wrong_ans.mp3'));
       constToast("Attendance Marked!");
-
+      homeCo.getlastCheckina();
       update();
-      getAttendanceLogs();
+
       if (unplaned.isTrue) {
-         updatevisits();
+        updatevisits();
       } else {
         getVisitAttendance(visitid);
       }
-
+      getAttendanceLogs();
       isMark.value = true;
       unplaned.value = false;
       update();
@@ -435,5 +458,6 @@ class AttendanceController extends GetxController {
     update();
     from.clear();
     to.clear();
+    visitPurpose.clear();
   }
 }

@@ -1,14 +1,14 @@
 // To parse this JSON data, do
 //
-//     final visitAttendanceModel = visitAttendanceModelFromJson(jsonString);
+//     final attendanceLogModel = attendanceLogModelFromJson(jsonString);
 
 import 'dart:convert';
 
-VisitAttendanceModel visitAttendanceModelFromJson(String str) => VisitAttendanceModel.fromJson(json.decode(str));
+AttendanceLogModel attendanceLogModelFromJson(String str) => AttendanceLogModel.fromJson(json.decode(str));
 
-String visitAttendanceModelToJson(VisitAttendanceModel data) => json.encode(data.toJson());
+String attendanceLogModelToJson(AttendanceLogModel data) => json.encode(data.toJson());
 
-class VisitAttendanceModel {
+class AttendanceLogModel {
     String? responseMessage;
     bool? status;
     int? dataCount;
@@ -16,7 +16,7 @@ class VisitAttendanceModel {
     String? responseCode;
     bool? confirmationbox;
 
-    VisitAttendanceModel({
+    AttendanceLogModel({
         this.responseMessage,
         this.status,
         this.dataCount,
@@ -25,7 +25,7 @@ class VisitAttendanceModel {
         this.confirmationbox,
     });
 
-    factory VisitAttendanceModel.fromJson(Map<String, dynamic> json) => VisitAttendanceModel(
+    factory AttendanceLogModel.fromJson(Map<String, dynamic> json) => AttendanceLogModel(
         responseMessage: json["ResponseMessage"],
         status: json["Status"],
         dataCount: json["DataCount"],

@@ -9,27 +9,27 @@ ConvModeModel convModeModelFromJson(String str) => ConvModeModel.fromJson(json.d
 String convModeModelToJson(ConvModeModel data) => json.encode(data.toJson());
 
 class ConvModeModel {
-    String responseMessage;
-    bool status;
-    int dataCount;
-    Data data;
-    String responseCode;
-    bool confirmationbox;
+    String? responseMessage;
+    bool? status;
+    int? dataCount;
+    List<Datum>? data;
+    String? responseCode;
+    bool? confirmationbox;
 
     ConvModeModel({
-        required this.responseMessage,
-        required this.status,
-        required this.dataCount,
-        required this.data,
-        required this.responseCode,
-        required this.confirmationbox,
+        this.responseMessage,
+        this.status,
+        this.dataCount,
+        this.data,
+        this.responseCode,
+        this.confirmationbox,
     });
 
     factory ConvModeModel.fromJson(Map<String, dynamic> json) => ConvModeModel(
         responseMessage: json["ResponseMessage"],
         status: json["Status"],
         dataCount: json["DataCount"],
-        data: Data.fromJson(json["Data"]),
+        data: json["Data"] == null ? [] : List<Datum>.from(json["Data"]!.map((x) => Datum.fromJson(x))),
         responseCode: json["ResponseCode"],
         confirmationbox: json["confirmationbox"],
     );
@@ -38,48 +38,36 @@ class ConvModeModel {
         "ResponseMessage": responseMessage,
         "Status": status,
         "DataCount": dataCount,
-        "Data": data.toJson(),
+        "Data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
         "ResponseCode": responseCode,
         "confirmationbox": confirmationbox,
     };
 }
 
-class Data {
-    List<VisitPlan> visitPlan;
+class Datum {
+    int? convModeId;
+    String? convModeDesc;
+    int? rate;
+    int? isActive;
 
-    Data({
-        required this.visitPlan,
+    Datum({
+        this.convModeId,
+        this.convModeDesc,
+        this.rate,
+        this.isActive,
     });
 
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
-        visitPlan: List<VisitPlan>.from(json["VisitPlan"].map((x) => VisitPlan.fromJson(x))),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "VisitPlan": List<dynamic>.from(visitPlan.map((x) => x.toJson())),
-    };
-}
-
-class VisitPlan {
-    int convModeId;
-    String convModeDesc;
-    int rate;
-
-    VisitPlan({
-        required this.convModeId,
-        required this.convModeDesc,
-        required this.rate,
-    });
-
-    factory VisitPlan.fromJson(Map<String, dynamic> json) => VisitPlan(
+    factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         convModeId: json["ConvModeId"],
         convModeDesc: json["ConvModeDesc"],
         rate: json["Rate"],
+        isActive: json["IsActive"],
     );
 
     Map<String, dynamic> toJson() => {
         "ConvModeId": convModeId,
         "ConvModeDesc": convModeDesc,
         "Rate": rate,
+        "IsActive": isActive,
     };
 }
