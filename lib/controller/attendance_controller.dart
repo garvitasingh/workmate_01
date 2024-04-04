@@ -426,13 +426,15 @@ class AttendanceController extends GetxController {
       AudioPlayer().play(AssetSource('audios/wrong_ans.mp3'));
       constToast("Attendance Marked!");
       homeCo.getlastCheckina();
-      update();
 
+      update();
       if (unplaned.isTrue) {
         updatevisits();
+        update();
       } else {
         getVisitAttendance(visitid);
       }
+
       getAttendanceLogs();
       isMark.value = true;
       unplaned.value = false;
@@ -451,9 +453,9 @@ class AttendanceController extends GetxController {
     for (var i = 0; i < visitPlanModel!.data.visitPlan.length; i++) {
       if (newVisit == visitPlanModel!.data.visitPlan[i].visitLocation) {
         visitid = visitPlanModel!.data.visitPlan[i].expenseId;
-        getVisitAttendance(visitPlanModel!.data.visitPlan[i].expenseId);
       }
     }
+    getVisitAttendance(visitid);
     // visits.add(newVisit);
     update();
     from.clear();
