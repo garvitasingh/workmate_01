@@ -1,5 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -8,6 +9,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:workmate_01/component/check_connectivity.dart';
 import 'package:workmate_01/controller/home_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
+import 'package:workmate_01/utils/constants.dart';
 import 'package:workmate_01/utils/local_data.dart';
 import 'package:workmate_01/view/about_app.dart';
 import 'package:workmate_01/view/expanse_management.dart';
@@ -213,184 +215,330 @@ class _HomePageViewState extends State<HomePageView> {
                                     GetBuilder<HomeController>(
                                       init: HomeController(),
                                       builder: (controller) {
-                                        return controller.ischeck.isTrue
-                                            ? const Center(
-                                                child: CircularProgressIndicator
-                                                    .adaptive(),
-                                              )
-                                            : Container(
-                                                margin: const EdgeInsets.all(2),
-                                                decoration: BoxDecoration(
-                                                    color: getColorByIndex(8),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12)),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      14.0),
-                                                  child: Column(
-                                                    children: [
-                                                      Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Text(
-                                                            controller
-                                                                .aboutapp!
-                                                                .data
-                                                                .info[0]
-                                                                .productName,
-                                                            style: const TextStyle(
-                                                                fontSize: 20,
+                                        return Container(
+                                          margin: const EdgeInsets.all(2),
+                                          decoration: BoxDecoration(
+                                              color: getColorByIndex(8),
+                                              borderRadius:
+                                                  BorderRadius.circular(12)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(14.0),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      controller.aboutapp!.data
+                                                          .info[0].productName,
+                                                      style: const TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          color: darkColor),
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: [
+                                                        const Text(
+                                                            "Your last CheckIn visit",
+                                                            style: TextStyle(
+                                                                fontSize: 16,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .w700,
+                                                                        .w600,
                                                                 color:
-                                                                    darkColor),
-                                                          ),
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .end,
-                                                            children: [
-                                                              const Text(
-                                                                  "Your last CheckIn visit",
-                                                                  style: TextStyle(
+                                                                    darkColor)),
+                                                        // SizedBox(
+                                                        //   height: 50,
+                                                        //   width: 200,
+                                                        //   child:
+                                                        //       ScrollLoopAutoScroll(
+                                                        //     gap: 0,
+                                                        //     delay: const Duration(
+                                                        //         seconds:
+                                                        //             3),
+                                                        //     scrollDirection:
+                                                        //         Axis.vertical,
+                                                        //     child: Column(
+                                                        //       crossAxisAlignment:
+                                                        //           CrossAxisAlignment
+                                                        //               .end,
+                                                        //       children: [
+                                                        //         ListView
+                                                        //             .separated(
+                                                        //           separatorBuilder:
+                                                        //               (context, index) =>
+                                                        //                   const SizedBox(
+                                                        //             height:
+                                                        //                 20,
+                                                        //           ),
+                                                        //           shrinkWrap:
+                                                        //               true,
+                                                        //           itemCount: controller
+                                                        //               .lastCheckInModel!
+                                                        //               .dataCount!,
+                                                        //           itemBuilder:
+                                                        //               (context,
+                                                        //                   index) {
+                                                        //             return Row(
+                                                        //               mainAxisAlignment:
+                                                        //                   MainAxisAlignment.end,
+                                                        //               children: [
+                                                        //                 Container(
+                                                        //                   height: 40,
+                                                        //                   alignment: Alignment.center,
+                                                        //                   decoration: BoxDecoration(color: appbarColor, borderRadius: BorderRadius.circular(6)),
+                                                        //                   child: Text(
+                                                        //                     " ${controller.lastCheckInModel!.data!.lastVisitAttendance![index].visitFrom} - ${controller.lastCheckInModel!.data!.lastVisitAttendance![index].visitTo} ",
+                                                        //                     style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                                                        //                   ),
+                                                        //                 ),
+                                                        //               ],
+                                                        //             );
+                                                        //           },
+                                                        //         )
+                                                        //       ],
+                                                        //     ),
+                                                        //   ),
+                                                        // ),
+                                                        DropdownButtonHideUnderline(
+                                                          child:
+                                                              DropdownButton2<
+                                                                  String>(
+                                                            isExpanded: true,
+                                                            hint: const Row(
+                                                              children: [
+                                                                Icon(
+                                                                  Icons.list,
+                                                                  size: 16,
+                                                                  color: Colors
+                                                                      .yellow,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 4,
+                                                                ),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    'Select Item',
+                                                                    style:
+                                                                        TextStyle(
                                                                       fontSize:
-                                                                          16,
+                                                                          14,
                                                                       fontWeight:
                                                                           FontWeight
-                                                                              .w600,
-                                                                      color:
-                                                                          darkColor)),
-                                                              SizedBox(
-                                                                height: 50,
-                                                                width: 200,
-                                                                child:
-                                                                    ScrollLoopAutoScroll(
-                                                                  gap: 0,
-                                                                  delay: const Duration(
-                                                                      seconds:
-                                                                          3),
-                                                                  scrollDirection:
-                                                                      Axis.vertical,
-                                                                  child: Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .end,
-                                                                    children: [
-                                                                      ListView
-                                                                          .separated(
-                                                                        separatorBuilder:
-                                                                            (context, index) =>
-                                                                                const SizedBox(
-                                                                          height:
-                                                                              20,
-                                                                        ),
-                                                                        shrinkWrap:
-                                                                            true,
-                                                                        itemCount: controller
-                                                                            .lastCheckInModel!
-                                                                            .dataCount!,
-                                                                        itemBuilder:
-                                                                            (context,
-                                                                                index) {
-                                                                          return Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.end,
-                                                                            children: [
-                                                                              Container(
-                                                                                height: 40,
-                                                                                alignment: Alignment.center,
-                                                                                decoration: BoxDecoration(color: appbarColor, borderRadius: BorderRadius.circular(6)),
-                                                                                child: Text(
-                                                                                  " ${controller.lastCheckInModel!.data!.lastVisitAttendance![index].visitFrom} - ${controller.lastCheckInModel!.data!.lastVisitAttendance![index].visitTo} ",
-                                                                                  style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          );
-                                                                        },
-                                                                      )
-                                                                    ],
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .yellow,
+                                                                    ),
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
                                                                   ),
                                                                 ),
-                                                              ),
-                                                            ],
-                                                          )
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 20,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          const Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                "Check in/Check out",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w900),
-                                                              ),
-                                                              Text(
-                                                                "Mark your check-in and check-out visit.",
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        appbarColor,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500),
-                                                              )
-                                                            ],
-                                                          ),
-                                                          InkWell(
-                                                            onTap: () {
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          const TodayVisit(),
-                                                                ),
-                                                              );
+                                                              ],
+                                                            ),
+                                                            items: controller
+                                                                .getLastVisits
+                                                                .map((String
+                                                                        item) =>
+                                                                    DropdownMenuItem<
+                                                                        String>(
+                                                                      value:
+                                                                          item,
+                                                                      child:
+                                                                          Text(
+                                                                        item,
+                                                                        style:
+                                                                            const TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                      ),
+                                                                    ))
+                                                                .toList(),
+                                                            value: controller
+                                                                .selectedValue,
+                                                            onChanged: (String?
+                                                                value) {
+                                                              setState(() {
+                                                                controller
+                                                                        .selectedValue =
+                                                                    value!;
+                                                                visitID = value;
+                                                                setState(() {});
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            TodayVisit(),
+                                                                  ),
+                                                                );
+                                                              });
                                                             },
-                                                            child: Container(
-                                                              decoration: const BoxDecoration(
+                                                            buttonStyleData:
+                                                                ButtonStyleData(
+                                                              height: 40,
+                                                              width: 100,
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 14,
+                                                                      right:
+                                                                          14),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            14),
+                                                                border:
+                                                                    Border.all(
                                                                   color: Colors
-                                                                      .white,
-                                                                  shape: BoxShape
-                                                                      .circle),
-                                                              child:
-                                                                  const Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            4.0),
-                                                                child: Icon(Icons
-                                                                    .arrow_forward),
+                                                                      .black26,
+                                                                ),
+                                                                color: Colors
+                                                                    .redAccent,
+                                                              ),
+                                                              elevation: 2,
+                                                            ),
+                                                            iconStyleData:
+                                                                const IconStyleData(
+                                                              icon: Icon(
+                                                                Icons
+                                                                    .arrow_forward_ios_outlined,
+                                                              ),
+                                                              iconSize: 14,
+                                                              iconEnabledColor:
+                                                                  Colors.white,
+                                                              iconDisabledColor:
+                                                                  Colors.white,
+                                                            ),
+                                                            dropdownStyleData:
+                                                                DropdownStyleData(
+                                                              maxHeight: 200,
+                                                              width: 200,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            14),
+                                                                color:
+                                                                    appbarColor,
+                                                              ),
+                                                              offset:
+                                                                  const Offset(
+                                                                      -20, 0),
+                                                              scrollbarTheme:
+                                                                  ScrollbarThemeData(
+                                                                radius:
+                                                                    const Radius
+                                                                        .circular(
+                                                                        40),
+                                                                thickness:
+                                                                    MaterialStateProperty
+                                                                        .all<double>(
+                                                                            6),
+                                                                thumbVisibility:
+                                                                    MaterialStateProperty
+                                                                        .all<bool>(
+                                                                            true),
                                                               ),
                                                             ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
+                                                            menuItemStyleData:
+                                                                const MenuItemStyleData(
+                                                              height: 40,
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      left: 14,
+                                                                      right:
+                                                                          14),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
                                                 ),
-                                              );
+                                                const SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    const Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          "Check in/Check out",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w900),
+                                                        ),
+                                                        Text(
+                                                          "Mark your check-in and check-out visit.",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  appbarColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                TodayVisit(),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: Container(
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                                color: Colors
+                                                                    .white,
+                                                                shape: BoxShape
+                                                                    .circle),
+                                                        child: const Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  4.0),
+                                                          child: Icon(Icons
+                                                              .arrow_forward),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
                                       },
                                     ),
                                     const SizedBox(
@@ -411,6 +559,8 @@ class _HomePageViewState extends State<HomePageView> {
                                                     mainAxisSpacing: 10,
                                                     mainAxisExtent: 150),
                                             itemBuilder: (context, index) {
+                                              List<Color> colors =
+                                                  generateLightColors();
                                               return InkWell(
                                                 onTap: () {
                                                   Navigator.push(
@@ -421,7 +571,7 @@ class _HomePageViewState extends State<HomePageView> {
                                                       ));
                                                 },
                                                 child: Card(
-                                                  color: getColorByIndex(index),
+                                                  color: colors[index],
                                                   child: Padding(
                                                     padding:
                                                         const EdgeInsets.all(
@@ -469,6 +619,16 @@ class _HomePageViewState extends State<HomePageView> {
                   ),
           )),
     );
+  }
+
+  List<Color> generateLightColors() {
+    List<Color> lightColors = [];
+    // Add all light shades of primary colors
+    for (MaterialColor color in Colors.primaries) {
+      lightColors.add(color.shade200);
+    }
+
+    return lightColors;
   }
 
   Color getColorByIndex(int index) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:workmate_01/controller/my_attendance_controller.dart';
 import 'package:workmate_01/swimmer_widget/my_attendance_swimmer.dart';
 import 'package:workmate_01/utils/colors.dart';
@@ -17,6 +18,33 @@ class MarkAttendanceView extends StatefulWidget {
 class _MarkAttendanceViewState extends State<MarkAttendanceView> {
   //AttendanceController controller = Get.put(AttendanceController());
   DateTime currentDate = DateTime.now();
+  List<DateTime> holidays = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    List<DateTime> sundaysInApril2024 = getSundaysInMonth(2024, 4);
+
+    // Add all Sundays to the holidays list
+    holidays.addAll(sundaysInApril2024);
+  }
+
+  List<DateTime> getSundaysInMonth(int year, int month) {
+    List<DateTime> sundays = [];
+    DateTime firstDayOfMonth = DateTime(year, month, 1);
+    DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
+
+    for (DateTime date = firstDayOfMonth;
+        date.isBefore(lastDayOfMonth);
+        date = date.add(Duration(days: 1))) {
+      if (date.weekday == DateTime.sunday) {
+        sundays.add(DateTime.utc(date.year, date.month, date.day));
+      }
+    }
+
+    return sundays;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +143,14 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
   Widget _iconCard(String title, int? count, icon, color) {
     return InkWell(
       onTap: () {
-        //
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CalendarDialog(
+              holidays: holidays,
+            );
+          },
+        );
       },
       child: Card(
         color: color,
@@ -168,4 +203,116 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
     "Leave",
     "Working Days",
   ];
+}
+
+class CalendarDialog extends StatefulWidget {
+  List holidays = [];
+
+  CalendarDialog({super.key, required this.holidays});
+  @override
+  State<CalendarDialog> createState() => _CalendarDialogState();
+}
+
+class _CalendarDialogState extends State<CalendarDialog> {
+  late CalendarFormat _calendarFormat;
+  late DateTime _focusedDay;
+  late DateTime _selectedDay;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _calendarFormat = CalendarFormat.month;
+    _focusedDay = DateTime.now();
+    _selectedDay = DateTime.now();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 20),
+            Card(
+              color: Colors.white,
+              surfaceTintColor: Colors.white,
+              child: TableCalendar(
+                firstDay:
+                    DateTime(DateTime.now().year, DateTime.now().month, 1),
+                lastDay:
+                    DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
+                focusedDay: _focusedDay,
+                calendarFormat: _calendarFormat,
+                calendarStyle: const CalendarStyle(
+                  todayDecoration: BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                  selectedDecoration: BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                headerStyle: const HeaderStyle(
+                  formatButtonVisible: false,
+                ),
+                onDaySelected: (selectedDay, focusedDay) {},
+                enabledDayPredicate: (DateTime day) {
+                  // Disable all past days except leave and absent days
+                  if (day.isAfter(
+                      DateTime.now().subtract(const Duration(days: 1)))) {
+                    return true;
+                  }
+                  for (DateTime leaveDate in widget.holidays) {
+                    if (_isSameDay(day, leaveDate)) {
+                      return true;
+                    }
+                  }
+                  return false;
+                },
+                calendarBuilders: CalendarBuilders(
+                  defaultBuilder: (context, day, focusedDay) {
+                    for (DateTime highlightedDate in widget.holidays) {
+                      if (_isSameDay(day, highlightedDate)) {
+                        return Container(
+                          margin: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              border: Border.all(
+                                  color: Colors.red, width: 2),
+                              shape: BoxShape.circle),
+                          child: Center(
+                            child: Text(
+                              '${day.day}',
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Close'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool _isSameDay(DateTime dayA, DateTime dayB) {
+    return dayA.year == dayB.year &&
+        dayA.month == dayB.month &&
+        dayA.day == dayB.day;
+  }
 }

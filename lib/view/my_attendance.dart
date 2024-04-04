@@ -143,16 +143,14 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const TodayVisit(),
+                                        builder: (context) => TodayVisit(),
                                       ),
                                     );
                                   } else {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const TodayVisit(),
+                                        builder: (context) => TodayVisit(),
                                       ),
                                     );
                                   }
@@ -480,7 +478,6 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                               const SizedBox(
                                                 height: 3,
                                               ),
-                                             
                                           itemCount: controller
                                               .attendanceLogModel!.dataCount!)
                                 ],

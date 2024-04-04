@@ -11,7 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:workmate_01/controller/home_controller.dart';
 import 'package:workmate_01/model/attendance_log.dart';
 import 'package:workmate_01/model/attendance_model.dart';
-import 'package:workmate_01/model/monthl_attendance_model.dart';
 import 'package:workmate_01/model/visit_attendance_model.dart';
 import 'package:workmate_01/model/visit_plan_model.dart';
 import 'package:workmate_01/utils/constants.dart';
@@ -31,7 +30,7 @@ class AttendanceController extends GetxController {
   VisitAttendanceModel? visitAttendanceModel;
   List<String> visits = [];
   VisitPlanModel? visitPlanModel;
-  String? selectedLocation = '';
+  String? selectedLocation = ' ';
   String? visitid;
   final unplaned = false.obs;
   bool attendancLoad = false;
@@ -80,7 +79,10 @@ class AttendanceController extends GetxController {
 
     // getVisitPlans();
     // getAttendanceMonthly();
-
+   if(visitID != ''){
+    selectedLocation = visitID;
+    print(selectedLocation);
+   }
     getVisitPlans();
     getAttendance();
     getAttendanceLogs();
@@ -174,7 +176,7 @@ class AttendanceController extends GetxController {
       }
     }
   }
-
+  
   getvisitId() {
     attendancLoad = true;
     update();
@@ -184,6 +186,7 @@ class AttendanceController extends GetxController {
         visitid = visitPlanModel!.data.visitPlan[i].expenseId;
       }
     }
+    visitID = '';
     if (selectedLocation == "Un-planned") {
       unplaned.value = true;
       visitid = "1";
@@ -244,7 +247,12 @@ class AttendanceController extends GetxController {
 
         update();
       }
+      if(visitID != ''){
+        selectedLocation = visitID;
+        update();
+      }else{
       selectedLocation = visitPlanModel!.data.visitPlan[0].visitLocation;
+      }
       update();
       getvisitId();
       isLoading.value = false;

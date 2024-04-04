@@ -22,3 +22,5 @@ String convertTimestampToTime(String timestamp) {
   String formattedTime = DateFormat('hh:mm a').format(dateTime);
   return formattedTime;
 }
+
+String visitID ='';

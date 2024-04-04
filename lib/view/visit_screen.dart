@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/component/no_data_found.dart';
 import 'package:workmate_01/controller/visit_controller.dart';
+import 'package:workmate_01/swimmer_widget/home_page_swimmer.dart';
+import 'package:workmate_01/swimmer_widget/swimmer_for_visits.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:workmate_01/utils/constants.dart';
 import 'package:workmate_01/view/previous_claims.dart';
@@ -35,7 +37,7 @@ class VisitScreen extends StatelessWidget {
           init: VisitController(),
           builder: (controller) {
             return controller.isLoading.isTrue
-                ? Center(child: CircularProgressIndicator.adaptive())
+                ? Center(child: SwimmerForVisitView())
                 : Padding(
                     padding: const EdgeInsets.all(8),
                     child: Column(
@@ -58,11 +60,12 @@ class VisitScreen extends StatelessWidget {
                                     String formattedDate =
                                         DateFormat("MMM dd yyyy ")
                                             .format(dateTime);
+                                    List<Color> colors = generateLightColors();
                                     return Container(
                                       padding: const EdgeInsets.all(16.0),
                                       margin: const EdgeInsets.all(8.0),
                                       decoration: BoxDecoration(
-                                        color: getColorByIndex(index),
+                                        color: colors[index],
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                       ),
@@ -77,9 +80,9 @@ class VisitScreen extends StatelessWidget {
                                               data['VisitRemarks'].toString()),
                                           data['VisitRemarks'].toString() ==
                                                   "null"
-                                              ? Row(
+                                              ? Row(mainAxisAlignment: MainAxisAlignment.center,
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
+                                                      CrossAxisAlignment.center,
                                                   children: [
                                                     Expanded(
                                                         child: Container(
@@ -192,8 +195,8 @@ class VisitScreen extends StatelessWidget {
                                                       decoration: TextDecoration
                                                           .underline,
                                                       decorationColor:
-                                                          Colors.blue,
-                                                      color: Colors.blue,
+                                                          Colors.black,
+                                                      color: Colors.black,
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.w600),
@@ -223,12 +226,28 @@ class VisitScreen extends StatelessWidget {
           child: Text(
             "${text} : ",
             style: const TextStyle(
-                color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
           ),
         ),
-        SizedBox(width: 150, child: Text(text2 == "null" ? '-:-' : text2)),
+        SizedBox(
+            width: 150,
+            child: Text(
+              text2 == "null" ? '-:-' : text2,
+              style: TextStyle(color: appbarColor),
+            )),
       ],
     );
+  }
+
+  List<Color> generateLightColors() {
+    List<Color> lightColors = [];
+
+    // Add all light shades of primary colors
+    for (MaterialColor color in Colors.primaries) {
+      lightColors.add(color.shade300);
+    }
+
+    return lightColors;
   }
 
   Color getColorByIndex(int index) {

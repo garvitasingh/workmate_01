@@ -76,10 +76,9 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
                     time =
                         "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}.${dateTime.millisecond}";
                   }
+                  List<Color> colors = generateLightColors();
                   return Card(
-                    color: !visibleList![index]
-                        ? Colors.red
-                        : getColorByIndex(index),
+                    color: !visibleList![index] ? Colors.red : colors[index],
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     child: Padding(
@@ -236,13 +235,28 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
     return adjustedColor;
   }
 
+  List<Color> generateLightColors() {
+    List<Color> lightColors = [];
+
+    // Add all light shades of primary colors
+    for (MaterialColor color in Colors.primaries) {
+      lightColors.add(color.shade300);
+      // lightColors.add(color.shade900);
+      // lightColors.add(color.shade100);
+      // lightColors.add(color.shade500);
+    }
+
+    return lightColors;
+  }
+
   Future getClaims({String? id}) async {
     setState(() {
       loding = false;
     });
     try {
       var res = await ApiProvider().getRequest(
-          apiUrl: "$BASEURL/v1/application/expense/get-expense?VisitSummaryId=$id");
+          apiUrl:
+              "$BASEURL/v1/application/expense/get-expense?VisitSummaryId=$id");
       print(jsonDecode(res));
       setState(() {
         loding = true;
