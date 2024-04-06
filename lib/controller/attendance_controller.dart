@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -42,7 +41,10 @@ class AttendanceController extends GetxController {
     return DateFormat('MM-dd-yyyy HH:mm').format(dateTime);
   }
 
-  final List<DateTime> leaveDates = [];
+  final List<DateTime> leaveDates = [
+    DateTime.utc(2024, 4, 25),
+    DateTime.utc(2024, 4, 26),
+  ];
   final List<DateTime> holidayDates = [];
   final List<DateTime> absentDates = [];
 
@@ -78,11 +80,11 @@ class AttendanceController extends GetxController {
     super.onInit();
 
     // getVisitPlans();
-    // getAttendanceMonthly();
-   if(visitID != ''){
-    selectedLocation = visitID;
-    print(selectedLocation);
-   }
+    //getAttendanceMonthly();
+    if (visitID != '') {
+      selectedLocation = visitID;
+      print(selectedLocation);
+    }
     getVisitPlans();
     getAttendance();
     getAttendanceLogs();
@@ -176,7 +178,7 @@ class AttendanceController extends GetxController {
       }
     }
   }
-  
+
   getvisitId() {
     attendancLoad = true;
     update();
@@ -247,11 +249,11 @@ class AttendanceController extends GetxController {
 
         update();
       }
-      if(visitID != ''){
+      if (visitID != '') {
         selectedLocation = visitID;
         update();
-      }else{
-      selectedLocation = visitPlanModel!.data.visitPlan[0].visitLocation;
+      } else {
+        selectedLocation = visitPlanModel!.data.visitPlan[0].visitLocation;
       }
       update();
       getvisitId();

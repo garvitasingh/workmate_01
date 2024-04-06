@@ -83,6 +83,8 @@ class HomeController extends GetxController {
   getlastCheckina() async {
     getLastVisits.clear();
     ischeck.value = true;
+    isLoading.value = true;
+    update();
     print("get last called");
     try {
       var res = await ApiProvider().getRequest(
@@ -96,9 +98,12 @@ class HomeController extends GetxController {
         update();
       }
       ischeck.value = false;
+      isLoading.value = false;
+
       update();
     } catch (e) {
       ischeck.value = false;
+      isLoading.value = false;
       update();
       print(e.toString());
     }

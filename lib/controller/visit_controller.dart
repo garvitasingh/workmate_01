@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:workmate_01/utils/constants.dart';
-import 'package:workmate_01/utils/local_data.dart';
 import '../Provider/Api_provider.dart';
 
 class VisitController extends GetxController {

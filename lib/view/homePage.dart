@@ -163,6 +163,14 @@ class _HomePageViewState extends State<HomePageView> {
             actions: [
               IconButton(
                   onPressed: () {
+                    controller.getlastCheckina();
+                  },
+                  icon: const Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                  )),
+              IconButton(
+                  onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -173,447 +181,404 @@ class _HomePageViewState extends State<HomePageView> {
                   icon: const Icon(
                     Icons.notifications_rounded,
                     color: secondaryColor,
-                  ))
+                  )),
             ],
           ),
-          bottomSheet:
-              Container(height: 30, child: InternetConnectionChecker()),
           body: Obx(
             () => controller.isLoading.isTrue
                 ? Center(child: SwimmerPage())
-                : SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Obx(() => controller.isLoading.isFalse
-                              ? Column(
-                                  children: [
-                                    // CarouselSlider.builder(
-                                    //     itemCount: controller.imgList.length,
-                                    //     options: CarouselOptions(
-                                    //         autoPlay: true,
-                                    //         aspectRatio: 2.0,
-                                    //         enlargeCenterPage: false,
-                                    //         height: 120),
-                                    //     itemBuilder: (context, index, realIdx) {
-                                    //       return Padding(
-                                    //         padding: const EdgeInsets.all(4.0),
-                                    //         child: Center(
-                                    //             child: ClipRRect(
-                                    //           borderRadius:
-                                    //               BorderRadius.circular(12),
-                                    //           child: Image.network(
-                                    //               controller.imgList[index],
-                                    //               fit: BoxFit.cover,
-                                    //               width: 500),
-                                    //         )),
-                                    //       );
-                                    //     }),
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      controller.getlastCheckina();
+                    },
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Obx(() => controller.isLoading.isFalse
+                                ? Column(
+                                    children: [
+                                      // CarouselSlider.builder(
+                                      //     itemCount: controller.imgList.length,
+                                      //     options: CarouselOptions(
+                                      //         autoPlay: true,
+                                      //         aspectRatio: 2.0,
+                                      //         enlargeCenterPage: false,
+                                      //         height: 120),
+                                      //     itemBuilder: (context, index, realIdx) {
+                                      //       return Padding(
+                                      //         padding: const EdgeInsets.all(4.0),
+                                      //         child: Center(
+                                      //             child: ClipRRect(
+                                      //           borderRadius:
+                                      //               BorderRadius.circular(12),
+                                      //           child: Image.network(
+                                      //               controller.imgList[index],
+                                      //               fit: BoxFit.cover,
+                                      //               width: 500),
+                                      //         )),
+                                      //       );
+                                      //     }),
 
-                                    GetBuilder<HomeController>(
-                                      init: HomeController(),
-                                      builder: (controller) {
-                                        return Container(
-                                          margin: const EdgeInsets.all(2),
-                                          decoration: BoxDecoration(
-                                              color: getColorByIndex(8),
-                                              borderRadius:
-                                                  BorderRadius.circular(12)),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(14.0),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      controller.aboutapp!.data
-                                                          .info[0].productName,
-                                                      style: const TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                          color: darkColor),
-                                                    ),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .end,
-                                                      children: [
-                                                        const Text(
-                                                            "Your last CheckIn visit",
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color:
-                                                                    darkColor)),
-                                                        // SizedBox(
-                                                        //   height: 50,
-                                                        //   width: 200,
-                                                        //   child:
-                                                        //       ScrollLoopAutoScroll(
-                                                        //     gap: 0,
-                                                        //     delay: const Duration(
-                                                        //         seconds:
-                                                        //             3),
-                                                        //     scrollDirection:
-                                                        //         Axis.vertical,
-                                                        //     child: Column(
-                                                        //       crossAxisAlignment:
-                                                        //           CrossAxisAlignment
-                                                        //               .end,
-                                                        //       children: [
-                                                        //         ListView
-                                                        //             .separated(
-                                                        //           separatorBuilder:
-                                                        //               (context, index) =>
-                                                        //                   const SizedBox(
-                                                        //             height:
-                                                        //                 20,
-                                                        //           ),
-                                                        //           shrinkWrap:
-                                                        //               true,
-                                                        //           itemCount: controller
-                                                        //               .lastCheckInModel!
-                                                        //               .dataCount!,
-                                                        //           itemBuilder:
-                                                        //               (context,
-                                                        //                   index) {
-                                                        //             return Row(
-                                                        //               mainAxisAlignment:
-                                                        //                   MainAxisAlignment.end,
-                                                        //               children: [
-                                                        //                 Container(
-                                                        //                   height: 40,
-                                                        //                   alignment: Alignment.center,
-                                                        //                   decoration: BoxDecoration(color: appbarColor, borderRadius: BorderRadius.circular(6)),
-                                                        //                   child: Text(
-                                                        //                     " ${controller.lastCheckInModel!.data!.lastVisitAttendance![index].visitFrom} - ${controller.lastCheckInModel!.data!.lastVisitAttendance![index].visitTo} ",
-                                                        //                     style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-                                                        //                   ),
-                                                        //                 ),
-                                                        //               ],
-                                                        //             );
-                                                        //           },
-                                                        //         )
-                                                        //       ],
-                                                        //     ),
-                                                        //   ),
-                                                        // ),
-                                                        DropdownButtonHideUnderline(
-                                                          child:
-                                                              DropdownButton2<
-                                                                  String>(
-                                                            isExpanded: true,
-                                                            hint: const Row(
+                                      GetBuilder<HomeController>(
+                                        init: HomeController(),
+                                        builder: (controller) {
+                                          return Container(
+                                            margin: const EdgeInsets.all(2),
+                                            decoration: BoxDecoration(
+                                                color: getColorByIndex(8),
+                                                borderRadius:
+                                                    BorderRadius.circular(12)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(14.0),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        controller
+                                                            .aboutapp!
+                                                            .data
+                                                            .info[0]
+                                                            .productName,
+                                                        style: const TextStyle(
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            color: darkColor),
+                                                      ),
+                                                      controller.getLastVisits.isEmpty
+                                                          ? SizedBox(height: 40,)
+                                                          : Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .end,
                                                               children: [
-                                                                Icon(
-                                                                  Icons.list,
-                                                                  size: 16,
-                                                                  color: Colors
-                                                                      .yellow,
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 4,
-                                                                ),
-                                                                Expanded(
-                                                                  child: Text(
-                                                                    'Select Item',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      color: Colors
-                                                                          .yellow,
-                                                                    ),
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            items: controller
-                                                                .getLastVisits
-                                                                .map((String
-                                                                        item) =>
-                                                                    DropdownMenuItem<
-                                                                        String>(
-                                                                      value:
-                                                                          item,
-                                                                      child:
-                                                                          Text(
-                                                                        item,
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
+                                                                const Text(
+                                                                    "Your last CheckIn visit",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600,
+                                                                        color:
+                                                                            darkColor)),
+                                                                DropdownButtonHideUnderline(
+                                                                  child:
+                                                                      DropdownButton2<
+                                                                          String>(
+                                                                    isExpanded:
+                                                                        true,
+                                                                    hint:
+                                                                        const Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .list,
+                                                                          size:
+                                                                              16,
                                                                           color:
-                                                                              Colors.white,
+                                                                              Colors.yellow,
                                                                         ),
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
+                                                                        SizedBox(
+                                                                          width:
+                                                                              4,
+                                                                        ),
+                                                                        Expanded(
+                                                                          child:
+                                                                              Text(
+                                                                            'Select Item',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 14,
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: Colors.yellow,
+                                                                            ),
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    items: controller
+                                                                        .getLastVisits
+                                                                        .map((String
+                                                                                item) =>
+                                                                            DropdownMenuItem<String>(
+                                                                              value: item,
+                                                                              child: Text(
+                                                                                item,
+                                                                                style: const TextStyle(
+                                                                                  fontSize: 14,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Colors.white,
+                                                                                ),
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
+                                                                            ))
+                                                                        .toList(),
+                                                                    value: controller
+                                                                        .selectedValue,
+                                                                    onChanged:
+                                                                        (String?
+                                                                            value) {
+                                                                      setState(
+                                                                          () {
+                                                                        controller.selectedValue =
+                                                                            value!;
+                                                                        visitID =
+                                                                            value;
+                                                                        setState(
+                                                                            () {});
+                                                                        Navigator
+                                                                            .push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                            builder: (context) =>
+                                                                                const TodayVisit(),
+                                                                          ),
+                                                                        );
+                                                                      });
+                                                                    },
+                                                                    buttonStyleData:
+                                                                        ButtonStyleData(
+                                                                      height:
+                                                                          40,
+                                                                      width:
+                                                                          100,
+                                                                      padding: const EdgeInsets
+                                                                          .only(
+                                                                          left:
+                                                                              14,
+                                                                          right:
+                                                                              14),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(14),
+                                                                        border:
+                                                                            Border.all(
+                                                                          color:
+                                                                              Colors.black26,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .redAccent,
                                                                       ),
-                                                                    ))
-                                                                .toList(),
-                                                            value: controller
-                                                                .selectedValue,
-                                                            onChanged: (String?
-                                                                value) {
-                                                              setState(() {
-                                                                controller
-                                                                        .selectedValue =
-                                                                    value!;
-                                                                visitID = value;
-                                                                setState(() {});
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            TodayVisit(),
+                                                                      elevation:
+                                                                          2,
+                                                                    ),
+                                                                    iconStyleData:
+                                                                        const IconStyleData(
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .arrow_forward_ios_outlined,
+                                                                      ),
+                                                                      iconSize:
+                                                                          14,
+                                                                      iconEnabledColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      iconDisabledColor:
+                                                                          Colors
+                                                                              .white,
+                                                                    ),
+                                                                    dropdownStyleData:
+                                                                        DropdownStyleData(
+                                                                      maxHeight:
+                                                                          200,
+                                                                      width:
+                                                                          200,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(14),
+                                                                        color:
+                                                                            appbarColor,
+                                                                      ),
+                                                                      offset:
+                                                                          const Offset(
+                                                                              -20,
+                                                                              0),
+                                                                      scrollbarTheme:
+                                                                          ScrollbarThemeData(
+                                                                        radius: const Radius
+                                                                            .circular(
+                                                                            40),
+                                                                        thickness:
+                                                                            MaterialStateProperty.all<double>(6),
+                                                                        thumbVisibility:
+                                                                            MaterialStateProperty.all<bool>(true),
+                                                                      ),
+                                                                    ),
+                                                                    menuItemStyleData:
+                                                                        const MenuItemStyleData(
+                                                                      height:
+                                                                          40,
+                                                                      padding: EdgeInsets.only(
+                                                                          left:
+                                                                              14,
+                                                                          right:
+                                                                              14),
+                                                                    ),
                                                                   ),
-                                                                );
-                                                              });
-                                                            },
-                                                            buttonStyleData:
-                                                                ButtonStyleData(
-                                                              height: 40,
-                                                              width: 100,
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      left: 14,
-                                                                      right:
-                                                                          14),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            14),
-                                                                border:
-                                                                    Border.all(
-                                                                  color: Colors
-                                                                      .black26,
-                                                                ),
-                                                                color: Colors
-                                                                    .redAccent,
-                                                              ),
-                                                              elevation: 2,
-                                                            ),
-                                                            iconStyleData:
-                                                                const IconStyleData(
-                                                              icon: Icon(
-                                                                Icons
-                                                                    .arrow_forward_ios_outlined,
-                                                              ),
-                                                              iconSize: 14,
-                                                              iconEnabledColor:
-                                                                  Colors.white,
-                                                              iconDisabledColor:
-                                                                  Colors.white,
-                                                            ),
-                                                            dropdownStyleData:
-                                                                DropdownStyleData(
-                                                              maxHeight: 200,
-                                                              width: 200,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            14),
-                                                                color:
-                                                                    appbarColor,
-                                                              ),
-                                                              offset:
-                                                                  const Offset(
-                                                                      -20, 0),
-                                                              scrollbarTheme:
-                                                                  ScrollbarThemeData(
-                                                                radius:
-                                                                    const Radius
-                                                                        .circular(
-                                                                        40),
-                                                                thickness:
-                                                                    MaterialStateProperty
-                                                                        .all<double>(
-                                                                            6),
-                                                                thumbVisibility:
-                                                                    MaterialStateProperty
-                                                                        .all<bool>(
-                                                                            true),
-                                                              ),
-                                                            ),
-                                                            menuItemStyleData:
-                                                                const MenuItemStyleData(
-                                                              height: 40,
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      left: 14,
-                                                                      right:
-                                                                          14),
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 20,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    const Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          "Check in/Check out",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w900),
-                                                        ),
-                                                        Text(
-                                                          "Mark your check-in and check-out visit.",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  appbarColor,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                TodayVisit(),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        decoration:
-                                                            const BoxDecoration(
+                                                                )
+                                                              ],
+                                                            )
+                                                    ],
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      const Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            "Check in/Check out",
+                                                            style: TextStyle(
                                                                 color: Colors
                                                                     .white,
-                                                                shape: BoxShape
-                                                                    .circle),
-                                                        child: const Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  4.0),
-                                                          child: Icon(Icons
-                                                              .arrow_forward),
-                                                        ),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w900),
+                                                          ),
+                                                          Text(
+                                                            "Mark your check-in and check-out visit.",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    appbarColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                          )
+                                                        ],
                                                       ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
+                                                      InkWell(
+                                                        onTap: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  const TodayVisit(),
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  shape: BoxShape
+                                                                      .circle),
+                                                          child: const Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    4.0),
+                                                            child: Icon(Icons
+                                                                .arrow_forward),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    controller.menuData.isEmpty
-                                        ? const Text("")
-                                        : GridView.builder(
-                                            shrinkWrap: true,
-                                            itemCount:
-                                                controller.menuData.length,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            gridDelegate:
-                                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                                    crossAxisCount: 2,
-                                                    crossAxisSpacing: 1,
-                                                    mainAxisSpacing: 10,
-                                                    mainAxisExtent: 150),
-                                            itemBuilder: (context, index) {
-                                              List<Color> colors =
-                                                  generateLightColors();
-                                              return InkWell(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            routes[index],
-                                                      ));
-                                                },
-                                                child: Card(
-                                                  color: colors[index],
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Image.asset(
-                                                          "assets/${iconss[index]}.png",
-                                                          height: 40,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        Text(
-                                                          controller.menuData[
-                                                                  index] ??
-                                                              "",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: const TextStyle(
-                                                              color: darkColor,
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600),
-                                                        ),
-                                                      ],
+                                          );
+                                        },
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      controller.menuData.isEmpty
+                                          ? const Text("")
+                                          : GridView.builder(
+                                              shrinkWrap: true,
+                                              itemCount:
+                                                  controller.menuData.length,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              gridDelegate:
+                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 2,
+                                                      crossAxisSpacing: 1,
+                                                      mainAxisSpacing: 10,
+                                                      mainAxisExtent: 150),
+                                              itemBuilder: (context, index) {
+                                                List<Color> colors =
+                                                    generateLightColors();
+                                                return InkWell(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              routes[index],
+                                                        ));
+                                                  },
+                                                  child: Card(
+                                                    color: colors[index],
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Image.asset(
+                                                            "assets/${iconss[index]}.png",
+                                                            height: 40,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
+                                                            controller.menuData[
+                                                                    index] ??
+                                                                "",
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: const TextStyle(
+                                                                color:
+                                                                    darkColor,
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                  ],
-                                )
-                              : const Center(
-                                  child: CircularProgressIndicator()))
-                        ],
+                                                );
+                                              },
+                                            ),
+                                    ],
+                                  )
+                                : const Center(
+                                    child: CircularProgressIndicator()))
+                          ],
+                        ),
                       ),
                     ),
                   ),

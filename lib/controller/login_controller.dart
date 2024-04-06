@@ -46,17 +46,21 @@ class AuthController extends GetxController {
       };
       box.write("deviceid", password);
       var res = await ApiProvider().postRequestToken(
-          apiUrl:
-              "$BASEURL/v1/application/auth/token",
-          data: data);
-         
+          apiUrl: "$BASEURL/v1/application/auth/token", data: data);
 
+      if (res['error'] == "User not found") {
+        constToast("msg_user_not_found");
+        isLoading.value = true;
+        update();
+        return;
+      }
       if (res['error_uri'].toString() == "001") {
         Get.to(const VerificationUser());
       } else {
         box.write("token", res['access_token']);
         Get.offAll(const HomePageView());
       }
+
       isLoading.value = true;
       update();
     } catch (e) {
@@ -79,9 +83,7 @@ class AuthController extends GetxController {
       };
 
       var res = await ApiProvider().postRequestToken(
-          apiUrl:
-              "$BASEURL/v1/application/auth/activate-user",
-          data: data);
+          apiUrl: "$BASEURL/v1/application/auth/activate-user", data: data);
       if (res['responseData']['Status'] == true) {
         loginUser();
       } else {
@@ -103,7 +105,7 @@ class AuthController extends GetxController {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-     // password = androidInfo.id;
+      // password = androidInfo.id;
       password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
       update();
       print('Device ID: ${androidInfo.id}');

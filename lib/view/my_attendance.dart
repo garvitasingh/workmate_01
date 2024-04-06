@@ -388,6 +388,8 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                           physics:
                                               const NeverScrollableScrollPhysics(),
                                           itemBuilder: (context, index) {
+                                            List<Color> colors =
+                                                    generateLightColors();
                                             final data = controller
                                                 .attendanceLogModel!
                                                 .data!
@@ -398,7 +400,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                     color:
-                                                        getColorByIndex(index),
+                                                        colors[index],
                                                     borderRadius:
                                                         BorderRadiusDirectional
                                                             .circular(12)),
@@ -562,6 +564,16 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
     Color adjustedColor = baseColor.withOpacity(percentage / 100.0);
 
     return adjustedColor;
+  }
+
+  List<Color> generateLightColors() {
+    List<Color> lightColors = [];
+    // Add all light shades of primary colors
+    for (MaterialColor color in Colors.primaries) {
+      lightColors.add(color.shade200);
+    }
+
+    return lightColors;
   }
 
   Widget _buildStatusContainer(String title, String count, Color color) {

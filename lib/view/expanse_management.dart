@@ -603,7 +603,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                         if (controller.seleExpLocation.value ==
                                             'Vehicle') {
                                           if (controller.visitPurposeController
-                                              .text.isEmpty) {
+                                              .text.isNotEmpty) {
                                             constToast("Purpose Required!");
                                           } else if (controller
                                               .locationDistanceController
