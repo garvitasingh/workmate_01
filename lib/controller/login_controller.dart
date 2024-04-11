@@ -111,7 +111,8 @@ class AuthController extends GetxController {
       print('Device ID: ${androidInfo.id}');
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      password = iosInfo.identifierForVendor.toString();
+      password = "iosInfo.identifierForVendor.toString()";
+      password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
       update();
       print('Device ID: ${iosInfo.identifierForVendor}');
     }
