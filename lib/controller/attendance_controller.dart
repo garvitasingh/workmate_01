@@ -86,7 +86,7 @@ class AttendanceController extends GetxController {
       print(selectedLocation);
     }
     getVisitPlans();
-    getAttendance();
+   // getAttendance();
     getAttendanceLogs();
     // Timer.periodic(const Duration(seconds: 1), (Timer timer) {
     //   // Check if the widget is still mounted before updating the state
