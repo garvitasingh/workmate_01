@@ -128,7 +128,52 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
                                 // dd("Distance",
                                 //     data..toString()),
                                 dd("Amount", data.amount.toString()),
-                                //dd("Remarks", data.remarks.toString()),
+
+                                data.expenseDoc.toString() == 'null'
+                                    ? SizedBox()
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(
+                                            width: 20,
+                                            child: Text("▶️"),
+                                          ),
+                                          const SizedBox(
+                                            width: 150,
+                                            child: Text(
+                                              "Doc : ",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return FullPageImageDialog(
+                                                      imageUrl:
+                                                          "${ImageURL}${data.expenseDoc.toString()}");
+                                                },
+                                              );
+                                            },
+                                            child: const SizedBox(
+                                                width: 150,
+                                                child: Text(
+                                                  "view ",
+                                                  style: TextStyle(
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                      fontSize: 17,
+                                                      color: appbarColor),
+                                                )),
+                                          ),
+                                        ],
+                                      ),
                                 dd("Description", data.description.toString()),
                                 dd("Submit", time),
                                 const SizedBox(
@@ -275,5 +320,31 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
         print(e.toString());
       }
     }
+  }
+}
+
+class FullPageImageDialog extends StatelessWidget {
+  final String imageUrl;
+
+  FullPageImageDialog({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        constraints:
+            const BoxConstraints(maxWidth: double.infinity, maxHeight: 400),
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

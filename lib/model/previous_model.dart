@@ -62,22 +62,25 @@ class Data {
 
 class ClaimDetail {
     String? expenseReqId;
+    String? expenseDoc;
     String? amount;
+    DateTime? createdAt;
     String? expModeDesc;
-    dynamic rate;
+    String? rate;
     DateTime? updatedAt;
     String? visitFrom;
     String? visitTo;
-    dynamic visitPurpose;
+    String? visitPurpose;
     dynamic convModeDesc;
     String? description;
     dynamic approvedBy;
     dynamic checkedBy;
-    DateTime? createdAt;
 
     ClaimDetail({
         this.expenseReqId,
+        this.expenseDoc,
         this.amount,
+        this.createdAt,
         this.expModeDesc,
         this.rate,
         this.updatedAt,
@@ -88,12 +91,13 @@ class ClaimDetail {
         this.description,
         this.approvedBy,
         this.checkedBy,
-        this.createdAt,
     });
 
     factory ClaimDetail.fromJson(Map<String, dynamic> json) => ClaimDetail(
         expenseReqId: json["ExpenseReqId"],
+        expenseDoc: json["expense_doc"],
         amount: json["Amount"],
+        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
         expModeDesc: json["ExpModeDesc"],
         rate: json["Rate"],
         updatedAt: json["updatedAt"] == null ? null : DateTime.parse(json["updatedAt"]),
@@ -104,12 +108,13 @@ class ClaimDetail {
         description: json["Description"],
         approvedBy: json["ApprovedBy"],
         checkedBy: json["CheckedBy"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
     );
 
     Map<String, dynamic> toJson() => {
         "ExpenseReqId": expenseReqId,
+        "expense_doc": expenseDoc,
         "Amount": amount,
+        "createdAt": createdAt?.toIso8601String(),
         "ExpModeDesc": expModeDesc,
         "Rate": rate,
         "updatedAt": updatedAt?.toIso8601String(),
@@ -120,6 +125,5 @@ class ClaimDetail {
         "Description": description,
         "ApprovedBy": approvedBy,
         "CheckedBy": checkedBy,
-        "createdAt": createdAt?.toIso8601String(),
     };
 }

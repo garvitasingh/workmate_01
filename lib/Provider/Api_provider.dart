@@ -34,26 +34,40 @@ class ApiProvider {
     }
   }
 
-  Future<dynamic> markAtt({data, file}) async {
+  Future<dynamic> uploadImage({file}) async {
+    var token = box.read("token");
+    // var request = http.MultipartRequest(
+    //     'POST',
+    //     Uri.parse(
+    //         '$BASEURL/v1/application/file/upload-attendence-image-local'));
+    // print(file.path);
+    // if (file != null) {
+    //   request.files.add(await http.MultipartFile.fromPath(
+    //     'file',
+    //     file.path,
+    //     contentType: MediaType('file', 'png'),
+    //   ));
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Cookie':
+          'genie_refresh_token=s%3AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkRGF0YSI6eyJyZXF1ZXN0SVAiOiIxMDYuMjIxLjIzMi4yMzciLCJhcHBVc2VySWQiOiJJVDAwMyIsIkRlc2lnSWQiOiI0In0sImlhdCI6MTcxMjgxODQ1NiwiZXhwIjoxNzEyODYwMTk5LCJpc3MiOiJub3VyaXNoZ2VuaWUuY29tIn0.IllKbXtE9uhglb8vfAIeAScBkQPLDXUgb7AiGXkIZTw.O9aze%2BUmnb3bXw8%2FAsh2P17eGZe6NIVRMu%2FfKUQfLmw'
+    };
     var request = http.MultipartRequest(
-        'POST', Uri.parse('$BASEURL/Attendance/MarkAttendance'));
-    request.fields.addAll({'value': data});
-    print(data);
-    print(file);
-    if (file != null) {
-      request.files.add(await http.MultipartFile.fromPath(
-        'Image',
-        file.path,
-        contentType: MediaType('Image', 'png'),
-      ));
+        'POST',
+        Uri.parse(
+            'https://3afb-14-99-179-131.ngrok-free.app/v1/application/file/upload-attendence-image-local'));
+    request.files.add(await http.MultipartFile.fromPath('file', file.path));
+    request.headers.addAll(headers);
 
-      http.StreamedResponse response = await request.send();
-      print(response.statusCode);
-      if (response.statusCode == 200) {
-        print(await response.stream.bytesToString());
-      } else {
-        print(response.reasonPhrase);
-      }
+    http.StreamedResponse response = await request.send();
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      var decode = jsonDecode(await response.stream.bytesToString());
+      return decode['data']['file_name'];
+    } else {
+      print(response.reasonPhrase);
+      return null;
     }
   }
 
@@ -119,24 +133,4 @@ class ApiProvider {
   //   }
   // }
   //
-  // Future<dynamic> patchRequest({required apiUrl, data}) async {
-  //   var token = box.read("token");
-  //   // print(token);
-  //   var res = await http.patch(
-  //       body: data,
-  //       Uri.parse('$BASEURL$apiUrl'),
-  //       headers: {'Authorization': 'Bearer $token'});
-  //   print(res.body);
-  //   if (res.statusCode == 200) {
-  //     return res;
-  //   } else if (res.statusCode == 401) {
-  //     return Future.error(res.body);
-  //   } else if (res.statusCode == 404) {
-  //     return Future.error(res.body);
-  //   } else if (res.statusCode == 500) {
-  //     return Future.error(res.body);
-  //   } else {
-  //     return Future.error('Network Problem');
-  //   }
-  // }
 }

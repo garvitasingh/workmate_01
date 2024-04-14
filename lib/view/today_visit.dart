@@ -18,6 +18,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:workmate_01/utils/constants.dart';
 
+import '../Provider/Api_provider.dart';
+
 class TodayVisit extends StatefulWidget {
   const TodayVisit({super.key});
 
@@ -33,7 +35,9 @@ class _TodayVisitState extends State<TodayVisit> {
   // ignore: non_constant_identifier_names
   String Address = 'Location';
   File? _capturedImage;
+  String image = '';
   bool temp = false;
+  bool _load = false;
   @override
   void initState() {
     super.initState();
@@ -117,8 +121,19 @@ class _TodayVisitState extends State<TodayVisit> {
       setState(() {
         _capturedImage = File(pickedFile.path);
         _initializeLocation();
+        _storeImage();
       });
     }
+  }
+
+  _storeImage() async {
+    setState(() {
+      _load = true;
+    });
+    image = await ApiProvider().uploadImage(file: _capturedImage);
+    setState(() {
+      _load = false;
+    });
   }
 
   List<String> _locations = ['A', 'A', 'C', 'D']; // Option 2
@@ -225,6 +240,7 @@ class _TodayVisitState extends State<TodayVisit> {
                       setState(() {
                         controller.selectedLocation = value;
                         controller.getvisitId();
+                        controller.getAttendanceMonthly();
                       });
                     },
                     buttonStyleData: ButtonStyleData(
@@ -272,164 +288,138 @@ class _TodayVisitState extends State<TodayVisit> {
             )
           ],
         ),
-        body: Address == "Location"
-            ? const Center(child: TodayWidgetSwimmer())
-            : GetBuilder<AttendanceController>(
-                init: AttendanceController(),
-                builder: (controller) {
-                  return controller.attendancLoad == true
-                      ? TodayWidgetSwimmer()
-                      : SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      borderRadius: BorderRadius.circular(12)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Center(
-                                            child: Text(
-                                              formattedTime,
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Center(
-                                              child: Text(
-                                            formattedDate,
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w500),
-                                          )),
-                                        ]),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: controller.unplaned.isTrue ? 10 : 0,
-                                ),
-                                controller.unplaned.isTrue
-                                    ? Row(
-                                        children: [
-                                          Expanded(
-                                              child: Container(
+        body: _load
+            ? const Center(child: CircularProgressIndicator.adaptive())
+            : Address == "Location"
+                ? const Center(child: TodayWidgetSwimmer())
+                : GetBuilder<AttendanceController>(
+                    init: AttendanceController(),
+                    builder: (controller) {
+                      return controller.attendancLoad == true
+                          ? const TodayWidgetSwimmer()
+                          : SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.all(2),
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(12)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Center(
+                                                child: Text(
+                                                  formattedTime,
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              Center(
+                                                  child: Text(
+                                                formattedDate,
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 13,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              )),
+                                            ]),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height:
+                                          controller.unplaned.isTrue ? 10 : 0,
+                                    ),
+                                    controller.unplaned.isTrue
+                                        ? Row(
+                                            children: [
+                                              Expanded(
+                                                  child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
+                                                    border: Border.all(
+                                                        color: Colors.grey)),
+                                                child: TextFormField(
+                                                  controller: controller.from,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets.all(5),
+                                                          border:
+                                                              InputBorder.none,
+                                                          hintText: "From"),
+                                                ),
+                                              )),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                  child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
+                                                    border: Border.all(
+                                                        color: Colors.grey)),
+                                                child: TextFormField(
+                                                  controller: controller.to,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets.all(5),
+                                                          border:
+                                                              InputBorder.none,
+                                                          hintText: "To"),
+                                                ),
+                                              )),
+                                            ],
+                                          )
+                                        : const SizedBox(),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    controller.unplaned.isTrue
+                                        ? Container(
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                                 border: Border.all(
                                                     color: Colors.grey)),
                                             child: TextFormField(
-                                              controller: controller.from,
+                                              controller:
+                                                  controller.visitPurpose,
                                               decoration: const InputDecoration(
                                                   contentPadding:
                                                       EdgeInsets.all(5),
                                                   border: InputBorder.none,
-                                                  hintText: "From"),
+                                                  hintText: "Purpose"),
                                             ),
-                                          )),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                              child: Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                border: Border.all(
-                                                    color: Colors.grey)),
-                                            child: TextFormField(
-                                              controller: controller.to,
-                                              decoration: const InputDecoration(
-                                                  contentPadding:
-                                                      EdgeInsets.all(5),
-                                                  border: InputBorder.none,
-                                                  hintText: "To"),
-                                            ),
-                                          )),
-                                        ],
-                                      )
-                                    : const SizedBox(),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                controller.unplaned.isTrue
-                                    ? Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            border:
-                                                Border.all(color: Colors.grey)),
-                                        child: TextFormField(
-                                          controller: controller.visitPurpose,
-                                          decoration: const InputDecoration(
-                                              contentPadding: EdgeInsets.all(5),
-                                              border: InputBorder.none,
-                                              hintText: "Purpose"),
-                                        ),
-                                      )
-                                    : SizedBox(),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                controller.dataPresent.isFalse
-                                    ? Container(
-                                        alignment: Alignment.center,
-                                        child: CheckInButton(
-                                            checkOut: false,
-                                            checkIn: true,
-                                            onPressed: () {
-                                              controller.markAttendance(
-                                                  add: Address,
-                                                  log: _currentPosition
-                                                      .longitude
-                                                      .toStringAsFixed(4),
-                                                  lat: _currentPosition.latitude
-                                                      .toStringAsFixed(4),
-                                                  attType: 'in',
-                                                  img: _capturedImage);
-                                            }),
-                                      )
-                                    : Container(
-                                        alignment: Alignment.center,
-                                        height: 200,
-                                        child: CheckInButton(
-                                            checkOut: controller
-                                                        .visitAttendanceModel!
-                                                        .data!
-                                                        .visitAttendance![0]
-                                                        .checkOut ==
-                                                    0
-                                                ? false
-                                                : true,
-                                            checkIn: controller
-                                                        .visitAttendanceModel!
-                                                        .data!
-                                                        .visitAttendance![0]
-                                                        .checkIn ==
-                                                    1
-                                                ? false
-                                                : true,
-                                            onPressed: () {
-                                              controller
-                                                          .visitAttendanceModel!
-                                                          .data!
-                                                          .visitAttendance![0]
-                                                          .checkOut ==
-                                                      1
-                                                  ? constToast(
-                                                      "Attendance Completed!")
-                                                  : controller.markAttendance(
+                                          )
+                                        : const SizedBox(),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    controller.dataPresent.isFalse
+                                        ? Container(
+                                            alignment: Alignment.center,
+                                            child: CheckInButton(
+                                                checkOut: false,
+                                                checkIn: true,
+                                                onPressed: () {
+                                                  controller.markAttendance(
                                                       add: Address,
                                                       log: _currentPosition
                                                           .longitude
@@ -437,251 +427,338 @@ class _TodayVisitState extends State<TodayVisit> {
                                                       lat: _currentPosition
                                                           .latitude
                                                           .toStringAsFixed(4),
-                                                      attType: controller
-                                                                  .visitAttendanceModel!
-                                                                  .data!
-                                                                  .visitAttendance![
-                                                                      0]
-                                                                  .presentTimeOut !=
-                                                              'null'
-                                                          ? 'out'
-                                                          : 'in',
-                                                      img: _capturedImage);
-                                            }),
-                                      ),
-                                const Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("Longitude",
-                                        style: TextStyle(
-                                            color: darkColor,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold)),
-                                    Text("Latitude  ",
-                                        style: TextStyle(
-                                            color: darkColor,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                        height: 50,
-                                        width: 100,
-                                        decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                                fit: BoxFit.fitHeight,
-                                                image: AssetImage(
-                                                  "assets/map.png",
-                                                ))),
-                                        child: Column(
-                                          children: [
-                                            const Icon(
-                                              Icons.location_on,
-                                              color: Colors.blue,
-                                            ),
-                                            Text(
-                                                "   ${_currentPosition.longitude.toStringAsFixed(4)}",
-                                                style: const TextStyle(
-                                                    color: textLightColor,
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.w600))
-                                          ],
-                                        )),
-                                    Container(
-                                        height: 50,
-                                        width: 100,
-                                        decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                                fit: BoxFit.fitHeight,
-                                                image: AssetImage(
-                                                  "assets/map.png",
-                                                ))),
-                                        child: Column(
-                                          children: [
-                                            const Icon(
-                                              Icons.location_on,
-                                              color: Colors.blue,
-                                            ),
-                                            Text(
-                                                "   ${_currentPosition.latitude.toStringAsFixed(4)}",
-                                                style: const TextStyle(
-                                                    color: textLightColor,
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.w600))
-                                          ],
-                                        )),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                controller.dataPresent.isTrue
-                                    ? Container(
-                                        decoration: BoxDecoration(
-                                          color: secondaryColor,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
+                                                      attType: 'in',
+                                                      img: image);
+                                                }),
+                                          )
+                                        : Container(
+                                            alignment: Alignment.center,
+                                            height: 200,
+                                            child: CheckInButton(
+                                                checkOut: controller
+                                                            .visitAttendanceModel!
+                                                            .data!
+                                                            .visitAttendance![0]
+                                                            .checkOut ==
+                                                        0
+                                                    ? false
+                                                    : true,
+                                                checkIn: controller
+                                                            .visitAttendanceModel!
+                                                            .data!
+                                                            .visitAttendance![0]
+                                                            .checkIn ==
+                                                        1
+                                                    ? false
+                                                    : true,
+                                                onPressed: () {
+                                                  controller
+                                                              .visitAttendanceModel!
+                                                              .data!
+                                                              .visitAttendance![
+                                                                  0]
+                                                              .checkOut ==
+                                                          1
+                                                      ? constToast(
+                                                          "Attendance Completed!")
+                                                      : controller.markAttendance(
+                                                          add: Address,
+                                                          log: _currentPosition
+                                                              .longitude
+                                                              .toStringAsFixed(
+                                                                  4),
+                                                          lat: _currentPosition
+                                                              .latitude
+                                                              .toStringAsFixed(
+                                                                  4),
+                                                          attType: controller
+                                                                      .visitAttendanceModel!
+                                                                      .data!
+                                                                      .visitAttendance![
+                                                                          0]
+                                                                      .presentTimeOut !=
+                                                                  'null'
+                                                              ? 'out'
+                                                              : 'in',
+                                                          img: image);
+                                                }),
+                                          ),
+                                    const Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("Longitude",
+                                            style: TextStyle(
+                                                color: darkColor,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold)),
+                                        Text("Latitude  ",
+                                            style: TextStyle(
+                                                color: darkColor,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold)),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                            height: 50,
+                                            width: 100,
+                                            decoration: const BoxDecoration(
+                                                image: DecorationImage(
+                                                    fit: BoxFit.fitHeight,
+                                                    image: AssetImage(
+                                                      "assets/map.png",
+                                                    ))),
+                                            child: Column(
                                               children: [
-                                                _buildRow(
-                                                    controller
-                                                                .visitAttendanceModel!
-                                                                .data!
-                                                                .visitAttendance![
-                                                                    0]
-                                                                .presentTimeIn
-                                                                .toString() ==
-                                                            "null"
-                                                        ? '-:-'
-                                                        : (convertTimestampToTime(
-                                                            controller
-                                                                .visitAttendanceModel!
-                                                                .data!
-                                                                .visitAttendance![
-                                                                    0]
-                                                                .presentTimeIn
-                                                                .toString())),
-                                                    "Check-in"),
-                                                _buildRow(
-                                                    controller
-                                                                .visitAttendanceModel!
-                                                                .data!
-                                                                .visitAttendance![
-                                                                    0]
-                                                                .presentTimeOut
-                                                                .toString() ==
-                                                            "null"
-                                                        ? '-:-'
-                                                        : (convertTimestampToTime(
-                                                            controller
-                                                                .visitAttendanceModel!
-                                                                .data!
-                                                                .visitAttendance![
-                                                                    0]
-                                                                .presentTimeOut
-                                                                .toString())),
-                                                    "Check-out"),
-                                                _buildRow(
-                                                    controller
-                                                                    .visitAttendanceModel!
-                                                                    .data!
-                                                                    .visitAttendance![
-                                                                        0]
-                                                                    .presentTimeOut
-                                                                    .toString() ==
-                                                                "null" ||
-                                                            controller
-                                                                    .visitAttendanceModel!
-                                                                    .data!
-                                                                    .visitAttendance![
-                                                                        0]
-                                                                    .presentTimeOut
-                                                                    .toString() ==
-                                                                'null'
-                                                        ? controller
+                                                const Icon(
+                                                  Icons.location_on,
+                                                  color: Colors.blue,
+                                                ),
+                                                Text(
+                                                    "   ${_currentPosition.longitude.toStringAsFixed(4)}",
+                                                    style: const TextStyle(
+                                                        color: textLightColor,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w600))
+                                              ],
+                                            )),
+                                        Container(
+                                            height: 50,
+                                            width: 100,
+                                            decoration: const BoxDecoration(
+                                                image: DecorationImage(
+                                                    fit: BoxFit.fitHeight,
+                                                    image: AssetImage(
+                                                      "assets/map.png",
+                                                    ))),
+                                            child: Column(
+                                              children: [
+                                                const Icon(
+                                                  Icons.location_on,
+                                                  color: Colors.blue,
+                                                ),
+                                                Text(
+                                                    "   ${_currentPosition.latitude.toStringAsFixed(4)}",
+                                                    style: const TextStyle(
+                                                        color: textLightColor,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w600))
+                                              ],
+                                            )),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    controller.dataPresent.isTrue
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                              color: secondaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  children: [
+                                                    _buildRow(
+                                                        controller
                                                                     .visitAttendanceModel!
                                                                     .data!
                                                                     .visitAttendance![
                                                                         0]
                                                                     .presentTimeIn
-                                                                    .toString() !=
+                                                                    .toString() ==
                                                                 "null"
-                                                            ? "process"
-                                                            : '-:-'
-                                                        : "Done",
-                                                    "Status")
-                                              ]),
-                                        ),
-                                      )
-                                    : Container(
-                                        decoration: BoxDecoration(
-                                          color: secondaryColor,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                _buildRow('-:-', "Check-in"),
-                                                _buildRow('-:-', "Check-out"),
-                                                _buildRow('-:-', "Status")
-                                              ]),
-                                        ),
+                                                            ? '-:-'
+                                                            : (convertTimestampToTime(controller
+                                                                .visitAttendanceModel!
+                                                                .data!
+                                                                .visitAttendance![
+                                                                    0]
+                                                                .presentTimeIn
+                                                                .toString())),
+                                                        "Check-in"),
+                                                    _buildRow(
+                                                        controller
+                                                                    .visitAttendanceModel!
+                                                                    .data!
+                                                                    .visitAttendance![
+                                                                        0]
+                                                                    .presentTimeOut
+                                                                    .toString() ==
+                                                                "null"
+                                                            ? '-:-'
+                                                            : (convertTimestampToTime(controller
+                                                                .visitAttendanceModel!
+                                                                .data!
+                                                                .visitAttendance![
+                                                                    0]
+                                                                .presentTimeOut
+                                                                .toString())),
+                                                        "Check-out"),
+                                                    _buildRow(
+                                                        controller
+                                                                        .visitAttendanceModel!
+                                                                        .data!
+                                                                        .visitAttendance![
+                                                                            0]
+                                                                        .presentTimeOut
+                                                                        .toString() ==
+                                                                    "null" ||
+                                                                controller
+                                                                        .visitAttendanceModel!
+                                                                        .data!
+                                                                        .visitAttendance![
+                                                                            0]
+                                                                        .presentTimeOut
+                                                                        .toString() ==
+                                                                    'null'
+                                                            ? controller
+                                                                        .visitAttendanceModel!
+                                                                        .data!
+                                                                        .visitAttendance![
+                                                                            0]
+                                                                        .presentTimeIn
+                                                                        .toString() !=
+                                                                    "null"
+                                                                ? "process"
+                                                                : '-:-'
+                                                            : "Done",
+                                                        "Status")
+                                                  ]),
+                                            ),
+                                          )
+                                        : Container(
+                                            decoration: BoxDecoration(
+                                              color: secondaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  children: [
+                                                    _buildRow(
+                                                        '-:-', "Check-in"),
+                                                    _buildRow(
+                                                        '-:-', "Check-out"),
+                                                    _buildRow('-:-', "Status")
+                                                  ]),
+                                            ),
+                                          ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: secondaryColor,
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: secondaryColor,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text("Today's Punch Logs",
-                                            style: TextStyle(
-                                                color: darkColor,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w800)),
-                                        Row(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            _punchBuild("Photo"),
-                                            _punchBuild("Punch Time"),
-                                            _punchBuild("Location")
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            controller.dataPresent.value
-                                                ? controller
-                                                            .visitAttendanceModel!
-                                                            .data!
-                                                            .visitAttendance![0]
-                                                            .checkOutAddressImage
-                                                            .toString() !=
-                                                        "null"
-                                                        ?SizedBox()
-                                                    // ? Image.network(
-                                                    //     ImageURL +
-                                                    //         controller
-                                                    //             .visitAttendanceModel!
-                                                    //             .data!
-                                                    //             .visitAttendance![
-                                                    //                 0]
-                                                    //             .checkInAddressImage
-                                                    //             .toString(),
-                                                    //     height: 100,
-                                                    //   )
+                                            const Text("Today's Punch Logs",
+                                                style: TextStyle(
+                                                    color: darkColor,
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.w800)),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                _punchBuild("Photo"),
+                                                _punchBuild("Punch Time"),
+                                                _punchBuild("Location")
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                controller.dataPresent.value
+                                                    ? controller
+                                                                .visitAttendanceModel!
+                                                                .data!
+                                                                .visitAttendance![
+                                                                    0]
+                                                                .checkOutAddressImage
+                                                                .toString() !=
+                                                            "null"
+                                                        ? Image.network(
+                                                            ImageURL +
+                                                                controller
+                                                                    .visitAttendanceModel!
+                                                                    .data!
+                                                                    .visitAttendance![
+                                                                        0]
+                                                                    .checkInAddressImage
+                                                                    .toString(),
+                                                            height: 100,
+                                                          )
+                                                        : SizedBox(
+                                                            height: 100,
+                                                            width: 100,
+                                                            child:
+                                                                _capturedImage !=
+                                                                        null
+                                                                    ? InkWell(
+                                                                        onTap:
+                                                                            _openCamera,
+                                                                        child: Image
+                                                                            .file(
+                                                                          _capturedImage!,
+                                                                          height:
+                                                                              50,
+                                                                          fit: BoxFit
+                                                                              .cover,
+                                                                        ),
+                                                                      )
+                                                                    : IconButton(
+                                                                        icon:
+                                                                            const Icon(
+                                                                          Icons
+                                                                              .camera_alt,
+                                                                          color:
+                                                                              Colors.red,
+                                                                          size:
+                                                                              40,
+                                                                        ),
+                                                                        onPressed:
+                                                                            _openCamera,
+                                                                        iconSize:
+                                                                            20,
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                          )
                                                     : SizedBox(
                                                         height: 100,
                                                         width: 100,
@@ -713,147 +790,128 @@ class _TodayVisitState extends State<TodayVisit> {
                                                                 color: Colors
                                                                     .white,
                                                               ),
-                                                      )
-                                                : SizedBox(
-                                                    height: 100,
-                                                    width: 100,
-                                                    child: _capturedImage !=
-                                                            null
-                                                        ? InkWell(
-                                                            onTap: _openCamera,
-                                                            child: Image.file(
-                                                              _capturedImage!,
-                                                              height: 50,
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          )
-                                                        : IconButton(
-                                                            icon: const Icon(
-                                                              Icons.camera_alt,
-                                                              color: Colors.red,
-                                                              size: 40,
-                                                            ),
-                                                            onPressed:
-                                                                _openCamera,
-                                                            iconSize: 20,
-                                                            color: Colors.white,
-                                                          ),
-                                                  ),
-                                            controller.dataPresent.isTrue
-                                                ? SizedBox(
-                                                    width: 100,
-                                                    child: Text(
-                                                      controller
-                                                                  .visitAttendanceModel!
-                                                                  .data!
-                                                                  .visitAttendance![
-                                                                      0]
-                                                                  .presentTimeIn
-                                                                  .toString() ==
-                                                              "null"
-                                                          ? '-:-'
-                                                          : controller
+                                                      ),
+                                                controller.dataPresent.isTrue
+                                                    ? SizedBox(
+                                                        width: 100,
+                                                        child: Text(
+                                                          controller
+                                                                      .visitAttendanceModel!
+                                                                      .data!
+                                                                      .visitAttendance![
+                                                                          0]
+                                                                      .presentTimeIn
+                                                                      .toString() ==
+                                                                  "null"
+                                                              ? '-:-'
+                                                              : controller
+                                                                          .visitAttendanceModel!
+                                                                          .data!
+                                                                          .visitAttendance![
+                                                                              0]
+                                                                          .presentTimeOut
+                                                                          .toString() ==
+                                                                      "null"
+                                                                  ? convertTimestampToTime(controller
+                                                                      .visitAttendanceModel!
+                                                                      .data!
+                                                                      .visitAttendance![
+                                                                          0]
+                                                                      .presentTimeIn
+                                                                      .toString())
+                                                                  : convertTimestampToTime(controller
                                                                       .visitAttendanceModel!
                                                                       .data!
                                                                       .visitAttendance![
                                                                           0]
                                                                       .presentTimeOut
-                                                                      .toString() ==
-                                                                  "null"
-                                                              ? convertTimestampToTime(controller
-                                                                  .visitAttendanceModel!
-                                                                  .data!
-                                                                  .visitAttendance![
-                                                                      0]
-                                                                  .presentTimeIn
-                                                                  .toString())
-                                                              : convertTimestampToTime(controller
-                                                                  .visitAttendanceModel!
-                                                                  .data!
-                                                                  .visitAttendance![
-                                                                      0]
-                                                                  .presentTimeOut
-                                                                  .toString()),
-                                                      style: const TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.green,
-                                                          fontWeight:
-                                                              FontWeight.w500),
-                                                    ))
-                                                : const SizedBox(
-                                                    width: 100,
-                                                    child: Text(
-                                                      '-:-',
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.green,
-                                                          fontWeight:
-                                                              FontWeight.w500),
-                                                    )),
-                                            SizedBox(
-                                              width: 100,
-                                              child: Row(
-                                                children: [
-                                                  const Icon(
-                                                    Icons.location_on,
-                                                    size: 40,
-                                                    color: Colors.blue,
+                                                                      .toString()),
+                                                          style: const TextStyle(
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.green,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ))
+                                                    : const SizedBox(
+                                                        width: 100,
+                                                        child: Text(
+                                                          '-:-',
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Colors.green,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        )),
+                                                SizedBox(
+                                                  width: 100,
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(
+                                                        Icons.location_on,
+                                                        size: 40,
+                                                        color: Colors.blue,
+                                                      ),
+                                                      IconButton(
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              temp = !temp;
+                                                            });
+                                                          },
+                                                          icon: !temp
+                                                              ? const Icon(Icons
+                                                                  .keyboard_arrow_down)
+                                                              : const Icon(Icons
+                                                                  .keyboard_arrow_up))
+                                                    ],
                                                   ),
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          temp = !temp;
-                                                        });
-                                                      },
-                                                      icon: !temp
-                                                          ? const Icon(Icons
-                                                              .keyboard_arrow_down)
-                                                          : const Icon(Icons
-                                                              .keyboard_arrow_up))
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: temp ? 5 : 0,
-                                        ),
-                                        temp
-                                            ? Text(
-                                                controller.dataPresent.value
-                                                    ? controller
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: temp ? 5 : 0,
+                                            ),
+                                            temp
+                                                ? Text(
+                                                    controller.dataPresent.value
+                                                        ? controller
+                                                                    .visitAttendanceModel!
+                                                                    .data!
+                                                                    .visitAttendance![
+                                                                        0]
+                                                                    .checkOutAddress
+                                                                    .toString() !=
+                                                                "null"
+                                                            ? controller
                                                                 .visitAttendanceModel!
                                                                 .data!
                                                                 .visitAttendance![
                                                                     0]
                                                                 .checkOutAddress
-                                                                .toString() !=
-                                                            "null"
-                                                        ? controller
-                                                            .visitAttendanceModel!
-                                                            .data!
-                                                            .visitAttendance![0]
-                                                            .checkOutAddress
-                                                            .toString()
-                                                        : Address
-                                                    : Address,
-                                                style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              )
-                                            : const SizedBox(),
-                                      ],
+                                                                .toString()
+                                                            : Address
+                                                        : Address,
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
-                },
-              ));
+                              ),
+                            );
+                    },
+                  ));
   }
 
   Widget _punchBuild(text) {

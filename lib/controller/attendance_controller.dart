@@ -41,10 +41,7 @@ class AttendanceController extends GetxController {
     return DateFormat('MM-dd-yyyy HH:mm').format(dateTime);
   }
 
-  final List<DateTime> leaveDates = [
-    DateTime.utc(2024, 4, 25),
-    DateTime.utc(2024, 4, 26),
-  ];
+  final List<DateTime> leaveDates = [];
   final List<DateTime> holidayDates = [];
   final List<DateTime> absentDates = [];
 
@@ -56,21 +53,21 @@ class AttendanceController extends GetxController {
 
   addholiday(date) {
     String presentDateString = date;
-    DateTime presentDate = DateFormat("dd-MM-yyyy").parse(presentDateString);
+    DateTime presentDate = DateFormat("yyyy-MM-dd").parse(presentDateString);
     holidayDates.add(presentDate);
     update();
   }
 
   addAbsent(date) {
     String presentDateString = date;
-    DateTime presentDate = DateFormat("dd-MM-yyyy").parse(presentDateString);
+    DateTime presentDate = DateFormat("yyyy-MM-dd").parse(presentDateString);
     absentDates.add(presentDate);
     update();
   }
 
   addLeave(date) {
     String presentDateString = date;
-    DateTime presentDate = DateFormat("dd-MM-yyyy").parse(presentDateString);
+    DateTime presentDate = DateFormat("yyyy-MM-dd").parse(presentDateString);
     leaveDates.add(presentDate);
     update();
   }
@@ -80,13 +77,13 @@ class AttendanceController extends GetxController {
     super.onInit();
 
     // getVisitPlans();
-    //getAttendanceMonthly();
+    getAttendanceMonthly();
     if (visitID != '') {
       selectedLocation = visitID;
       print(selectedLocation);
     }
     getVisitPlans();
-   // getAttendance();
+    getAttendance();
     getAttendanceLogs();
     // Timer.periodic(const Duration(seconds: 1), (Timer timer) {
     //   // Check if the widget is still mounted before updating the state
@@ -130,44 +127,22 @@ class AttendanceController extends GetxController {
     }
     try {
       var res = await ApiProvider().getRequest(
-          apiUrl:
-              "Attendance/MonthlyAttendance?EmpCode=${LocalData().getEmpCode()}");
+          apiUrl: "$BASEURL/v1/application/attendence/get-monthly-attendence");
 
-      var monthlyAttendance = jsonDecode(res);
-      //  monthlyAttendance = monthlyAttendanceFromJson(res);
-      if (monthlyAttendance['Data']['VisitAttendance']['Absent'] != "null") {
-        for (var i = 0;
-            i < monthlyAttendance['Data']['VisitAttendance']['Absent'].length;
-            i++) {
-          String ab = monthlyAttendance['Data']['VisitAttendance']['Absent'][i]
-                  ['AbsentDate']
-              .toString();
+      var decode = jsonDecode(res);
+
+      for (var i = 0; i < decode['Dates'].length; i++) {
+        if (decode['Dates'][i]['type'] == "leave") {
+          String ab = decode['Dates'][i]['date'].toString();
           //print(ab);
-          addAbsent(ab);
-        }
-      }
-      if (monthlyAttendance['Data']['VisitAttendance']['Holiday'] != "null") {
-        for (var i = 0;
-            i < monthlyAttendance['Data']['VisitAttendance']['Holiday'].length;
-            i++) {
-          String ab = monthlyAttendance['Data']['VisitAttendance']['Holiday'][i]
-                  ['HolidayDate']
-              .toString();
+          addLeave(ab);
+        } else {
+          String ab = decode['Dates'][i]['date'].toString();
           //print(ab);
           addholiday(ab);
         }
       }
-      if (monthlyAttendance['Data']['VisitAttendance']['Leave'] != "null") {
-        for (var i = 0;
-            i < monthlyAttendance['Data']['VisitAttendance']['Leave'].length;
-            i++) {
-          String ab = monthlyAttendance['Data']['VisitAttendance']['Leave'][i]
-                  ['LeaveDate']
-              .toString();
-          //print(ab);
-          addLeave(ab);
-        }
-      }
+
       isLoading.value = false;
       update();
     } catch (e) {
@@ -280,6 +255,7 @@ class AttendanceController extends GetxController {
           apiUrl:
               "$BASEURL/v1/application/attendence/get-attendance?VisitId=$visitid");
       visitAttendanceModel = visitAttendanceModelFromJson(res);
+      print(res);
       attendancLoad = false;
       update();
       dataPresent.value = true;
@@ -291,23 +267,6 @@ class AttendanceController extends GetxController {
       }
       update();
     } catch (e) {
-      // visitAttendanceModel!.data.visitAttendance.add(VisitAttendance(
-      //   empCode: "ABC123",
-      //   visitId: 1,
-      //   attendanceDate: DateTime.now(),
-      //   checkIn: 1,
-      //   checkOut: 0,
-      //   checkInTime: "09:00 AM",
-      //   checkOutTime: null,
-      // ));
-
-      // visitAttendanceModel!.data.visitAttendance[0].checkIn = 0;
-      // visitAttendanceModel!.data.visitAttendance[0].checkIn = 1;
-      // visitAttendanceModel!.data.visitAttendance[0].checkInTime = 'null';
-      // visitAttendanceModel!.data.visitAttendance[0].checkOutTime = "null";
-      // visitAttendanceModel!.data.visitAttendance[0].checkIn = 0;
-      // visitAttendanceModel!.data.visitAttendance[0].checkOut = 0;
-
       update();
       if (kDebugMode) {
         print(e.toString());
@@ -320,7 +279,7 @@ class AttendanceController extends GetxController {
     String? log,
     String? add,
     String? attType,
-    File? img,
+    String? img,
   }) async {
     isMark.value = false;
 
@@ -328,77 +287,11 @@ class AttendanceController extends GetxController {
       visitid = "1";
       update();
     }
-
-    // print(unplaned.value);
-    // if (kDebugMode) {
-    //   print("apply mark called");
-    // }
-    // if (img == null) {
-    //   constToast("Please Punch Image");
-    // }
-    // DateTime currentDateTime = DateTime.now();
-    // String formattedDateTime = formatDateTime(currentDateTime);
-    // if (kDebugMode) {
-    //   print(formattedDateTime);
-    // }
-    // try {
-    //   if (unplaned.isTrue) {
-    //     if (from.text.isEmpty || to.text.isEmpty) {
-    //       constToast("Fields Are Required!");
-    //       isMark.value = true;
-    //       update();
-    //       return;
-    //     }
-    //   }
-
-    //   var token = GetStorage().read("token");
-    //   if (selectedLocation == "Un-planned") {
-    //     //visitid = 0;
-    //     update();
-    //   }
-    //   var request = http.Request(
-    //       'POST',
-    //       Uri.parse(
-    //           '$BASEURL/v1/application/attendence/mark-attendence'));
-    //   request.body = json.encode({
-    //     "Latitude": "23.45",
-    //     "Longitude": "45.6",
-    //     "isPlanned": false,
-    //     "VisitFrom": "mumbai",
-    //     "VisitTo": "delhi",
-    //     "place_image": "place_image",
-    //     "visit_address": "visit_address",
-    //     "VisitSummaryId": ""
-    //   });
-    //   // request.files.add(await http.MultipartFile.fromPath('Image', img!.path));
-    //   request.headers.addAll({'Authorization': 'Bearer $token'});
-
-    //   http.StreamedResponse response = await request.send();
-    // var dec = jsonDecode(await response.stream.bytesToString());
-    // print(dec);
-    // AudioPlayer().play(AssetSource('audios/wrong_ans.mp3'));
-    // constToast("Attendance Marked!");
-    // // getAttendanceLogs();
-    // if (unplaned.isTrue) {
-    //   updatevisits();
-    // } else {
-    //   getVisitAttendance(visitid);
-    // }
-
-    // isMark.value = true;
-    // unplaned.value = false;
-    // update();
-    // } catch (e) {
-    //   unplaned.value = false;
-    //   isMark.value = true;
-    //   update();
-    //   if (kDebugMode) {
-    //     print(e.toString());
-    //   }
-    // }
-    if (img == null) {
+    if (img == '') {
       constToast("Please Punch Image");
+      return;
     }
+
     if (unplaned.isTrue) {
       if (from.text.isEmpty || to.text.isEmpty || visitPurpose.text.isEmpty) {
         constToast("Fields Are Required!");
@@ -415,13 +308,14 @@ class AttendanceController extends GetxController {
     };
     var request = http.Request('POST',
         Uri.parse('$BASEURL/v1/application/attendence/mark-attendence'));
+
     request.body = json.encode({
       "Latitude": lat.toString(),
       "Longitude": log.toString(),
       "isPlanned": unplaned.isTrue ? false : true,
       "VisitFrom": unplaned.isTrue ? from.text : "",
       "VisitTo": unplaned.isTrue ? to.text : "",
-      "place_image": "place_image",
+      "place_image": img,
       "visit_purpose": unplaned.isTrue ? visitPurpose.text : "",
       "visit_address": add.toString(),
       "VisitSummaryId": unplaned.isTrue ? "" : visitid
@@ -429,7 +323,7 @@ class AttendanceController extends GetxController {
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
-
+    print(response.statusCode);
     if (response.statusCode == 200) {
       var dec = jsonDecode(await response.stream.bytesToString());
       print(dec);

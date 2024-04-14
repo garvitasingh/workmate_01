@@ -28,10 +28,10 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   //   DateTime(2024, 1, 14),
   //   DateTime(2024, 1, 25),
   // ];
-  List<DateTime> holidays = [
-    DateTime.utc(2024, 1, 1),
-    DateTime.utc(2024, 1, 5),
-  ];
+  // List<DateTime> holidays = [
+  //   DateTime.utc(2024, 1, 1),
+  //   DateTime.utc(2024, 1, 5),
+  // ];
   bool visible = false;
   @override
   void initState() {

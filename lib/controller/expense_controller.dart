@@ -29,6 +29,7 @@ class ExpenseController extends GetxController {
   final isLoading = true.obs;
   final isSubmit = true.obs;
   final unplaned = true.obs;
+  String image = '';
   final expModeIdText = "ExpModeId".obs;
   String? convModeString;
   VisitPlanModel? visitPlanModel;
@@ -73,7 +74,13 @@ class ExpenseController extends GetxController {
     if (pickedFile != null) {
       capturedImage = File(pickedFile.path);
       update();
+      storeImage();
     }
+  }
+
+  storeImage() async {
+    image = await ApiProvider().uploadImage(file: capturedImage);
+    update();
   }
 
   openCamera() async {
@@ -83,6 +90,7 @@ class ExpenseController extends GetxController {
     if (pickedFile != null) {
       capturedImage = File(pickedFile.path);
       update();
+      storeImage();
     }
   }
 
@@ -141,8 +149,8 @@ class ExpenseController extends GetxController {
         }
         update();
       }
-     // getMstConvMode();
-     // getMstExpMode();
+      // getMstConvMode();
+      // getMstExpMode();
 
       update();
       isLoading.value = false;
@@ -158,7 +166,8 @@ class ExpenseController extends GetxController {
 
     print("get leave called");
     try {
-      var res = await ApiProvider().getRequest(apiUrl: "$BASEURL/v1/application/expense/mst-con-mode");
+      var res = await ApiProvider()
+          .getRequest(apiUrl: "$BASEURL/v1/application/expense/mst-con-mode");
       // print(jsonDecode(res));
       convModeModel = convModeModelFromJson(res);
       for (var i = 0; i < convModeModel!.dataCount!; i++) {
@@ -176,9 +185,8 @@ class ExpenseController extends GetxController {
   getMstExpMode() async {
     print("get eeee called");
     try {
-      var res = await ApiProvider().getRequest(
-          apiUrl:
-              "$BASEURL/v1/application/expense/exp-mst-mode");
+      var res = await ApiProvider()
+          .getRequest(apiUrl: "$BASEURL/v1/application/expense/exp-mst-mode");
       print(jsonDecode(res));
       visitPlanExpModel = visitPlanExpModelFromJson(res);
       update();
@@ -248,12 +256,12 @@ class ExpenseController extends GetxController {
     isSubmit.value = false;
     print("apply leave called");
     try {
-      // if (capturedImage == null) {
-      //   isSubmit.value = true;
-      //   update();
-      //   constToast("Please Select file");
-      //   return;
-      // }
+      if (capturedImage == null) {
+        isSubmit.value = true;
+        update();
+        constToast("Please Select file");
+        return;
+      }
       if (rateController.text.isEmpty) {
         rateController.text = "00";
         locationDistanceController.text = "00";
@@ -266,31 +274,8 @@ class ExpenseController extends GetxController {
         'Authorization': 'Bearer $token'
       };
 
-      // var request = http.MultipartRequest(
-      //     'POST',
-      //     Uri.parse(
-      //         '$BASEURL/v1/application/expense/create-expense'));
-      // // request.fields.addAll({
-
-      // //   'Value':
-      // //       '{"ExpenseId": ${expenseId.toString()},"ExpModeId":${expModeId.toString()},"ConvModeId": ${convModeId.toString()},"Rate": ${rateController.text},"LocationDistance":${locationDistanceController.text},"Amount": ${amountController.text},"ClaimDoc":"test","Remarks": "${remarksController.text}","VisitPurpose": "${visitPurposeController.text}"}'
-      // // });
-      // request.body = json.encode({
-      //   "ExpModeId": 1,
-      //   "ConvModeId": 1,
-      //   "VisitSummaryId": "285ed62a-b292-4507-9acf-77cda529b5f1",
-      //   "Rate": "20",
-      //   "LocationDistance": 10,
-      //   "Amount": 20000000,
-      //   "ClaimDoc": "test",
-      //   "Remarks": "cab",
-      //   "Reason": "stay"
-      // });
-      // print(request.fields);
       var request = http.Request(
-          'POST',
-          Uri.parse(
-              '$BASEURL/v1/application/expense/create-expense'));
+          'POST', Uri.parse('$BASEURL/v1/application/expense/create-expense'));
       request.body = json.encode({
         "ExpModeId": expModeId,
         "ConvModeId": convModeId,
@@ -298,26 +283,16 @@ class ExpenseController extends GetxController {
         "Rate": rateController.text,
         "LocationDistance": locationDistanceController.text,
         "Amount": amountController.text,
-        "ClaimDoc": "test",
+        "ClaimDoc": image,
         "Remarks": remarksController.text,
         "Reason": " "
       });
       print(request.body);
-      // request.files
-      //     .add(await http.MultipartFile.fromPath('Image', capturedImage!.path));
-      // request.headers.addAll({'Authorization': 'Bearer $token'});
-      // print(request.body);
-      // http.StreamedResponse response = await request.send();
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
       var dec = jsonDecode(await response.stream.bytesToString());
       print(dec);
-      // print(data);
-      // var res = await ApiProvider().postRequestToken(
-      //     apiUrl: "http://14.99.179.131/wsnapi/api/Claim/AddClaim", data: data);
-      // print(jsonDecode(res));
-
       if (dec['message'] == "Claim create successfully") {
         isSubmit.value = true;
         constToast(dec['message']);
