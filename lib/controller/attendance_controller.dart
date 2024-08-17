@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:workmate_01/controller/expense_controller.dart';
+
 import 'package:workmate_01/model/attendance_log.dart';
 import 'package:workmate_01/model/attendance_model.dart';
 import 'package:workmate_01/model/monthl_attendance_model.dart';
@@ -180,7 +180,6 @@ class AttendanceController extends GetxController {
         update();
       }
       getVisitAttendance(visitid);
-      
     }
     getVisitAttendance(visitid);
 
@@ -191,23 +190,25 @@ class AttendanceController extends GetxController {
     //isLoading.value = true;
     update();
     if (kDebugMode) {
-      print("get attendance called");
+      print("get 7daylogs called");
     }
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
               "Attendance/GetAttendancelog?EmpCode=${LocalData().getEmpCode()}&VisitId=0");
+     print("object");
+     print(res);
       attendanceLogModel = attendanceLogModelFromJson(res);
-     checkLog.value = true;
+      checkLog.value = true;
       update();
       if (kDebugMode) {
         print(res);
       }
-     // isLoading.value = false;
+      // isLoading.value = false;
       update();
     } catch (e) {
       checkLog.value = false;
-     // isLoading.value = false;
+      // isLoading.value = false;
       update();
       if (kDebugMode) {
         print(e.toString());
@@ -340,7 +341,7 @@ class AttendanceController extends GetxController {
       unplaned.value = false;
       update();
     } catch (e) {
-       unplaned.value = false;
+      unplaned.value = false;
       isMark.value = true;
       update();
       if (kDebugMode) {

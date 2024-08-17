@@ -9,12 +9,12 @@ MonthlyAttendance monthlyAttendanceFromJson(String str) => MonthlyAttendance.fro
 String monthlyAttendanceToJson(MonthlyAttendance data) => json.encode(data.toJson());
 
 class MonthlyAttendance {
-    String? responseMessage;
-    bool? status;
-    int? dataCount;
-    Data? data;
-    String? responseCode;
-    bool? confirmationbox;
+    final String? responseMessage;
+    final bool? status;
+    final int? dataCount;
+    final Data? data;
+    final String? responseCode;
+    final bool? confirmationbox;
 
     MonthlyAttendance({
         this.responseMessage,
@@ -45,7 +45,7 @@ class MonthlyAttendance {
 }
 
 class Data {
-    VisitAttendance? visitAttendance;
+    final VisitAttendance? visitAttendance;
 
     Data({
         this.visitAttendance,
@@ -61,10 +61,10 @@ class Data {
 }
 
 class VisitAttendance {
-    List<Absent>? present;
-    List<Absent>? leave;
-    List<Absent>? absent;
-    List<Absent>? holiday;
+    final dynamic present;
+    final dynamic leave;
+    final List<Absent>? absent;
+    final List<Absent>? holiday;
 
     VisitAttendance({
         this.present,
@@ -74,28 +74,26 @@ class VisitAttendance {
     });
 
     factory VisitAttendance.fromJson(Map<String, dynamic> json) => VisitAttendance(
-        present: json["Present"] == null ? [] : List<Absent>.from(json["Present"]!.map((x) => Absent.fromJson(x))),
-        leave: json["Leave"] == null ? [] : List<Absent>.from(json["Leave"]!.map((x) => Absent.fromJson(x))),
+        present: json["Present"],
+        leave: json["Leave"],
         absent: json["Absent"] == null ? [] : List<Absent>.from(json["Absent"]!.map((x) => Absent.fromJson(x))),
         holiday: json["Holiday"] == null ? [] : List<Absent>.from(json["Holiday"]!.map((x) => Absent.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "Present": present == null ? [] : List<dynamic>.from(present!.map((x) => x.toJson())),
-        "Leave": leave == null ? [] : List<dynamic>.from(leave!.map((x) => x.toJson())),
+        "Present": present,
+        "Leave": leave,
         "Absent": absent == null ? [] : List<dynamic>.from(absent!.map((x) => x.toJson())),
         "Holiday": holiday == null ? [] : List<dynamic>.from(holiday!.map((x) => x.toJson())),
     };
 }
 
 class Absent {
-    int? id;
-    String? absentDate;
-    EmpCode? empCode;
-    TableName? tableName;
-    String? holidayDate;
-    String? leaveDate;
-    String? presentDate;
+    final int? id;
+    final String? absentDate;
+    final EmpCode? empCode;
+    final TableName? tableName;
+    final String? holidayDate;
 
     Absent({
         this.id,
@@ -103,8 +101,6 @@ class Absent {
         this.empCode,
         this.tableName,
         this.holidayDate,
-        this.leaveDate,
-        this.presentDate,
     });
 
     factory Absent.fromJson(Map<String, dynamic> json) => Absent(
@@ -113,8 +109,6 @@ class Absent {
         empCode: empCodeValues.map[json["EMPCode"]]!,
         tableName: tableNameValues.map[json["TableName"]]!,
         holidayDate: json["HolidayDate"],
-        leaveDate: json["LeaveDate"],
-        presentDate: json["PresentDate"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -123,8 +117,6 @@ class Absent {
         "EMPCode": empCodeValues.reverse[empCode],
         "TableName": tableNameValues.reverse[tableName],
         "HolidayDate": holidayDate,
-        "LeaveDate": leaveDate,
-        "PresentDate": presentDate,
     };
 }
 
@@ -138,16 +130,12 @@ final empCodeValues = EnumValues({
 
 enum TableName {
     ABSENT,
-    HOLIDAY,
-    LEAVE,
-    PRESENT
+    HOLIDAY
 }
 
 final tableNameValues = EnumValues({
     "Absent": TableName.ABSENT,
-    "Holiday": TableName.HOLIDAY,
-    "Leave": TableName.LEAVE,
-    "Present": TableName.PRESENT
+    "Holiday": TableName.HOLIDAY
 });
 
 class EnumValues<T> {
@@ -157,7 +145,7 @@ class EnumValues<T> {
     EnumValues(this.map);
 
     Map<T, String> get reverse {
-        reverseMap = map.map((k, v) => MapEntry(v, k));
-        return reverseMap;
+            reverseMap = map.map((k, v) => MapEntry(v, k));
+            return reverseMap;
     }
 }

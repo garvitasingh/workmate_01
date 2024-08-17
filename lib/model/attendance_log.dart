@@ -9,27 +9,27 @@ AttendanceLogModel attendanceLogModelFromJson(String str) => AttendanceLogModel.
 String attendanceLogModelToJson(AttendanceLogModel data) => json.encode(data.toJson());
 
 class AttendanceLogModel {
-    String responseMessage;
-    bool status;
-    int dataCount;
-    Data data;
-    String responseCode;
-    bool confirmationbox;
+    final String? responseMessage;
+    final bool? status;
+    final int? dataCount;
+    final Data? data;
+    final String? responseCode;
+    final bool? confirmationbox;
 
     AttendanceLogModel({
-        required this.responseMessage,
-        required this.status,
-        required this.dataCount,
-        required this.data,
-        required this.responseCode,
-        required this.confirmationbox,
+        this.responseMessage,
+        this.status,
+        this.dataCount,
+        this.data,
+        this.responseCode,
+        this.confirmationbox,
     });
 
     factory AttendanceLogModel.fromJson(Map<String, dynamic> json) => AttendanceLogModel(
         responseMessage: json["ResponseMessage"],
         status: json["Status"],
         dataCount: json["DataCount"],
-        data: Data.fromJson(json["Data"]),
+        data: json["Data"] == null ? null : Data.fromJson(json["Data"]),
         responseCode: json["ResponseCode"],
         confirmationbox: json["confirmationbox"],
     );
@@ -38,51 +38,51 @@ class AttendanceLogModel {
         "ResponseMessage": responseMessage,
         "Status": status,
         "DataCount": dataCount,
-        "Data": data.toJson(),
+        "Data": data?.toJson(),
         "ResponseCode": responseCode,
         "confirmationbox": confirmationbox,
     };
 }
 
 class Data {
-    List<Attendancelog> attendancelog;
+    final List<Attendancelog>? attendancelog;
 
     Data({
-        required this.attendancelog,
+        this.attendancelog,
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
-        attendancelog: List<Attendancelog>.from(json["Attendancelog"].map((x) => Attendancelog.fromJson(x))),
+        attendancelog: json["Attendancelog"] == null ? [] : List<Attendancelog>.from(json["Attendancelog"]!.map((x) => Attendancelog.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "Attendancelog": List<dynamic>.from(attendancelog.map((x) => x.toJson())),
+        "Attendancelog": attendancelog == null ? [] : List<dynamic>.from(attendancelog!.map((x) => x.toJson())),
     };
 }
 
 class Attendancelog {
-    String empCode;
-    int visitId;
-    String visitLoc;
-    String lat;
-    String long;
-    String address;
-    DateTime? presentTimeIn;
-    DateTime? presentTimeOut;
-    int checkIn;
-    int checkOut;
+    final String? empCode;
+    final int? visitId;
+    final String? visitLoc;
+    final String? lat;
+    final String? long;
+    final String? address;
+    final DateTime? presentTimeIn;
+    final DateTime? presentTimeOut;
+    final int? checkIn;
+    final int? checkOut;
 
     Attendancelog({
-        required this.empCode,
-        required this.visitId,
-        required this.visitLoc,
-        required this.lat,
-        required this.long,
-        required this.address,
-        required this.presentTimeIn,
-        required this.presentTimeOut,
-        required this.checkIn,
-        required this.checkOut,
+        this.empCode,
+        this.visitId,
+        this.visitLoc,
+        this.lat,
+        this.long,
+        this.address,
+        this.presentTimeIn,
+        this.presentTimeOut,
+        this.checkIn,
+        this.checkOut,
     });
 
     factory Attendancelog.fromJson(Map<String, dynamic> json) => Attendancelog(

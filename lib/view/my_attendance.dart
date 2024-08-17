@@ -317,9 +317,9 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                             const NeverScrollableScrollPhysics(),
                                         itemBuilder: (context, index) {
                                           final data = controller
-                                              .attendanceLogModel!
-                                              .data
-                                              .attendancelog[index];
+                                              .attendanceLogModel
+                                              ?.data
+                                              ?.attendancelog?[index];
                                           return Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Container(
@@ -333,7 +333,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    data.presentTimeIn == null
+                                                    data?.presentTimeIn == null
                                                         ?  SizedBox(
                                                             width: 60,
                                                             child: Card(
@@ -353,12 +353,12 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                                             ))
                                                         : DateHeader(controller
                                                             .attendanceLogModel!
-                                                            .data
-                                                            .attendancelog[
+                                                            .data!
+                                                            .attendancelog![
                                                                 index]
                                                             .presentTimeIn
                                                             .toString()),
-                                                    data.presentTimeIn == null
+                                                    data?.presentTimeIn == null
                                                         ? const SizedBox(
                                                             width: 60,
                                                             child: Center(
@@ -367,12 +367,12 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                                         : _buildLog1(convertTimestampToTime(
                                                             controller
                                                                 .attendanceLogModel!
-                                                                .data
-                                                                .attendancelog[
+                                                                .data!
+                                                                .attendancelog![
                                                                     index]
                                                                 .presentTimeIn
                                                                 .toString())),
-                                                    data.presentTimeOut == null
+                                                    data?.presentTimeOut == null
                                                         ? const SizedBox(
                                                             width: 60,
                                                             child: Center(
@@ -381,15 +381,15 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                                         : _buildLog1(convertTimestampToTime(
                                                             controller
                                                                 .attendanceLogModel!
-                                                                .data
-                                                                .attendancelog[
+                                                                .data!
+                                                                .attendancelog![
                                                                     index]
                                                                 .presentTimeOut
                                                                 .toString())),
                                                     _buildLog1(controller
                                                                 .attendanceLogModel!
-                                                                .data
-                                                                .attendancelog[
+                                                                .data!
+                                                                .attendancelog?[
                                                                     index]
                                                                 .checkOut ==
                                                             1
@@ -404,7 +404,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                               height: 3,
                                             ),
                                         itemCount: controller
-                                            .attendanceLogModel!.dataCount)
+                                            .attendanceLogModel?.dataCount??0)
                               ],
                             ),
                           )

@@ -14,7 +14,8 @@ class ApiProvider {
 
     var res = await http.get(Uri.parse('$BASEURL$apiUrl'),
         headers: {'Authorization': 'Bearer $token'});
-
+  print(res.request?.url);
+  print(token);
     if (res.statusCode == 200) {
       return res.body;
       // var decodedBody = json.decode(res.body);
