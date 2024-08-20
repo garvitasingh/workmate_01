@@ -56,7 +56,6 @@ class ExpenseController extends GetxController {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     fromdistanse.dispose();
     todistanse.dispose();
     rateController.dispose();
@@ -140,17 +139,13 @@ class ExpenseController extends GetxController {
       visitPlanModel = visitPlanModelFromJson(res);
       print(visitPlanModel);
       for (var i = 0; i < visitPlanModel!.dataCount; i++) {
-        print(visitPlanModel!.data.visitPlan[i].visitLocation);
-        if (visitPlanModel!.data.visitPlan[i].visitLocation != "Un-planned") {
-          visits
-              .add(visitPlanModel!.data.visitPlan[i].visitLocation.toString());
-          selectedLocation = visitPlanModel!.data.visitPlan[i].visitLocation;
+        if (visitPlanModel?.data.visitPlan[i].visitLocation != "Un-planned") {
+          visits.add(visitPlanModel?.data.visitPlan[i].visitLocation ?? '');
+          selectedLocation = visitPlanModel?.data.visitPlan[i].visitLocation;
           update();
         }
         update();
       }
-      // getMstConvMode();
-      // getMstExpMode();
 
       update();
       isLoading.value = false;
@@ -171,7 +166,7 @@ class ExpenseController extends GetxController {
       // print(jsonDecode(res));
       convModeModel = convModeModelFromJson(res);
       for (var i = 0; i < convModeModel!.dataCount!; i++) {
-        convMode.add(convModeModel!.data![i].convModeDesc!);
+        convMode.add(convModeModel?.data?[i].convModeDesc ?? '');
         update();
       }
 
@@ -192,8 +187,7 @@ class ExpenseController extends GetxController {
       update();
       print(visitPlanExpModel);
       for (var i = 0; i < visitPlanExpModel!.data!.visitPlan!.length; i++) {
-        convExpMode
-            .add(visitPlanExpModel!.data!.visitPlan![i].ddlDesc.toString());
+        convExpMode.add(visitPlanExpModel?.data?.visitPlan?[i].ddlDesc ?? '');
         update();
       }
 
@@ -206,8 +200,8 @@ class ExpenseController extends GetxController {
   expIdGet() {
     for (var i = 0; i < visitPlanExpModel!.data!.visitPlan!.length; i++) {
       if (seleExpLocation.value ==
-          visitPlanExpModel!.data!.visitPlan![i].ddlDesc) {
-        expModeId = visitPlanExpModel!.data!.visitPlan![i].ddlId;
+          visitPlanExpModel?.data?.visitPlan?[i].ddlDesc) {
+        expModeId = visitPlanExpModel?.data?.visitPlan?[i].ddlId;
         update();
       }
     }
@@ -217,31 +211,29 @@ class ExpenseController extends GetxController {
   calculateAmount() {
     print("object");
     for (var i = 0; i < convModeModel!.dataCount!; i++) {
-      if (convModeString == convModeModel!.data![i].convModeDesc) {
-        rateController.text = convModeModel!.data![i].rate.toString();
-        convModeId = convModeModel!.data![i].convModeId.toString();
+      if (convModeString == convModeModel?.data?[i].convModeDesc) {
+        rateController.text = convModeModel?.data?[i].rate.toString() ?? '';
+        convModeId = convModeModel?.data?[i].convModeId.toString();
         update();
       }
     }
   }
 
   getVisitLocation() {
-    print("object");
     print(expModeId);
     print(convModeId);
     for (var i = 0; i < visitPlanModel!.dataCount; i++) {
       if (selectedLocation ==
           visitPlanModel!.data.visitPlan[i].visitLocation.toString()) {
-        dateController.text = visitPlanModel!.data.visitPlan[i].visitDate;
-        expenseId = visitPlanModel!.data.visitPlan[i].expenseId;
-        if (visitPlanModel!.data.visitPlan[i].visitLocation == "Un-planned") {
-          print("fff");
+        dateController.text = visitPlanModel?.data.visitPlan[i].visitDate ?? '';
+        expenseId = visitPlanModel?.data.visitPlan[i].expenseId;
+        if (visitPlanModel?.data.visitPlan[i].visitLocation == "Un-planned") {
           fromdistanse.clear();
           todistanse.clear();
           unplaned.value = true;
         } else {
           List<String> citiesSeparated =
-              visitPlanModel!.data.visitPlan[i].visitLocation.split('-');
+              visitPlanModel?.data.visitPlan[i].visitLocation.split('-') ?? [];
           fromdistanse.text = citiesSeparated[0];
           todistanse.text = citiesSeparated[1];
           unplaned.value = false;
@@ -296,8 +288,7 @@ class ExpenseController extends GetxController {
       if (dec['message'] == "Claim create successfully") {
         isSubmit.value = true;
         constToast(dec['message']);
-        // fromdistanse.clear();
-        // todistanse.clear();
+
         capturedImage = null;
         locationDistanceController.clear();
         rateController.clear();

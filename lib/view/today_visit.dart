@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
 
 import 'dart:async';
 import 'dart:io';
@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:workmate_01/component/check_in_button.dart';
 import 'package:workmate_01/controller/attendance_controller.dart';
@@ -32,7 +31,7 @@ class _TodayVisitState extends State<TodayVisit> {
   late String formattedTime;
 
   late Position _currentPosition;
-  // ignore: non_constant_identifier_names
+
   String Address = 'Location';
   File? _capturedImage;
   String image = '';
@@ -66,7 +65,9 @@ class _TodayVisitState extends State<TodayVisit> {
       _currentPosition = await _getGeoLocationPosition();
       await GetAddressFromLatLong(_currentPosition);
     } catch (e) {
-      print('Error initializing location: $e');
+      if (kDebugMode) {
+        print('Error initializing location: $e');
+      }
     }
   }
 
@@ -136,8 +137,6 @@ class _TodayVisitState extends State<TodayVisit> {
     });
   }
 
-  List<String> _locations = ['A', 'A', 'C', 'D']; // Option 2
-  String? _selectedLocation; // Option 2
   @override
   Widget build(BuildContext context) {
     DateTime currentDate = DateTime.now();
@@ -274,8 +273,8 @@ class _TodayVisitState extends State<TodayVisit> {
                       offset: const Offset(-20, 0),
                       scrollbarTheme: ScrollbarThemeData(
                         radius: const Radius.circular(40),
-                        thickness: MaterialStateProperty.all<double>(6),
-                        thumbVisibility: MaterialStateProperty.all<bool>(true),
+                        thickness: WidgetStateProperty.all<double>(6),
+                        thumbVisibility: WidgetStateProperty.all<bool>(true),
                       ),
                     ),
                     menuItemStyleData: const MenuItemStyleData(

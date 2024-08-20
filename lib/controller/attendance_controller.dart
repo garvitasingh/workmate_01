@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
@@ -80,7 +79,9 @@ class AttendanceController extends GetxController {
     getAttendanceMonthly();
     if (visitID != '') {
       selectedLocation = visitID;
-      print(selectedLocation);
+      if (kDebugMode) {
+        print(selectedLocation);
+      }
     }
     getVisitPlans();
     getAttendance();
@@ -159,8 +160,8 @@ class AttendanceController extends GetxController {
     update();
     visitAttendanceModel = null;
     for (var i = 0; i < visitPlanModel!.dataCount; i++) {
-      if (selectedLocation == visitPlanModel!.data.visitPlan[i].visitLocation) {
-        visitid = visitPlanModel!.data.visitPlan[i].expenseId;
+      if (selectedLocation == visitPlanModel?.data.visitPlan[i].visitLocation) {
+        visitid = visitPlanModel?.data.visitPlan[i].expenseId;
       }
     }
     visitID = '';
@@ -219,8 +220,7 @@ class AttendanceController extends GetxController {
               "$BASEURL/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
       visitPlanModel = visitPlanModelFromJson(res);
       for (var i = 0; i < visitPlanModel!.dataCount; i++) {
-        visits.add(visitPlanModel!.data.visitPlan[i].visitLocation);
-        //  visits.add(visitPlanModel!.data.visitPlan[1].visitLocation);
+        visits.add(visitPlanModel?.data.visitPlan[i].visitLocation ?? '');
 
         update();
       }
@@ -228,7 +228,7 @@ class AttendanceController extends GetxController {
         selectedLocation = visitID;
         update();
       } else {
-        selectedLocation = visitPlanModel!.data.visitPlan[0].visitLocation;
+        selectedLocation = visitPlanModel?.data.visitPlan[0].visitLocation;
       }
       update();
       getvisitId();
@@ -245,7 +245,9 @@ class AttendanceController extends GetxController {
 
   getVisitAttendance(id) async {
     isLoading.value = true;
-    print(id);
+    if (kDebugMode) {
+      print(id);
+    }
     update();
     if (kDebugMode) {
       print("get visit attendance called");
@@ -255,7 +257,9 @@ class AttendanceController extends GetxController {
           apiUrl:
               "$BASEURL/v1/application/attendence/get-attendance?VisitId=$visitid");
       visitAttendanceModel = visitAttendanceModelFromJson(res);
-      print(res);
+      if (kDebugMode) {
+        print(res);
+      }
       attendancLoad = false;
       update();
       dataPresent.value = true;
@@ -323,10 +327,14 @@ class AttendanceController extends GetxController {
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
-    print(response.statusCode);
+    if (kDebugMode) {
+      print(response.statusCode);
+    }
     if (response.statusCode == 200) {
       var dec = jsonDecode(await response.stream.bytesToString());
-      print(dec);
+      if (kDebugMode) {
+        print(dec);
+      }
       AudioPlayer().play(AssetSource('audios/wrong_ans.mp3'));
       constToast("Attendance Marked!");
       homeCo.getlastCheckina();
@@ -347,7 +355,9 @@ class AttendanceController extends GetxController {
       unplaned.value = false;
       isMark.value = true;
       update();
-      print(response.reasonPhrase);
+      if (kDebugMode) {
+        print(response.reasonPhrase);
+      }
     }
   }
 

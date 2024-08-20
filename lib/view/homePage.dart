@@ -1,12 +1,9 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:workmate_01/component/check_connectivity.dart';
 import 'package:workmate_01/controller/home_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:workmate_01/utils/constants.dart';
@@ -17,7 +14,6 @@ import 'package:workmate_01/view/leave_view.dart';
 import 'package:workmate_01/view/login_view.dart';
 import 'package:workmate_01/view/mark_attendance.dart';
 import 'package:workmate_01/view/my_attendance.dart';
-import 'package:workmate_01/view/my_scroolling_visits.dart';
 import 'package:workmate_01/view/notification_view.dart';
 import 'package:workmate_01/view/others_view.dart';
 import 'package:workmate_01/view/today_visit.dart';
@@ -55,11 +51,12 @@ class _HomePageViewState extends State<HomePageView> {
                                 'https://images.unsplash.com/photo-1485290334039-a3c69043e517?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxfDB8MXxyYW5kb218MHx8fHx8fHx8MTYyOTU3NDE0MQ&ixlib=rb-1.2.1&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=300'),
                           ),
                           accountEmail: Text(
-                            controller.userData!.data!.mobileNo.toString(),
+                            controller.userData?.data?.mobileNo.toString() ??
+                                '',
                             style: const TextStyle(color: secondaryColor),
                           ),
                           accountName: Text(
-                            controller.userData!.data!.name.toString(),
+                            controller.userData?.data?.name.toString() ?? '',
                             style: const TextStyle(
                                 fontSize: 24.0, color: secondaryColor),
                           ),
@@ -73,7 +70,7 @@ class _HomePageViewState extends State<HomePageView> {
                             height: 40,
                           ),
                           title: Text(
-                            controller.userData!.data!.empCode.toString(),
+                            controller.userData?.data?.empCode.toString() ?? '',
                             style: const TextStyle(
                                 fontSize: 24.0, color: Colors.green),
                           ),
@@ -147,7 +144,7 @@ class _HomePageViewState extends State<HomePageView> {
                   onPressed: () {
                     controller.menuData.isEmpty
                         ? ''
-                        : _scaffoldKey.currentState!.openDrawer();
+                        : _scaffoldKey.currentState?.openDrawer();
                   },
                 );
               },
@@ -256,8 +253,11 @@ class _HomePageViewState extends State<HomePageView> {
                                                                 FontWeight.w700,
                                                             color: darkColor),
                                                       ),
-                                                      controller.getLastVisits.isEmpty
-                                                          ? SizedBox(height: 40,)
+                                                      controller.getLastVisits
+                                                              .isEmpty
+                                                          ? SizedBox(
+                                                              height: 40,
+                                                            )
                                                           : Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment

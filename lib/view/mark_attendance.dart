@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +24,6 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     List<DateTime> sundaysInApril2024 = getSundaysInMonth(2024, 4);
 
@@ -37,7 +38,7 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
 
     for (DateTime date = firstDayOfMonth;
         date.isBefore(lastDayOfMonth);
-        date = date.add(Duration(days: 1))) {
+        date = date.add(const Duration(days: 1))) {
       if (date.weekday == DateTime.sunday) {
         sundays.add(DateTime.utc(date.year, date.month, date.day));
       }
@@ -75,15 +76,15 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
           init: MyAttendanceController(),
           builder: (controller) {
             return controller.isLoading.isTrue
-                ? Center(child: MyAttendanceSwimmer())
+                ? const Center(child: MyAttendanceSwimmer())
                 : Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Attendance Status (${formattedDate})",
-                            style: TextStyle(
+                            "Attendance Status ($formattedDate)",
+                            style: const TextStyle(
                                 color: darkColor,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600),
@@ -103,31 +104,31 @@ class _MarkAttendanceViewState extends State<MarkAttendanceView> {
                               children: [
                                 _iconCard(
                                     "Present",
-                                    controller.attendanceData!.data
+                                    controller.attendanceData?.data
                                         .myAttendance[0].present,
                                     "present",
                                     getColorByIndex(0)),
                                 _iconCard(
                                     "Absent",
-                                    controller.attendanceData!.data
+                                    controller.attendanceData?.data
                                         .myAttendance[0].absent,
                                     "absent",
                                     getColorByIndex(1)),
                                 _iconCard(
                                     "Leaves",
-                                    controller.attendanceData!.data
+                                    controller.attendanceData?.data
                                         .myAttendance[0].leave,
                                     "leave",
                                     getColorByIndex(2)),
                                 _iconCard(
                                     "Working Days",
-                                    controller.attendanceData!.data
+                                    controller.attendanceData?.data
                                         .myAttendance[0].workingDays,
                                     "my_att",
                                     getColorByIndex(3)),
                                 _iconCard(
                                     "Holidays",
-                                    controller.attendanceData!.data
+                                    controller.attendanceData?.data
                                         .myAttendance[0].holidayCount,
                                     "leave",
                                     getColorByIndex(3)),
@@ -216,25 +217,22 @@ class CalendarDialog extends StatefulWidget {
 class _CalendarDialogState extends State<CalendarDialog> {
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;
-  late DateTime _selectedDay;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _calendarFormat = CalendarFormat.month;
     _focusedDay = DateTime.now();
-    _selectedDay = DateTime.now();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Card(
               color: Colors.white,
               surfaceTintColor: Colors.white,
@@ -280,8 +278,7 @@ class _CalendarDialogState extends State<CalendarDialog> {
                           margin: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                               color: Colors.red,
-                              border: Border.all(
-                                  color: Colors.red, width: 2),
+                              border: Border.all(color: Colors.red, width: 2),
                               shape: BoxShape.circle),
                           child: Center(
                             child: Text(
@@ -297,12 +294,12 @@ class _CalendarDialogState extends State<CalendarDialog> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         ),

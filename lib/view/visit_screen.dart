@@ -1,4 +1,7 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -36,7 +39,7 @@ class VisitScreen extends StatelessWidget {
           init: VisitController(),
           builder: (controller) {
             return controller.isLoading.isTrue
-                ? Center(child: SwimmerForVisitView())
+                ? const Center(child: SwimmerForVisitView())
                 : Padding(
                     padding: const EdgeInsets.all(8),
                     child: Column(
@@ -47,8 +50,10 @@ class VisitScreen extends StatelessWidget {
                                 child: ListView.builder(
                                   itemCount: controller.visitData.length,
                                   itemBuilder: (context, index) {
-                                    print(
+                                    if (kDebugMode) {
+                                      print(
                                         controller.visitData[index]['VisitTo']);
+                                    }
                                     var data = controller.visitData[index];
 
                                     // Parse the ISO 8601 date string
@@ -127,8 +132,10 @@ class VisitScreen extends StatelessWidget {
                                                         height: 35,
                                                         color: darkColor,
                                                         onPressed: () {
-                                                          print(data[
+                                                          if (kDebugMode) {
+                                                            print(data[
                                                               'VisitSummaryId']);
+                                                          }
                                                           if (controller
                                                                   .remarkCo[
                                                                       index]
@@ -223,7 +230,7 @@ class VisitScreen extends StatelessWidget {
         SizedBox(
           width: 130,
           child: Text(
-            "${text} : ",
+            "$text : ",
             style: const TextStyle(
                 color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
           ),
@@ -232,7 +239,7 @@ class VisitScreen extends StatelessWidget {
             width: 150,
             child: Text(
               text2 == "null" ? '-:-' : text2,
-              style: TextStyle(color: appbarColor),
+              style: const TextStyle(color: appbarColor),
             )),
       ],
     );

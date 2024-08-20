@@ -23,13 +23,6 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
   DateTime toDate = DateTime.now();
 
   @override
-  void initState() {
-    // TODO: implement initState
-    // controller.getVisitPlans();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     var w = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -60,35 +53,6 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
             GetBuilder<ExpenseController>(
               init: ExpenseController(),
               builder: (controller) {
-                // return Container(
-                //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                //   margin: const EdgeInsets.all(8.0),
-                //   decoration: BoxDecoration(
-                //     color: Colors.green,
-                //     borderRadius: BorderRadius.circular(5),
-                //   ),
-                //   child: DropdownButton<String>(
-                //     value: controller.selectedLocation,
-                //     onChanged: (String? newValue) {
-                //       setState(() {
-                //         controller.selectedLocation = newValue!;
-                //         controller.getvisitId();
-                //       });
-                //     },
-                //     elevation: 2,
-                //     items: controller.visits
-                //         .toList()
-                //         .map<DropdownMenuItem<String>>((String value) {
-                //       return DropdownMenuItem<String>(
-                //         value: value,
-                //         child: Text(
-                //           value.toString(),
-                //           style: const TextStyle(color: Colors.black),
-                //         ),
-                //       );
-                //     }).toList(),
-                //   ),
-                // );
                 return DropdownButtonHideUnderline(
                   child: DropdownButton2<String>(
                     isExpanded: true,
@@ -167,8 +131,8 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                       offset: const Offset(-20, 0),
                       scrollbarTheme: ScrollbarThemeData(
                         radius: const Radius.circular(40),
-                        thickness: MaterialStateProperty.all<double>(6),
-                        thumbVisibility: MaterialStateProperty.all<bool>(true),
+                        thickness: WidgetStateProperty.all<double>(6),
+                        thumbVisibility: WidgetStateProperty.all<bool>(true),
                       ),
                     ),
                     menuItemStyleData: const MenuItemStyleData(
@@ -228,7 +192,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                     return null;
                                   },
                                   onChanged: (value) {
-                                    if (value != null && value is DateTime) {
+                                    if (value != null) {
                                       fromDate = value;
                                       controller.dateController.text =
                                           DateFormat('yyyy-MM-dd')
@@ -333,7 +297,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                   () => FormBuilderDropdown(
                                     onChanged: (value) {
                                       controller.seleExpLocation.value = value!;
-                                      print(value);
+
                                       controller.expIdGet();
                                       controller.update();
                                     },
@@ -538,7 +502,7 @@ class _ExpanseManagementViewState extends State<ExpanseManagementView> {
                                     // },
                                     autofocus: false),
                                 const SizedBox(height: 10),
-                                Row(
+                                const Row(
                                   children: [
                                     Text(
                                       "Attachment",

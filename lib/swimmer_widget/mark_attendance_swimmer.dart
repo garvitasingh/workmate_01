@@ -1,21 +1,23 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarSwimmer extends StatefulWidget {
+  const CalendarSwimmer({super.key});
+
   @override
   _CalendarSwimmerState createState() => _CalendarSwimmerState();
 }
 
 class _CalendarSwimmerState extends State<CalendarSwimmer> {
   late DateTime _focusedDay;
-  late DateTime _selectedDay;
 
   @override
   void initState() {
     super.initState();
     _focusedDay = DateTime.now();
-    _selectedDay = DateTime.now();
   }
 
   @override
@@ -28,7 +30,7 @@ class _CalendarSwimmerState extends State<CalendarSwimmer> {
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
       child: TableCalendar(
-        calendarBuilders: CalendarBuilders(),
+        calendarBuilders: const CalendarBuilders(),
         firstDay: DateTime(DateTime.now().year, DateTime.now().month, 1),
         lastDay: DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
         focusedDay: _focusedDay,
@@ -36,7 +38,6 @@ class _CalendarSwimmerState extends State<CalendarSwimmer> {
         calendarFormat: CalendarFormat.month,
         onDaySelected: (selectedDay, focusedDay) {
           setState(() {
-            _selectedDay = selectedDay;
             _focusedDay = focusedDay;
           });
           // Do something with the selected day

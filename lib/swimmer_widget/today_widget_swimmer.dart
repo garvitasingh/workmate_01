@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -56,7 +56,7 @@ class TodayWidgetSwimmer extends StatelessWidget {
                           width: 100,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Shimmer.fromColors(
@@ -85,7 +85,7 @@ class TodayWidgetSwimmer extends StatelessWidget {
                           width: 100,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Shimmer.fromColors(
@@ -103,7 +103,7 @@ class TodayWidgetSwimmer extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Shimmer.fromColors(
@@ -116,7 +116,7 @@ class TodayWidgetSwimmer extends StatelessWidget {
                   height: 100,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Shimmer.fromColors(

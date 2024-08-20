@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:workmate_01/view/homePage.dart';
 import 'package:workmate_01/view/login_view.dart';
@@ -18,7 +17,6 @@ class _SplashScreenViewState extends State<SplashScreenView> {
 
   @override
   void initState() {
-   
     // TODO: implement initState
 
     Timer(const Duration(seconds: 1), () {

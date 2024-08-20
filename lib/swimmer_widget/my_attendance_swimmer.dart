@@ -19,7 +19,7 @@ class MyAttendanceSwimmer extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             GridView.builder(

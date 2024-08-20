@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:workmate_01/utils/colors.dart';
 
+// ignore: use_key_in_widget_constructors
 class InternetConnectionChecker extends StatefulWidget {
   @override
   _InternetConnectionCheckerState createState() =>

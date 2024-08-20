@@ -32,7 +32,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   //   DateTime.utc(2024, 1, 1),
   //   DateTime.utc(2024, 1, 5),
   // ];
-  bool visible = false;
+  bool visible = true;
   @override
   void initState() {
     super.initState();
@@ -134,23 +134,23 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                           controller.leaveDates[i].toString());
                                       int dayOfMonth = leave.day;
 
-                                      if (curre == dayOfMonth) {
-                                        constToast(
-                                            "You are on leave today, cannot mark attendance.");
-                                        return;
-                                      }
+                                      // if (curre == dayOfMonth) {
+                                      //   constToast(
+                                      //       "You are on leave today, cannot mark attendance.");
+                                      //   return;
+                                      // }
                                     }
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => TodayVisit(),
+                                        builder: (context) => const TodayVisit(),
                                       ),
                                     );
                                   } else {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => TodayVisit(),
+                                        builder: (context) => const TodayVisit(),
                                       ),
                                     );
                                   }
@@ -229,59 +229,6 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                           const SizedBox(
                             height: 20,
                           ),
-                          // Obx(() => controller.isLoading.isFalse
-                          //     ? Card(
-                          //         surfaceTintColor: Colors.white,
-                          //         color: Colors.white,
-                          //         child: Column(
-                          //           crossAxisAlignment:
-                          //               CrossAxisAlignment.start,
-                          //           children: [
-                          //             const Text(
-                          //               " Attendance Status",
-                          //               style: TextStyle(
-                          //                   color: darkColor,
-                          //                   fontSize: 20,
-                          //                   fontWeight: FontWeight.bold),
-                          //             ),
-                          //             SizedBox(
-                          //               height: 110,
-                          //               child: Row(
-                          //                 mainAxisAlignment:
-                          //                     MainAxisAlignment.spaceBetween,
-                          //                 //scrollDirection: Axis.horizontal,
-                          //                 children: [
-                          //                   _buildStatusContainer(
-                          //                       " Present ",
-                          //                       controller.attendanceData!.data
-                          //                           .claimDetails[0].present
-                          //                           .toString(),
-                          //                       Colors.green),
-                          //                   _buildStatusContainer(
-                          //                       " Absent ",
-                          //                       controller.attendanceData!.data
-                          //                           .claimDetails[0].absent
-                          //                           .toString(),
-                          //                       Colors.red),
-                          //                   _buildStatusContainer(
-                          //                       " Leave ",
-                          //                       controller.attendanceData!.data
-                          //                           .claimDetails[0].leave
-                          //                           .toString(),
-                          //                       Colors.orange),
-                          //                   _buildStatusContainer(
-                          //                       " Holiday ",
-                          //                       controller.attendanceData!.data
-                          //                           .claimDetails[0].holiday
-                          //                           .toString(),
-                          //                       Colors.greenAccent),
-                          //                 ],
-                          //               ),
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       )
-                          //     : const CircularProgressIndicator()),
                           const Text(
                             " Attendance Status",
                             style: TextStyle(
@@ -289,20 +236,27 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
                           ),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           PieChart(
                             dataMap: {
-                              "Present": double.parse(controller
-                                  .attendanceData!.data.myAttendance[0].present
-                                  .toString()),
-                              "Absent": double.parse(controller
-                                  .attendanceData!.data.myAttendance[0].absent
-                                  .toString()),
-                              "Leave": double.parse(controller
-                                  .attendanceData!.data.myAttendance[0].leave
-                                  .toString()),
-                              "Holiday": double.parse(controller.attendanceData!
-                                  .data.myAttendance[0].holidayCount
-                                  .toString()),
+                              "Present": double.parse(controller.attendanceData
+                                      ?.data.myAttendance[0].present
+                                      .toString() ??
+                                  ''),
+                              "Absent": double.parse(controller.attendanceData
+                                      ?.data.myAttendance[0].absent
+                                      .toString() ??
+                                  ''),
+                              "Leave": double.parse(controller.attendanceData
+                                      ?.data.myAttendance[0].leave
+                                      .toString() ??
+                                  ''),
+                              "Holiday": double.parse(controller.attendanceData
+                                      ?.data.myAttendance[0].holidayCount
+                                      .toString() ??
+                                  ''),
                             },
                             animationDuration:
                                 const Duration(milliseconds: 800),
@@ -389,7 +343,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                               const NeverScrollableScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             List<Color> colors =
-                                                    generateLightColors();
+                                                generateLightColors();
                                             final data = controller
                                                 .attendanceLogModel!
                                                 .data!
@@ -399,8 +353,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                                   const EdgeInsets.all(8.0),
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                    color:
-                                                        colors[index],
+                                                    color: colors[index],
                                                     borderRadius:
                                                         BorderRadiusDirectional
                                                             .circular(12)),
@@ -481,7 +434,9 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                                 height: 3,
                                               ),
                                           itemCount: controller
-                                              .attendanceLogModel!.dataCount!)
+                                                  .attendanceLogModel
+                                                  ?.dataCount ??
+                                              0)
                                 ],
                               ),
                             ),
@@ -490,7 +445,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                       ),
                     ),
                   )
-                : Center(child: CalendarSwimmer());
+                : const Center(child: CalendarSwimmer());
           },
         ));
   }

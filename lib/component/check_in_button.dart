@@ -57,9 +57,9 @@ class CheckInButton extends StatelessWidget {
                           ),
                         )
                       : checkOut
-                          ? Text(
+                          ? const Text(
                               'Done',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,

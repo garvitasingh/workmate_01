@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -33,10 +31,8 @@ class LeaveController extends GetxController {
       print("get leave called");
     }
     try {
-      var res = await ApiProvider().getRequest(
-          apiUrl:
-              "$BASEURL/v1/application/leave/get-leave");
-      print(jsonDecode(res));
+      var res = await ApiProvider()
+          .getRequest(apiUrl: "$BASEURL/v1/application/leave/get-leave");
       leaveData = leaveModelFromJson(res);
       isLoading.value = false;
       update();
@@ -52,7 +48,6 @@ class LeaveController extends GetxController {
       print("apply leave called");
     }
     try {
-      
       var data = {
         "EmployeeID": employeeId.text,
         "EMPCode": "IT002",
@@ -63,9 +58,7 @@ class LeaveController extends GetxController {
         "Reason": ""
       };
       var res = await ApiProvider().postRequestToken(
-          apiUrl:
-              "$BASEURL/v1/application/leave/apply-leave",
-          data: data);
+          apiUrl: "$BASEURL/v1/application/leave/apply-leave", data: data);
       // print(jsonDecode(res));
       if (kDebugMode) {
         print(res);

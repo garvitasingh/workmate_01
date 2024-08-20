@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -23,7 +22,7 @@ class SwimmerForVisitView extends StatelessWidget {
                   height: 150,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Shimmer.fromColors(
@@ -36,7 +35,7 @@ class SwimmerForVisitView extends StatelessWidget {
                   height: 150,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Shimmer.fromColors(
@@ -49,7 +48,7 @@ class SwimmerForVisitView extends StatelessWidget {
                   height: 150,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Shimmer.fromColors(
@@ -62,7 +61,7 @@ class SwimmerForVisitView extends StatelessWidget {
                   height: 150,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Shimmer.fromColors(
@@ -75,7 +74,7 @@ class SwimmerForVisitView extends StatelessWidget {
                   height: 150,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Shimmer.fromColors(

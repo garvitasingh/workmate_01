@@ -59,12 +59,12 @@ class _AboutAppPageState extends State<AboutAppPage> {
                     ),
                     const SizedBox(height: 8.0),
                     Text(
-                        'Client: ${controller.aboutapp!.data.info[0].clientName}'),
+                        'Client: ${controller.aboutapp?.data.info[0].clientName}'),
                     Text(
-                        'Product: ${controller.aboutapp!.data.info[0].productName}'),
+                        'Product: ${controller.aboutapp?.data.info[0].productName}'),
                     const SizedBox(height: 16.0),
                     Text(
-                      'Copyright © ${DateTime.now().year} ${controller.aboutapp!.data.info[0].copyrightName}',
+                      'Copyright © ${DateTime.now().year} ${controller.aboutapp?.data.info[0].copyrightName}',
                       style: const TextStyle(color: Colors.grey),
                     ),
                   ],

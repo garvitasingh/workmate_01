@@ -1,9 +1,10 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
-import '../utils/constants.dart';
 import '../view/login_view.dart';
 
 class ApiProvider {
@@ -20,9 +21,10 @@ class ApiProvider {
       // var decodedBody = json.decode(res.body);
       // return decodedBody;
     } else if (res.statusCode == 401) {
+      // ignore: unused_local_variable
       var re = jsonDecode(res.body);
       GetStorage().erase();
-      Get.offAll(LoginViewPage());
+      Get.offAll(const LoginViewPage());
 
       return Future.error(res.body);
     } else if (res.statusCode == 404) {
@@ -36,17 +38,7 @@ class ApiProvider {
 
   Future<dynamic> uploadImage({file}) async {
     var token = box.read("token");
-    // var request = http.MultipartRequest(
-    //     'POST',
-    //     Uri.parse(
-    //         '$BASEURL/v1/application/file/upload-attendence-image-local'));
-    // print(file.path);
-    // if (file != null) {
-    //   request.files.add(await http.MultipartFile.fromPath(
-    //     'file',
-    //     file.path,
-    //     contentType: MediaType('file', 'png'),
-    //   ));
+
     var headers = {
       'Authorization': 'Bearer $token',
       'Cookie':
@@ -55,45 +47,35 @@ class ApiProvider {
     var request = http.MultipartRequest(
         'POST',
         Uri.parse(
-            'https://3afb-14-99-179-131.ngrok-free.app/v1/application/file/upload-attendence-image-local'));
+            'http://14.99.179.131/WSN2/v1/application/file/upload-attendence-image-local'));
     request.files.add(await http.MultipartFile.fromPath('file', file.path));
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
-    print(response.statusCode);
+    if (kDebugMode) {
+      print(response.statusCode);
+    }
     if (response.statusCode == 200) {
       var decode = jsonDecode(await response.stream.bytesToString());
       return decode['data']['file_name'];
     } else {
-      print(response.reasonPhrase);
+      if (kDebugMode) {
+        print(response.reasonPhrase);
+      }
       return null;
     }
   }
 
-  // Future<dynamic> postRequest({required apiUrl, data}) async {
-  //   var headers = {'Content-Type': 'application/json'};
-  //   var request = http.Request('POST', Uri.parse('$BASEURL$apiUrl'));
-  //   request.body = json.encode(data);
-  //   request.headers.addAll(headers);
-  //   http.StreamedResponse res = await request.send();
-  //   print(res.statusCode);
-  //   if (res.statusCode == 200) {
-  //     var decode = jsonDecode(await res.stream.bytesToString());
-  //     print("result is ====  ${decode}");
-  //     return decode;
-  //     // print(await response.stream.bytesToString());
-  //   } else {
-  //     return res.reasonPhrase;
-  //   }
-  // }
-
   Future<dynamic> postRequestToken({required apiUrl, data}) async {
     var token = box.read("token");
+
     var res = await http.post(body: data, Uri.parse('$apiUrl'), headers: {
       'Authorization': 'Bearer $token'
     }).timeout(const Duration(seconds: 20));
-    print(res.body);
+    if (kDebugMode) {
+      print(res.body);
+    }
     return jsonDecode(res.body);
     // if (res.statusCode == 200) {
     //   return res;

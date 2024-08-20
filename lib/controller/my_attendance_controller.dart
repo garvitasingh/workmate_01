@@ -15,7 +15,6 @@ class MyAttendanceController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     getAttendance();
   }
@@ -28,10 +27,7 @@ class MyAttendanceController extends GetxController {
     }
     try {
       var res = await ApiProvider().getRequest(
-          apiUrl:
-              "$BASEURL/v1/application/attendence/my-attendance");
-      // print(jsonDecode(res));
-
+          apiUrl: "$BASEURL/v1/application/attendence/my-attendance");
       attendanceData = attendanceModelFromJson(res);
       isLoading.value = false;
       update();

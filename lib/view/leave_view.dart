@@ -2,12 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:workmate_01/controller/leave_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
-import 'package:workmate_01/utils/local_data.dart';
 
 class LeaveView extends StatefulWidget {
   const LeaveView({super.key});
@@ -32,11 +30,6 @@ class _LeaveViewState extends State<LeaveView> {
     "Rejected Leave": 2,
     "Pending": 2,
   };
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +62,7 @@ class _LeaveViewState extends State<LeaveView> {
         ),
         body: Obx(() => Center(
               child: controller.isLoading.isTrue
-                  ? CircularProgressIndicator.adaptive()
+                  ? const CircularProgressIndicator.adaptive()
                   : Padding(
                       padding:
                           const EdgeInsets.only(top: 5, left: 10, right: 10),
@@ -88,30 +81,37 @@ class _LeaveViewState extends State<LeaveView> {
                             ),
                             PieChart(
                               dataMap: {
-                                "Total Leave": double.parse(controller
-                                    .leaveData!.data!.visitPlan![0].totalLeave
-                                    .toString()),
+                                "Total Leave": double.parse(controller.leaveData
+                                        ?.data?.visitPlan?[0].totalLeave
+                                        .toString() ??
+                                    ''),
                                 "SL": double.parse(controller
-                                    .leaveData!.data!.visitPlan![0].totalSl
-                                    .toString()),
+                                        .leaveData?.data?.visitPlan?[0].totalSl
+                                        .toString() ??
+                                    ''),
                                 "EL": double.parse(controller
-                                    .leaveData!.data!.visitPlan![0].totalEl
-                                    .toString()),
+                                        .leaveData?.data?.visitPlan?[0].totalEl
+                                        .toString() ??
+                                    ''),
                                 "CL": double.parse(controller
-                                    .leaveData!.data!.visitPlan![0].totalCl
-                                    .toString()),
+                                        .leaveData?.data?.visitPlan?[0].totalCl
+                                        .toString() ??
+                                    ''),
                                 "Approve Leave": double.parse(controller
-                                    .leaveData!
-                                    .data!
-                                    .visitPlan![0]
-                                    .totalApproved
-                                    .toString()),
+                                        .leaveData
+                                        ?.data
+                                        ?.visitPlan?[0]
+                                        .totalApproved
+                                        .toString() ??
+                                    ''),
                                 "Pending Leave": double.parse(controller
-                                    .leaveData!.data!.visitPlan![0].pending
-                                    .toString()),
+                                        .leaveData?.data?.visitPlan?[0].pending
+                                        .toString() ??
+                                    ''),
                                 "Rejected Leave": double.parse(controller
-                                    .leaveData!.data!.visitPlan![0].rejected
-                                    .toString()),
+                                        .leaveData?.data?.visitPlan?[0].rejected
+                                        .toString() ??
+                                    ''),
                               },
                               animationDuration:
                                   const Duration(milliseconds: 800),
@@ -276,8 +276,7 @@ class _LeaveViewState extends State<LeaveView> {
                                                     return null;
                                                   },
                                                   onChanged: (value) {
-                                                    if (value != null &&
-                                                        value is DateTime) {
+                                                    if (value != null) {
                                                       fromDate = value;
                                                       if (kDebugMode) {
                                                         print(DateFormat(
@@ -314,9 +313,8 @@ class _LeaveViewState extends State<LeaveView> {
                                                       return 'To Date is required';
                                                     }
 
-                                                    if (value is DateTime &&
-                                                        value.isBefore(
-                                                            fromDate)) {
+                                                    if (value
+                                                        .isBefore(fromDate)) {
                                                       return 'To Date must be after From Date';
                                                     }
 
@@ -324,8 +322,7 @@ class _LeaveViewState extends State<LeaveView> {
                                                   },
                                                   firstDate: fromDate,
                                                   onChanged: (value) {
-                                                    if (value != null &&
-                                                        value is DateTime) {
+                                                    if (value != null) {
                                                       toDate = value;
                                                       if (kDebugMode) {
                                                         print(DateFormat(
@@ -375,7 +372,7 @@ class _LeaveViewState extends State<LeaveView> {
                                                         .saveAndValidate()) {
                                                       // Form data is valid, process it here
                                                       var formData = _formKey
-                                                          .currentState!.value;
+                                                          .currentState?.value;
                                                       controller.applyLeave(
                                                           fomData: formData);
                                                       if (kDebugMode) {
@@ -429,6 +426,7 @@ class _LeaveViewState extends State<LeaveView> {
     return adjustedColor;
   }
 
+  // ignore: unused_element
   Widget _leaveCard(String title, int? count, color) {
     return InkWell(
       onTap: () {

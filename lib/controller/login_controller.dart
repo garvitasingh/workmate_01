@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -23,12 +24,16 @@ class AuthController extends GetxController {
 
   loginUser() async {
     isLoading.value = false;
-    print(box.read("token"));
+    if (kDebugMode) {
+      print(box.read("token"));
+    }
     update();
-    print("get login called");
+    if (kDebugMode) {
+      print("get login called");
+    }
     try {
       // You can use your logic to get the password
-      print(password);
+
       if (phoneController.text.isEmpty ||
           phoneController.text.length < 10 ||
           password == "null") {
@@ -67,12 +72,16 @@ class AuthController extends GetxController {
       constToast("Time Out");
       isLoading.value = true;
       update();
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 
   userActivation() async {
-    print("get userActivation called");
+    if (kDebugMode) {
+      print("get userActivation called");
+    }
     try {
       // You can use your logic to get the password
       isLoading.value = false;
@@ -97,7 +106,9 @@ class AuthController extends GetxController {
     } catch (e) {
       isLoading.value = true;
       update();
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
   }
 
@@ -108,12 +119,16 @@ class AuthController extends GetxController {
       // password = androidInfo.id;
       password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
       update();
-      print('Device ID: ${androidInfo.id}');
+      if (kDebugMode) {
+        print('Device ID: ${androidInfo.id}');
+      }
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
       update();
-      print('Device ID: ${iosInfo.identifierForVendor}');
+      if (kDebugMode) {
+        print('Device ID: ${iosInfo.identifierForVendor}');
+      }
     }
   }
 }
