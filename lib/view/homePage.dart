@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:workmate_01/controller/home_controller.dart';
+import 'package:workmate_01/network/network_controller.dart';
 import 'package:workmate_01/utils/colors.dart';
 import 'package:workmate_01/utils/constants.dart';
 import 'package:workmate_01/utils/local_data.dart';
@@ -15,7 +16,7 @@ import 'package:workmate_01/view/login_view.dart';
 import 'package:workmate_01/view/mark_attendance.dart';
 import 'package:workmate_01/view/my_attendance.dart';
 import 'package:workmate_01/view/notification_view.dart';
-import 'package:workmate_01/view/others_view.dart';
+import 'package:workmate_01/view/logsView.dart';
 import 'package:workmate_01/view/today_visit.dart';
 import 'package:workmate_01/view/visit_screen.dart';
 
@@ -32,6 +33,12 @@ class _HomePageViewState extends State<HomePageView> {
   HomeController controller = Get.put(HomeController());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   final User = LocalData();
+
+  @override
+  void initState() {
+    Get.put(NetworkController(), permanent: true);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -615,7 +622,7 @@ class _HomePageViewState extends State<HomePageView> {
     VisitScreen(),
     const ExpanseManagementView(),
     const LeaveView(),
-    const OthersView(),
+    const LogsView(),
   ];
   List iconss = [
     "my_att",

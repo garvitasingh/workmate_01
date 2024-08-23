@@ -106,7 +106,7 @@ class HomeController extends GetxController {
     "Visits",
     "Expense Management",
     "Leave",
-    "Others"
+    "Logs"
   ];
 
   getMenu({userId}) async {

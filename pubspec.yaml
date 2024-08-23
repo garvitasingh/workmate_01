@@ -98,7 +98,7 @@ flutter:
         - asset: assets/fonts/Product-Sans-Regular.ttf
         - asset: assets/fonts/Product-Sans-Bold-Italic.ttf
         - asset: assets/fonts/Product-Sans-Bold.ttf
-          weight: 700
+          weight: 900
         - asset: assets/fonts/Product-Sans-Italic.ttf
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

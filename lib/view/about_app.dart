@@ -14,7 +14,7 @@ class AboutAppPage extends StatefulWidget {
 }
 
 class _AboutAppPageState extends State<AboutAppPage> {
-  late PackageInfo? _packageInfo;
+  PackageInfo? _packageInfo;
   Future<void> _loadPackageInfo() async {
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
@@ -24,7 +24,6 @@ class _AboutAppPageState extends State<AboutAppPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _loadPackageInfo();
   }
@@ -45,17 +44,17 @@ class _AboutAppPageState extends State<AboutAppPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Image.memory(base64Decode(
-                        controller.aboutapp!.data.info[0].productIcon)),
+                        controller.aboutapp?.data.info[0].productIcon ?? '')),
                     const SizedBox(height: 16.0),
                     Text(
-                      controller.aboutapp!.data.info[0].appName,
+                      controller.aboutapp?.data.info[0].appName ?? '',
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      'Version: ${_packageInfo!.version}',
-                      style:
-                          const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      'Version: ${_packageInfo?.version}',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8.0),
                     Text(

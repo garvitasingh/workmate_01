@@ -43,6 +43,8 @@ class AttendanceController extends GetxController {
   final List<DateTime> leaveDates = [];
   final List<DateTime> holidayDates = [];
   final List<DateTime> absentDates = [];
+  String todayInTime = '';
+  String todayoutTime = '';
 
   //   List<DateTime> holidays = [
   //   DateTime.utc(2024, 3, 25),
@@ -74,7 +76,7 @@ class AttendanceController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
+    getAttendanceLogs();
     // getVisitPlans();
     getAttendanceMonthly();
     if (visitID != '') {
@@ -85,7 +87,7 @@ class AttendanceController extends GetxController {
     }
     getVisitPlans();
     getAttendance();
-    getAttendanceLogs();
+
     // Timer.periodic(const Duration(seconds: 1), (Timer timer) {
     //   // Check if the widget is still mounted before updating the state
     //   getAttendanceLogs();
@@ -106,9 +108,10 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl: "$BASEURL/v1/application/attendence/my-attendance");
-      // print(jsonDecode(res));
+      print(jsonDecode(res));
 
       attendanceData = attendanceModelFromJson(res);
+      await Future.delayed(const Duration(seconds: 2));
       isLoading.value = false;
       update();
     } catch (e) {
@@ -182,18 +185,33 @@ class AttendanceController extends GetxController {
 
   getAttendanceLogs() async {
     //isLoading.value = true;
+    todayInTime = '';
+    todayoutTime = '';
     update();
     if (kDebugMode) {
-      print("get attendance called");
+      print("get 7daylogs  called");
     }
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
               "$BASEURL/v1/application/attendence/attendance-logs?EMPCode=${LocalData().getEmpCode()}&VisitId=0");
-      // print(res);
       attendanceLogModel = attendanceLogModelFromJson(res);
-
+      if (attendanceLogModel?.data?.attendancelog?.isNotEmpty ?? true) {
+        for (var i = 0;
+            i < attendanceLogModel!.data!.attendancelog!.length;
+            i++) {
+          final data = attendanceLogModel?.data?.attendancelog?[0];
+          if(isToday(data?.presentTimeIn.toString() ?? '')){
+             todayInTime = data?.presentTimeIn.toString() ?? '';
+          }
+          if(isToday(data?.presentTimeOut.toString() ?? '')){
+            todayoutTime = data?.presentTimeOut.toString() ?? '';
+          }
+          
+        }
+      }
       checkLog.value = true;
+     
       update();
 
       // isLoading.value = false;
@@ -206,6 +224,16 @@ class AttendanceController extends GetxController {
         print(e.toString());
       }
     }
+  }
+
+  bool isToday(String dateTimeString) {
+    final String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    // Extract the date portion from the input string
+    final String datePart = dateTimeString.split(' ')[0];
+
+    // Compare the date part with today's date
+    return datePart == today;
   }
 
   getVisitPlans() async {

@@ -18,9 +18,21 @@ constToast(msg) {
 }
 
 String convertTimestampToTime(String timestamp) {
-  DateTime dateTime = DateTime.parse(timestamp);
-  String formattedTime = DateFormat('hh:mm a').format(dateTime);
-  return formattedTime;
+  
+  if (timestamp.trim().isEmpty) {
+    return '-:-'; 
+  }
+  
+  try {
+    // Parse the timestamp to DateTime
+    DateTime dateTime = DateTime.parse(timestamp);
+    // Format the DateTime to a 12-hour time format with AM/PM
+    String formattedTime = DateFormat('hh:mm a').format(dateTime);
+    return formattedTime;
+  } catch (e) {
+    // Handle parsing errors
+    return '-:-'; 
+  }
 }
 
 String visitID ='';
