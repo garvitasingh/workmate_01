@@ -93,6 +93,7 @@ class _HomePageViewState extends State<HomePageView> {
                             style: TextStyle(fontSize: 24.0, color: darkColor),
                           ),
                           onTap: () {
+                              Get.back();
                             Get.to(VisitScreen());
                           },
                         ),
@@ -106,6 +107,7 @@ class _HomePageViewState extends State<HomePageView> {
                             style: TextStyle(fontSize: 24.0, color: darkColor),
                           ),
                           onTap: () {
+                            Get.back();
                             Get.to(const AboutAppPage());
                           },
                         ),
@@ -204,27 +206,7 @@ class _HomePageViewState extends State<HomePageView> {
                             Obx(() => controller.isLoading.isFalse
                                 ? Column(
                                     children: [
-                                      // CarouselSlider.builder(
-                                      //     itemCount: controller.imgList.length,
-                                      //     options: CarouselOptions(
-                                      //         autoPlay: true,
-                                      //         aspectRatio: 2.0,
-                                      //         enlargeCenterPage: false,
-                                      //         height: 120),
-                                      //     itemBuilder: (context, index, realIdx) {
-                                      //       return Padding(
-                                      //         padding: const EdgeInsets.all(4.0),
-                                      //         child: Center(
-                                      //             child: ClipRRect(
-                                      //           borderRadius:
-                                      //               BorderRadius.circular(12),
-                                      //           child: Image.network(
-                                      //               controller.imgList[index],
-                                      //               fit: BoxFit.cover,
-                                      //               width: 500),
-                                      //         )),
-                                      //       );
-                                      //     }),
+                                      
 
                                       GetBuilder<HomeController>(
                                         init: HomeController(),
