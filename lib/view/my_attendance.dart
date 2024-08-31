@@ -22,16 +22,6 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
   late DateTime _focusedDay;
   late DateTime _selectedDay;
 
-  // AttendanceController controller = Get.put(AttendanceController());
-
-  // final List<DateTime> _presentDates = [
-  //   DateTime(2024, 1, 14),
-  //   DateTime(2024, 1, 25),
-  // ];
-  // List<DateTime> holidays = [
-  //   DateTime.utc(2024, 1, 1),
-  //   DateTime.utc(2024, 1, 5),
-  // ];
   bool visible = true;
   @override
   void initState() {
@@ -112,6 +102,18 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                     return true;
                                   }
                                 }
+                                for (DateTime presentDate
+                                    in controller.presentDates) {
+                                  if (_isSameDay(day, presentDate)) {
+                                    return true;
+                                  }
+                                }
+                                for (DateTime holidayDate
+                                    in controller.holidayDates) {
+                                  if (_isSameDay(day, holidayDate)) {
+                                    return true;
+                                  }
+                                }
                                 return false;
                               },
                               onDaySelected: (selectedDay, focusedDay) {
@@ -134,11 +136,11 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                           controller.leaveDates[i].toString());
                                       int dayOfMonth = leave.day;
 
-                                      // if (curre == dayOfMonth) {
-                                      //   constToast(
-                                      //       "You are on leave today, cannot mark attendance.");
-                                      //   return;
-                                      // }
+                                      if (curre == dayOfMonth) {
+                                        constToast(
+                                            "You are on leave today, cannot mark attendance.");
+                                        return;
+                                      }
                                     }
                                     Navigator.push(
                                       context,
@@ -182,7 +184,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                                     }
                                   }
                                   for (DateTime highlightedDate
-                                      in controller.absentDates) {
+                                      in controller.presentDates) {
                                     if (_isSameDay(day, highlightedDate)) {
                                       return Container(
                                         margin: const EdgeInsets.all(5),
@@ -293,6 +295,7 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
                           const SizedBox(
                             height: 5,
                           ),
+                          _buildAttendanceSummary(controller)
                         ],
                       ),
                     ),
@@ -302,119 +305,188 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
         ));
   }
 
-  // ignore: non_constant_identifier_names
-  Widget DateHeader(String dateString) {
-    DateTime date = DateTime.parse(dateString);
-    return SizedBox(
-      width: 60,
-      child: Card(
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Text("${date.day}"),
-              Text(_getDayName(date)),
-            ],
-          ),
-        ),
-      ),
-    );
+  int calculateAbsentDays(int present, int leave, int holiday) {
+    DateTime now = DateTime.now();
+
+    int totalDays = now.day;
+
+    int absentDays = totalDays - (present + leave + holiday);
+
+    return absentDays >= 0 ? absentDays : 0;
   }
 
-  final colorList = <Color>[
-    Colors.green,
-    Colors.red,
-    Colors.orange, // Add color
-    Colors.greenAccent, // Add color
-  ];
-
-  Widget _buildLog(text) {
+  Widget _buildAttendanceSummary(AttendanceController controller) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-      ),
-    );
-  }
-
-  Widget _buildLog1(text) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-      ),
-    );
-  }
-
-  String _getDayName(DateTime date) {
-    final List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    return days[date.weekday - 1];
-  }
-
-  bool _isSameDay(DateTime dayA, DateTime dayB) {
-    return dayA.year == dayB.year &&
-        dayA.month == dayB.month &&
-        dayA.day == dayB.day;
-  }
-
-  Color getColorByIndex(int index) {
-    // Replace this logic with your own color assignment
-    Color baseColor = Colors.red; // Change this to your base color
-
-    // Calculate the percentage based on the index (adjust the factor as needed)
-    double percentage = (index + 1) * 10.0; // For example, 10% increments
-
-    // Create a color with the adjusted opacity
-    Color adjustedColor = baseColor.withOpacity(percentage / 100.0);
-
-    return adjustedColor;
-  }
-
-  List<Color> generateLightColors() {
-    List<Color> lightColors = [];
-    // Add all light shades of primary colors
-    for (MaterialColor color in Colors.primaries) {
-      lightColors.add(color.shade200);
-    }
-
-    return lightColors;
-  }
-
-  Widget _buildStatusContainer(String title, String count, Color color) {
-    return Container(
-      //width: 90,
-      margin: const EdgeInsets.all(10),
-      padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: color.withOpacity(0.2),
-        border: Border(
-          top: BorderSide(color: color, width: 5.0),
-        ),
-      ),
-      child: Column(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            count.toString(),
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
+          _buildStatusContainer(
+              'Present', controller.presentDates.length, Colors.green),
+          _buildStatusContainer(
+              'Absent',
+              calculateAbsentDays(controller.presentDates.length,
+                  controller.leaveDates.length, controller.holidayDates.length),
+              Colors.red),
+          _buildStatusContainer(
+              'Leave', controller.leaveDates.length, Colors.orange),
+          _buildStatusContainer(
+              'Holiday', controller.holidayDates.length, Colors.blueAccent),
         ],
       ),
     );
   }
+
+  Widget _buildStatusContainer(String title, int count, Color color) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: color.withOpacity(0.2),
+          border: Border(
+            top: BorderSide(color: color, width: 5.0),
+          ),
+        ),
+        child: Column(
+          children: [
+            Text(
+              count.toString(),
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ignore: non_constant_identifier_names
+Widget DateHeader(String dateString) {
+  DateTime date = DateTime.parse(dateString);
+  return SizedBox(
+    width: 60,
+    child: Card(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text("${date.day}"),
+            Text(_getDayName(date)),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+final colorList = <Color>[
+  Colors.green,
+  Colors.red,
+  Colors.orange, // Add color
+  Colors.greenAccent, // Add color
+];
+
+Widget _buildLog(text) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Text(
+      text,
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+    ),
+  );
+}
+
+Widget _buildLog1(text) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Text(
+      text,
+      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+    ),
+  );
+}
+
+String _getDayName(DateTime date) {
+  final List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  return days[date.weekday - 1];
+}
+
+bool _isSameDay(DateTime dayA, DateTime dayB) {
+  return dayA.year == dayB.year &&
+      dayA.month == dayB.month &&
+      dayA.day == dayB.day;
+}
+
+Color getColorByIndex(int index) {
+  // Replace this logic with your own color assignment
+  Color baseColor = Colors.red; // Change this to your base color
+
+  // Calculate the percentage based on the index (adjust the factor as needed)
+  double percentage = (index + 1) * 10.0; // For example, 10% increments
+
+  // Create a color with the adjusted opacity
+  Color adjustedColor = baseColor.withOpacity(percentage / 100.0);
+
+  return adjustedColor;
+}
+
+List<Color> generateLightColors() {
+  List<Color> lightColors = [];
+  // Add all light shades of primary colors
+  for (MaterialColor color in Colors.primaries) {
+    lightColors.add(color.shade200);
+  }
+
+  return lightColors;
+}
+
+Widget _buildStatusContainer(String title, String count, Color color) {
+  return Container(
+    //width: 90,
+    margin: const EdgeInsets.all(10),
+    padding: const EdgeInsets.all(2),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      color: color.withOpacity(0.2),
+      border: Border(
+        top: BorderSide(color: color, width: 5.0),
+      ),
+    ),
+    child: Column(
+      children: [
+        Text(
+          count.toString(),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
+    ),
+  );
 }

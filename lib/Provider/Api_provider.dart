@@ -47,7 +47,7 @@ class ApiProvider {
     var request = http.MultipartRequest(
         'POST',
         Uri.parse(
-            'http://14.99.179.131/WSN2/v1/application/file/upload-attendence-image-local'));
+            'https://7ce7-14-99-179-131.ngrok-free.app/v1/application/file/upload-attendence-image-local'));
     request.files.add(await http.MultipartFile.fromPath('file', file.path));
     request.headers.addAll(headers);
 

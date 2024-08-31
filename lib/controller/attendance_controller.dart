@@ -43,6 +43,7 @@ class AttendanceController extends GetxController {
   final List<DateTime> leaveDates = [];
   final List<DateTime> holidayDates = [];
   final List<DateTime> absentDates = [];
+  final List<DateTime> presentDates = [];
   String todayInTime = '';
   String todayoutTime = '';
 
@@ -63,6 +64,13 @@ class AttendanceController extends GetxController {
     String presentDateString = date;
     DateTime presentDate = DateFormat("yyyy-MM-dd").parse(presentDateString);
     absentDates.add(presentDate);
+    update();
+  }
+
+  addPresent(date) {
+    String presentDateString = date;
+    DateTime presentDate = DateFormat("yyyy-MM-dd").parse(presentDateString);
+    presentDates.add(presentDate);
     update();
   }
 
@@ -134,7 +142,7 @@ class AttendanceController extends GetxController {
           apiUrl: "$BASEURL/v1/application/attendence/get-monthly-attendence");
 
       var decode = jsonDecode(res);
-
+     
       for (var i = 0; i < decode['Dates'].length; i++) {
         if (decode['Dates'][i]['type'] == "leave") {
           String ab = decode['Dates'][i]['date'].toString();
@@ -142,9 +150,13 @@ class AttendanceController extends GetxController {
           addLeave(ab);
         } else {
           String ab = decode['Dates'][i]['date'].toString();
-          //print(ab);
           addholiday(ab);
         }
+      }
+      for (var i = 0; i < decode['presentRows'].length; i++) {
+        String ab = decode['presentRows'][i]['date'].toString();
+      
+        addPresent(ab);
       }
 
       isLoading.value = false;
@@ -201,17 +213,16 @@ class AttendanceController extends GetxController {
             i < attendanceLogModel!.data!.attendancelog!.length;
             i++) {
           final data = attendanceLogModel?.data?.attendancelog?[0];
-          if(isToday(data?.presentTimeIn.toString() ?? '')){
-             todayInTime = data?.presentTimeIn.toString() ?? '';
+          if (isToday(data?.presentTimeIn.toString() ?? '')) {
+            todayInTime = data?.presentTimeIn.toString() ?? '';
           }
-          if(isToday(data?.presentTimeOut.toString() ?? '')){
+          if (isToday(data?.presentTimeOut.toString() ?? '')) {
             todayoutTime = data?.presentTimeOut.toString() ?? '';
           }
-          
         }
       }
       checkLog.value = true;
-     
+
       update();
 
       // isLoading.value = false;

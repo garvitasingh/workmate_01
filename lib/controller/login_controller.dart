@@ -59,6 +59,7 @@ class AuthController extends GetxController {
         update();
         return;
       }
+      
       if (res['error_uri'].toString() == "001") {
         Get.to(const VerificationUser());
       } else {
