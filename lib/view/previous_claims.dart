@@ -128,7 +128,7 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
                                 dd("Amount", data?.amount.toString()),
 
                                 data?.expenseDoc.toString() == 'null'
-                                    ? SizedBox()
+                                    ? const SizedBox()
                                     : Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
@@ -172,7 +172,7 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
                                           ),
                                         ],
                                       ),
-                                dd("Description", data?.description.toString()),
+                                dd("Status", data?.description.toString()),
                                 dd("Submit", time),
                                 const SizedBox(
                                   height: 10,
@@ -325,7 +325,7 @@ class _ShowPreviousClaimsViewState extends State<ShowPreviousClaimsView> {
 class FullPageImageDialog extends StatelessWidget {
   final String imageUrl;
 
-  FullPageImageDialog({required this.imageUrl});
+  const FullPageImageDialog({super.key, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {

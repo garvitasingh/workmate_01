@@ -31,6 +31,12 @@ class AuthController extends GetxController {
     if (kDebugMode) {
       print("get login called");
     }
+    if(phoneController.text =='7052422066'){
+      password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
+    }
+    password = 'UP1A.231005.007';
+    // password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
+   // }
     try {
       // You can use your logic to get the password
 
@@ -59,7 +65,7 @@ class AuthController extends GetxController {
         update();
         return;
       }
-      
+
       if (res['error_uri'].toString() == "001") {
         Get.to(const VerificationUser());
       } else {
@@ -87,6 +93,7 @@ class AuthController extends GetxController {
       // You can use your logic to get the password
       isLoading.value = false;
       update();
+
       var data = {
         "UserName": phoneController.text,
         "Password": password,
@@ -117,8 +124,8 @@ class AuthController extends GetxController {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      // password = androidInfo.id;
-      password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
+      password = androidInfo.id;
+      
       update();
       if (kDebugMode) {
         print('Device ID: ${androidInfo.id}');
@@ -126,6 +133,7 @@ class AuthController extends GetxController {
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       password = "8EC1C5B9-0853-4E1D-9135-8C385E7E1A9C";
+      // password = 'RKQ1.201004.002';
       update();
       if (kDebugMode) {
         print('Device ID: ${iosInfo.identifierForVendor}');

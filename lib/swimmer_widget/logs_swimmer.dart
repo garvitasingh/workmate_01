@@ -22,7 +22,7 @@ class SwimmerForLogs extends StatelessWidget {
                           height: 150,
                         ),
                       ),
-                      SizedBox(height: 10,),
+                      const SizedBox(height: 10,),
               ListView.separated(
                 shrinkWrap: true,
                   itemBuilder: (context, index) => Shimmer.fromColors(

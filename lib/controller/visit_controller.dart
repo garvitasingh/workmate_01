@@ -33,7 +33,7 @@ class VisitController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "$BASEURL/v1/application/visit/get-visit-detail?EMPCode=IT002");
+              "$BASEURL/v1/application/visit/get-visit-detail");
       print(jsonDecode(res));
       var data = jsonDecode(res);
       // print(data["Data"]["VisitPlan"].length);

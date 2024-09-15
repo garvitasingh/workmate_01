@@ -116,7 +116,7 @@ class _TodayVisitState extends State<TodayVisit> {
 
   Future<void> _openCamera() async {
     final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await imagePicker.pickImage(source: Platform.isIOS?ImageSource.gallery: ImageSource.camera);
 
     if (pickedFile != null) {
       setState(() {
@@ -411,56 +411,17 @@ class _TodayVisitState extends State<TodayVisit> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    controller.dataPresent.isFalse
-                                        ? Container(
-                                            alignment: Alignment.center,
-                                            child: CheckInButton(
-                                                checkOut: false,
-                                                checkIn: true,
-                                                onPressed: () {
-                                                  controller.markAttendance(
-                                                      add: Address,
-                                                      log: _currentPosition
-                                                          .longitude
-                                                          .toStringAsFixed(4),
-                                                      lat: _currentPosition
-                                                          .latitude
-                                                          .toStringAsFixed(4),
-                                                      attType: 'in',
-                                                      img: image);
-                                                }),
-                                          )
-                                        : Container(
-                                            alignment: Alignment.center,
-                                            height: 200,
-                                            child: CheckInButton(
-                                                checkOut: controller
-                                                            .visitAttendanceModel!
-                                                            .data!
-                                                            .visitAttendance![0]
-                                                            .checkOut ==
-                                                        0
-                                                    ? false
-                                                    : true,
-                                                checkIn: controller
-                                                            .visitAttendanceModel!
-                                                            .data!
-                                                            .visitAttendance![0]
-                                                            .checkIn ==
-                                                        1
-                                                    ? false
-                                                    : true,
-                                                onPressed: () {
-                                                  controller
-                                                              .visitAttendanceModel!
-                                                              .data!
-                                                              .visitAttendance![
-                                                                  0]
-                                                              .checkOut ==
-                                                          1
-                                                      ? constToast(
-                                                          "Attendance Completed!")
-                                                      : controller.markAttendance(
+                                    controller.attendancLoad
+                                        ? const Center(
+                                            child: CircularProgressIndicator())
+                                        : controller.dataPresent.isFalse
+                                            ? Container(
+                                                alignment: Alignment.center,
+                                                child: CheckInButton(
+                                                    checkOut: false,
+                                                    checkIn: true,
+                                                    onPressed: () {
+                                                      controller.markAttendance(
                                                           add: Address,
                                                           log: _currentPosition
                                                               .longitude
@@ -470,18 +431,64 @@ class _TodayVisitState extends State<TodayVisit> {
                                                               .latitude
                                                               .toStringAsFixed(
                                                                   4),
-                                                          attType: controller
-                                                                      .visitAttendanceModel!
-                                                                      .data!
-                                                                      .visitAttendance![
-                                                                          0]
-                                                                      .presentTimeOut !=
-                                                                  'null'
-                                                              ? 'out'
-                                                              : 'in',
+                                                          attType: 'in',
                                                           img: image);
-                                                }),
-                                          ),
+                                                    }),
+                                              )
+                                            : Container(
+                                                alignment: Alignment.center,
+                                                height: 200,
+                                                child: CheckInButton(
+                                                    checkOut: controller
+                                                                .visitAttendanceModel!
+                                                                .data!
+                                                                .visitAttendance![
+                                                                    0]
+                                                                .checkOut ==
+                                                            0
+                                                        ? false
+                                                        : true,
+                                                    checkIn: controller
+                                                                .visitAttendanceModel!
+                                                                .data!
+                                                                .visitAttendance![
+                                                                    0]
+                                                                .checkIn ==
+                                                            1
+                                                        ? false
+                                                        : true,
+                                                    onPressed: () {
+                                                      controller
+                                                                  .visitAttendanceModel!
+                                                                  .data!
+                                                                  .visitAttendance![
+                                                                      0]
+                                                                  .checkOut ==
+                                                              1
+                                                          ? constToast(
+                                                              "Attendance Completed!")
+                                                          : controller.markAttendance(
+                                                              add: Address,
+                                                              log: _currentPosition
+                                                                  .longitude
+                                                                  .toStringAsFixed(
+                                                                      4),
+                                                              lat: _currentPosition
+                                                                  .latitude
+                                                                  .toStringAsFixed(
+                                                                      4),
+                                                              attType: controller
+                                                                          .visitAttendanceModel!
+                                                                          .data!
+                                                                          .visitAttendance![
+                                                                              0]
+                                                                          .presentTimeOut !=
+                                                                      'null'
+                                                                  ? 'out'
+                                                                  : 'in',
+                                                              img: image);
+                                                    }),
+                                              ),
                                     const Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,

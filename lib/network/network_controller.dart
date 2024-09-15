@@ -3,7 +3,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:get/get.dart';
 import 'package:workmate_01/network/offline_view.dart';
-import 'package:workmate_01/utils/constants.dart';
 
 class NetworkController extends GetxController {
   final Connectivity _connectivity = Connectivity();

@@ -116,7 +116,7 @@ class HomeController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "$BASEURL/v1/application/dashboard/get-menu?Devicetype=M&EmpCode=$userId");
+              "$BASEURL/v1/application/dashboard/get-menu?Devicetype=M");
       print(jsonDecode(res));
       var data = jsonDecode(res);
       for (var i = 0; i < data["Data"]["Menu"].length; i++) {

@@ -25,9 +25,9 @@ class NotificationView extends StatelessWidget {
           "Notifications",
           style: TextStyle(color: secondaryColor),
         ),
-        actions: [],
+        actions: const [],
       ),
-      body: NoDataFoundWidget(),
+      body: const NoDataFoundWidget(),
     );
   }
 }

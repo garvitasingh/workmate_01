@@ -11,7 +11,6 @@ import 'package:workmate_01/model/conve_mode_model.dart';
 import 'package:workmate_01/model/visit_plan_ex_mode.dart';
 import 'package:http/http.dart' as http;
 import 'package:workmate_01/model/visit_plan_model.dart';
-import 'package:workmate_01/utils/local_data.dart';
 
 import '../Provider/Api_provider.dart';
 import '../utils/constants.dart';
@@ -134,7 +133,7 @@ class ExpenseController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "$BASEURL/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
+              "$BASEURL/v1/application/attendence/get-visit-for-attendence");
 
       visitPlanModel = visitPlanModelFromJson(res);
       print(visitPlanModel);

@@ -32,6 +32,8 @@ class AttendanceController extends GetxController {
   String? visitid;
   final unplaned = false.obs;
   bool attendancLoad = false;
+  bool markAttcLoad = false;
+
   TextEditingController from = TextEditingController();
   TextEditingController to = TextEditingController();
   TextEditingController visitPurpose = TextEditingController();
@@ -116,7 +118,7 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl: "$BASEURL/v1/application/attendence/my-attendance");
-      print(jsonDecode(res));
+     
 
       attendanceData = attendanceModelFromJson(res);
       await Future.delayed(const Duration(seconds: 2));
@@ -206,7 +208,7 @@ class AttendanceController extends GetxController {
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "$BASEURL/v1/application/attendence/attendance-logs?EMPCode=${LocalData().getEmpCode()}&VisitId=0");
+              "$BASEURL/v1/application/attendence/attendance-logs?VisitId=0");
       attendanceLogModel = attendanceLogModelFromJson(res);
       if (attendanceLogModel?.data?.attendancelog?.isNotEmpty ?? true) {
         for (var i = 0;
@@ -251,13 +253,14 @@ class AttendanceController extends GetxController {
     isLoading.value = true;
     visits.clear();
     if (kDebugMode) {
-      print("get visits called");
+      print("get visits called"+LocalData().getEmpCode());
     }
     try {
       var res = await ApiProvider().getRequest(
           apiUrl:
-              "$BASEURL/v1/application/attendence/get-visit-for-attendence?EMPCode=${LocalData().getEmpCode()}");
+              "$BASEURL/v1/application/attendence/get-visit-for-attendence");
       visitPlanModel = visitPlanModelFromJson(res);
+     
       for (var i = 0; i < visitPlanModel!.dataCount; i++) {
         visits.add(visitPlanModel?.data.visitPlan[i].visitLocation ?? '');
 
@@ -325,7 +328,7 @@ class AttendanceController extends GetxController {
     String? img,
   }) async {
     isMark.value = false;
-
+    
     if (unplaned.isTrue) {
       visitid = "1";
       update();
@@ -334,7 +337,7 @@ class AttendanceController extends GetxController {
       constToast("Please Punch Image");
       return;
     }
-
+     
     if (unplaned.isTrue) {
       if (from.text.isEmpty || to.text.isEmpty || visitPurpose.text.isEmpty) {
         constToast("Fields Are Required!");
@@ -343,6 +346,8 @@ class AttendanceController extends GetxController {
         return;
       }
     }
+     attendancLoad = true;
+     update();
 
     var token = GetStorage().read("token");
     var headers = {
@@ -364,16 +369,18 @@ class AttendanceController extends GetxController {
       "VisitSummaryId": unplaned.isTrue ? "" : visitid
     });
     request.headers.addAll(headers);
-
+    print(request.body);
     http.StreamedResponse response = await request.send();
     if (kDebugMode) {
-      print(response.statusCode);
+      print(response);
     }
     if (response.statusCode == 200) {
       var dec = jsonDecode(await response.stream.bytesToString());
       if (kDebugMode) {
         print(dec);
       }
+     attendancLoad = false;
+     update();
       AudioPlayer().play(AssetSource('audios/wrong_ans.mp3'));
       constToast("Attendance Marked!");
       homeCo.getlastCheckina();
@@ -391,6 +398,8 @@ class AttendanceController extends GetxController {
       unplaned.value = false;
       update();
     } else {
+     attendancLoad = false;
+     update();
       unplaned.value = false;
       isMark.value = true;
       update();

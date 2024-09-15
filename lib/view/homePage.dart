@@ -192,7 +192,7 @@ class _HomePageViewState extends State<HomePageView> {
           ),
           body: Obx(
             () => controller.isLoading.isTrue
-                ? Center(child: SwimmerPage())
+                ? const Center(child: SwimmerPage())
                 : RefreshIndicator(
                     onRefresh: () async {
                       controller.getlastCheckina();
@@ -244,7 +244,7 @@ class _HomePageViewState extends State<HomePageView> {
                                                       ),
                                                       controller.getLastVisits
                                                               .isEmpty
-                                                          ? SizedBox(
+                                                          ? const SizedBox(
                                                               height: 40,
                                                             )
                                                           : Column(
@@ -405,9 +405,9 @@ class _HomePageViewState extends State<HomePageView> {
                                                                             .circular(
                                                                             40),
                                                                         thickness:
-                                                                            MaterialStateProperty.all<double>(6),
+                                                                            WidgetStateProperty.all<double>(6),
                                                                         thumbVisibility:
-                                                                            MaterialStateProperty.all<bool>(true),
+                                                                            WidgetStateProperty.all<bool>(true),
                                                                       ),
                                                                     ),
                                                                     menuItemStyleData:

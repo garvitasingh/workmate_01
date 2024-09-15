@@ -353,19 +353,25 @@ class _MyAttendanceViewState extends State<MyAttendanceView> {
           children: [
             Text(
               count.toString(),
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: color,
               ),
             ),
             const SizedBox(height: 5),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: color,
+            SizedBox(
+              width: 60,
+              child: Center(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
               ),
             ),
           ],

@@ -12,9 +12,9 @@ class ApiProvider {
 
   Future<dynamic> getRequest({required apiUrl}) async {
     var token = box.read("token");
-
+     
     var res = await http
-        .get(Uri.parse('$apiUrl'), headers: {'Authorization': 'Bearer $token'});
+        .get(Uri.parse('$apiUrl'), headers: {'authorization': 'Bearer $token'});
 
     if (res.statusCode == 200) {
       return res.body;
@@ -47,7 +47,7 @@ class ApiProvider {
     var request = http.MultipartRequest(
         'POST',
         Uri.parse(
-            'https://7ce7-14-99-179-131.ngrok-free.app/v1/application/file/upload-attendence-image-local'));
+            'https://wsn2.workgateway.in//v1/application/file/upload-attendence-image-local'));
     request.files.add(await http.MultipartFile.fromPath('file', file.path));
     request.headers.addAll(headers);
 
